@@ -27,7 +27,6 @@ import ChangePassword from "./changePassword";
 import ChangeLanguage from "./changeLanguage";
 import AboutUs from "./aboutUs";
 import EditProfile from "./editProfile";
-// import App00 from "./example";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
@@ -63,17 +62,7 @@ export default class App extends Component {
           Global={this.Global}
         >
           <Scene
-            // initial
-            key="example"
-            title=""
-            component={Example}
-            hideNavBar={true}
-            sceneStyle={{
-              paddingTop: 0
-            }}
-          />
-          <Scene
-            // initial
+            initial
             key="register"
             title=""
             component={Register}
@@ -83,7 +72,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-             initial
+            //  initial
             key="main"
             title=""
             component={Main}

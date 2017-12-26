@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 const { width, height } = Dimensions.get("window");
+
 import Global from "./models/global";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
@@ -36,17 +37,9 @@ export default class Main extends Component {
   render() {
     return (
       <ImageBackground source={background} style={styles.waperContainer} >
-      <View style={styles.waperLogo}>
           <Image source={logo} style={styles.logoStyle}/>
-      </View>
-      <View style={styles.containerName}>
-            <View style={styles.waperName}>
                 <Text style={styles.textName}>Simple</Text>
-            </View>
-            <View style={styles.waperSlogan}>
                 <Text style={styles.textSlogan}>Gần nhau hơn - abcxyz</Text>
-            </View>
-      </View>
         <View style={styles.containerButton}>
         <TouchableOpacity
                     onPress={() => {
@@ -79,84 +72,74 @@ const styles= StyleSheet.create({
       alignContent: 'space-around',
       flex: 1,
   },
-  waperLogo: {
-      height: height/2.6, //269,
-  },
+  // waperLogo: {
+  //     height: height<812?(height < 736 ? ( height < 667 ? 245 : 260): 283):312,
+  // },
   logoStyle: {
-      marginTop: height/10, //66
-      width: height/3.25, //205
-      height: height/3.25, //205
+      marginTop: height<812?(height < 736 ? ( height < 667 ? 57 : 67): 74):80,
+      width: height<812?(height < 736 ? ( height < 667 ? 205 : 205): 230):250,
+      height: height<812?(height < 736 ? ( height < 667 ? 205 : 205): 230):250,
       alignSelf: 'center',
-  },
-  containerName: {
-      height: height/5, //133.4
-      alignSelf: 'center',
-  },
-  waperName: {
-      height: height/7.33, //91
-      alignItems: 'center',
-      justifyContent: 'flex-start',
   },
   textName: {
-      fontSize: (height+4000)/83, //56
+      fontSize: height < 736 ? 56 : 60,
+      marginTop: -25,
       fontFamily: 'Noteworthy',
       color: '#ffff',
-      backgroundColor: 'transparent'
-  },
-  waperSlogan: {
-      height: (height+4000)/146, //32
-      alignItems: 'center',
-      justifyContent: 'center'
+      backgroundColor: 'transparent',
+      alignSelf: 'center'
   },
   textSlogan: {
-      fontSize: height/27.9, //24
+      fontSize: height < 736 ? (height < 568 ? 20 : 24) : 28,
       fontFamily: 'System',
       fontWeight: 'bold',
       color: '#ffff',
+      alignSelf: 'center',
       backgroundColor: 'transparent',
   },
   containerButton: {
-      height: height/2.8,
+      marginTop: 20,
+      height: height<812?(height < 736 ? ( height < 667 ? 160 : 240): 300):320,
       justifyContent: 'center',
       alignItems: 'center',
   },
   waperLogin:{
-      width: width - (width/8.33), //330
-      height: (height/10-(height-370)/12.78),//height/14, //48
+      width: width < 414 ? width - 40 : width - 50,
+      height: height < 667 ? 40 : 45,
       backgroundColor: '#F15F66',
       shadowColor: '#ED969B',
       shadowOffset: {width: 1, height: 1.3,  },
       shadowOpacity: 84,
       shadowRadius: 1,
-      borderRadius: height/28,
+      borderRadius: height < 667 ? 20 : 22.5,
       alignItems: 'center',
       justifyContent: 'center',
       marginBottom: 3,
 
   },
   textLogin: {
-      fontSize: (height+2000)/148, //18
+      fontSize: 18,
       fontFamily: 'System',
       fontWeight: 'bold',
       color: '#ffff',
       backgroundColor: 'transparent'
   },
   waperRegister:{
-      width: width - (width/8.33),
-      height: (height/10-(height-370)/12.78),//height/14,
+      width: width < 414 ? width - 40 : width - 50,
+      height: height < 667 ? 40 : 45,
       backgroundColor: '#FFA8AC',
       shadowColor: '#ED969B',
       shadowOffset: {width: 1, height: 1.3,  },
       shadowOpacity: 84,
       shadowRadius: 1,
-      borderRadius: height/28,
+      borderRadius: height < 667 ? 20 : 22.5,
       alignItems: 'center',
       justifyContent: 'center',
       marginTop: 4
 
   },
   textRegister: {
-      fontSize: (height+2000)/148,
+      fontSize: 18,
       fontFamily: 'System',
       fontWeight: 'bold',
       color: '#ffff',
