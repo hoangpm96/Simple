@@ -13,4 +13,4 @@ import {
 } from 'react-native';
 import App from "./src/index"
 
-AppRegistry.registerComponent('appcoffee', () => App);
+AppRegistry.registerComponent('Simple', () => App);
