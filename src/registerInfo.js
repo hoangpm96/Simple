@@ -82,7 +82,6 @@ export default class RegisterInfo extends Component {
                         <View style={styles.containerButton01}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    // Actions.login();
                                     this.setState({ isMale: true });
                                 }}
                             >
@@ -92,7 +91,6 @@ export default class RegisterInfo extends Component {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => {
-                                    // Actions.registerInfo();
                                     this.setState({ isMale: false });
                                 }}
                             >

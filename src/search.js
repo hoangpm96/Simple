@@ -51,9 +51,7 @@ export default class SearchFriend extends Component {
 
   constructor(props) {
     super(props);
-
     this.Global = this.props.Global;
-    this.Global.isFooter = true;
     this.state = {
       tags: [],
       text: "",
@@ -106,41 +104,25 @@ export default class SearchFriend extends Component {
   render() {
     const animatedValue = this.state.animatedValue;
     return (
-      <View
-        // source={require("./img/background01.png")}
-        style={styles.background}
-      >
-        <Animated.View>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerTextContain}>
-              <Text style={styles.headerText}>
-                SEARCH
-                  </Text>
-            </View>
-          </View>
-        </Animated.View>
-        <Text style={{ marginTop: 20, color: '#ffff', fontSize: 24, fontWeight: 'bold', backgroundColor: 'transparent' }}>{this.state.open ? 'SEARCH WITH ADDRESS' : ' SEARCH AROUND'}</Text>
+      <View style={styles.background}>
+        <Animated.View style={styles.headerContainer}>
+        <Text style={styles.headerText}>
+          SEARCH
+      </Text>
+      </Animated.View>
+        <Text style={styles.textSearch}>{this.state.open ? 'SEARCH WITH ADDRESS' : ' SEARCH AROUND'}</Text>
         <ScrollView
           style={{ width: width, height: height }}
           removeClippedSubviews={true}
-        // canCancelContentTouches={false}
         >
           <View style={styles.containerHobby}>
-            <View style={{
-              marginTop: 16, height: 30, backgroundColor: '#CEB7C3',
-              borderTopLeftRadius: 16, borderTopRightRadius: 16,
-              justifyContent: 'center'
-            }}>
-              <Text style={{
-                color: "#ffffff",
-                alignSelf: 'center',
-                fontWeight: 'bold'
-              }}>
+            <View style={styles.hobbiesTitle}>
+              <Text style={styles.hobbiesText}>
                 Hobbies?
           </Text>
             </View>
-            <View style={{ alignItems: 'flex-start', backgroundColor: 'rgba(202,148,157,1)', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, height: 150 }}>
-              <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', alignItems: 'flex-start', backgroundColor: 'transparent' }}>
+            <View style={styles.hobbiesContainerInput}>
+              <View style={styles.hobbiesInput}>
                 <TagInput
                   value={this.state.tags}
                   onChange={this.onChangeTags}
@@ -160,9 +142,7 @@ export default class SearchFriend extends Component {
               <Text style={styles.textQA}>Age?</Text>
               <Text style={styles.textQA}>{this.state.multiSliderValue[0]} - {this.state.multiSliderValue[1]}</Text>
             </View>
-            <View style={{ marginTop: 20 }}>
               <MultiSlider
-
                 values={[this.state.multiSliderValue[0], this.state.multiSliderValue[1]]}
                 sliderLength={width - 50}
                 onValuesChange={this.multiSliderValuesChange}
@@ -175,19 +155,13 @@ export default class SearchFriend extends Component {
                 snapped
               />
             </View>
-
-          </View>
           <View style={{ marginTop: -15 }}>
             <Expand
               minHeight={0}
-              // containerStyle={{ flexGrow: 1 }}
               ref="expand"
               value={this.state.open}
               animatedValue={animatedValue}>
-              <View>
-                <View >
-                  <Animated.View style={{ height: 140, justifyContent: 'center', backgroundColor: 'transparent' }}>
-                    <View style={styles.containerHeight}>
+                  <Animated.View style={styles.containerHeight}>
                       <TouchableOpacity
                         onPress={() => {
                           this.refs.picker.show();
@@ -254,16 +228,11 @@ export default class SearchFriend extends Component {
                           });
                         }}
                       />
-                    </View>
                   </Animated.View>
-                </View>
-              </View>
             </Expand>
-            <View>
               <TouchableOpacity style={styles.toggle} onPress={() => this.setState({ open: !this.state.open })}>
                 <Text style={this.state.open ? styles.arrow : styles.arrow2}>{this.state.open ? 'SEARCH AROUND ▲' : 'SEARCH WITH ADDRESS ▼'}</Text>
               </TouchableOpacity>
-            </View>
           </View>
         </ScrollView>
         <TouchableOpacity
@@ -277,8 +246,6 @@ export default class SearchFriend extends Component {
             <Icon name="search" color='#ffffff' size={23} />
           </View>
         </TouchableOpacity>
-
-
       </View>
     );
   }
@@ -292,7 +259,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     width: width,
-    height: (height + 1000) / 21.37,
+    height: height < 812 ? 65 : 75,
     alignItems: "center",
     justifyContent: 'center',
     backgroundColor: '#F15F66',
@@ -304,12 +271,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  headerTextContain: {
-    alignItems: "center",
-    marginTop: (height + 1000) / 58,
-    alignSelf: 'center'
-  },
   headerText: {
+    marginTop: height < 812 ? 20 : 30,
     color: "#ffffff",
     fontSize: 28,
     fontWeight: 'bold'
@@ -329,9 +292,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around'
   },
   containerHeight: {
-    // marginTop: 16,
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'center',
+    height: 140,
+    backgroundColor: 'transparent'
   },
   containerTextAge: {
     flexDirection: 'row',
@@ -353,11 +317,11 @@ const styles = StyleSheet.create({
   },
   containterAdd: {
     position: 'absolute',
-    left: -(height + 719) / 66,
-    bottom: 10,
-    width: (height + 719) / 33,
-    height: (height + 719) / 33,
-    borderRadius: ((height + 719) / 33) / 2,
+    left: height < 812 ? (height < 736 ? (height < 667 ? -19.5 : -21 ) : -22 ) : -24,
+    bottom: height < 812 ? 15: 25,
+    width: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
+    height: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
+    borderRadius: height < 812 ? (height < 736 ? (height < 667 ? 19.5 : 21 ) : 22 ) : 24,
     backgroundColor: '#F15F66',
     borderWidth: 1,
     borderColor: 'rgba(226,39,44,0.2)',
@@ -406,4 +370,38 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     width: width - (width / 8.33) - 70,
   },
+  textSearch: {
+    marginTop: 20, 
+    color: '#ffff', 
+    fontSize: 24, 
+    fontWeight: 'bold', 
+    backgroundColor: 'transparent' 
+  },
+  hobbiesTitle: {
+    marginTop: 16, 
+    height: 30, 
+    backgroundColor: '#CEB7C3',
+    borderTopLeftRadius: 16, 
+    borderTopRightRadius: 16,
+    justifyContent: 'center'
+  },
+  hobbiesText: {
+    color: "#ffffff",
+    alignSelf: 'center',
+    fontWeight: 'bold',
+  },
+  hobbiesContainerInput: { 
+    alignItems: 'flex-start', 
+    backgroundColor: 'rgba(202,148,157,1)', 
+    borderBottomLeftRadius: 16, 
+    borderBottomRightRadius: 16, 
+    height: 150 
+  },
+  hobbiesInput: { 
+    marginLeft: 10, 
+    marginRight: 10, 
+    flexDirection: 'row', 
+    alignItems: 'flex-start', 
+    backgroundColor: 'transparent' 
+  }
 });

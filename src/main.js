@@ -72,9 +72,6 @@ const styles= StyleSheet.create({
       alignContent: 'space-around',
       flex: 1,
   },
-  // waperLogo: {
-  //     height: height<812?(height < 736 ? ( height < 667 ? 245 : 260): 283):312,
-  // },
   logoStyle: {
       marginTop: height<812?(height < 736 ? ( height < 667 ? 57 : 67): 74):80,
       width: height<812?(height < 736 ? ( height < 667 ? 205 : 205): 230):250,

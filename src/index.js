@@ -103,7 +103,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            initial
+            // initial
             key="forgot"
             title=""
             component={Forgot}
@@ -153,7 +153,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="search"
             title={""}
             component={SearchFriend}
