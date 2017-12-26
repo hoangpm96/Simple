@@ -115,10 +115,7 @@ const styles = StyleSheet.create({
         alignContent: 'space-around',
         flex: 1,
     },
-    //   waperLogo: {
-    //       height: height<812?(height < 736 ? ( height < 667 ? 220 : 260): 283):312,
-    //       backgroundColor: 'red'
-    //   },
+
     logoStyle: {
         marginTop: height < 812 ? (height < 667 ? 45 : 55) : 60,
         width: height < 812 ? (height < 736 ? (height < 667 ? 180 : 205) : 230) : 250,
@@ -154,7 +151,7 @@ const styles = StyleSheet.create({
         borderColor: 'transparent',
         fontSize: 14,
         color: '#ffffff',
-        width: width - 110,
+        width: width < 414 ? width - 110 : width - 120,
     },
     containerPassword: {
         width: width < 414 ? width - 40 : width - 50,

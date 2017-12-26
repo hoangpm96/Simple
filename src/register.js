@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
   },
 
   logoStyle: {
-    marginTop: height / 12, //56
-    width: height / 3.26, //205
-    height: height / 3.26, //205
+    marginTop: height < 812 ? (height < 667 ? 45 : 55) : 60,
+    width: height < 812 ? (height < 736 ? (height < 667 ? 180 : 205) : 230) : 250,
+    height: height < 812 ? (height < 736 ? (height < 667 ? 180 : 205) : 230) : 250,
     alignSelf: 'center',
   },
   textName: {
@@ -135,15 +135,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   containerForm: {
-    marginTop: (height + 4000) / 203,//23
-    // height: (height+4000) / 26.67, //130
+    marginTop: 23,
     alignItems: 'center',
     justifyContent: 'center',
   },
   containerUserName: {
-    width: width - (width / 8.33), //330
-    height: (height / 10 - (height - 370) / 12.78),//48, //48
-    borderRadius: height / 28,
+    width: width < 414 ? width - 40 : width - 50,
+    height: height < 667 ? 40 : 45,
+    borderRadius: height < 667 ? 20 : 22.5,
     backgroundColor: 'rgba(202,148,157,1)',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -155,12 +154,12 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     fontSize: 14,
     color: '#ffffff',
-    width: width - (width / 8.33) - 70,
+    width: width < 414 ? width - 110 : width - 120,
   },
   containerPassword: {
-    width: width - (width / 8.40), //330
-    height: (height / 10 - (height - 370) / 12.78), //48
-    borderRadius: height / 28,
+    width: width < 414 ? width - 40 : width - 50,
+    height: height < 667 ? 40 : 45,
+    borderRadius: height < 667 ? 20 : 22.5,
     backgroundColor: 'rgba(202,148,157,1)',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -173,11 +172,11 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     fontSize: 14,
     color: '#ffffff',
-    width: width - (width / 8.33) - 70,
+    width: width < 414 ? width - 110 : width - 120,
   },
   containerLink: {
-    width: width - (width / 8.33),
-    height: height / 36.35,
+    width: width < 414 ? width - 40 : width - 50,
+    height: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
     // backgroundColor: 'red'
@@ -189,20 +188,19 @@ const styles = StyleSheet.create({
     fontStyle: 'italic'
   },
   containerButton: {
-    // height: height / 4.6,//145
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: height / 50
   },
   waperLogin: {
-    width: width - (width / 8.40), //330
-    height: (height / 10 - (height - 370) / 12.78), //48,
+    width: width < 414 ? width - 40 : width - 50,
+    height: height < 667 ? 40 : 45,
     backgroundColor: '#F15F66',
     shadowColor: '#ED969B',
     shadowOffset: { width: 1, height: 1.3, },
     shadowOpacity: 84,
     shadowRadius: 1,
-    borderRadius: 25,
+    borderRadius: height < 667 ? 20 : 22.5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -215,7 +213,7 @@ const styles = StyleSheet.create({
   },
   waperConnect: {
     flexDirection: 'row',
-    height: height / 20,
+    height: 40
   }
 
 

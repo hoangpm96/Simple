@@ -74,9 +74,7 @@ export default class RegisterInfo extends Component {
                 <View style={styles.waperLogo}>
                     <Image source={logo} style={styles.logoStyle} />
                 </View>
-                <View style={styles.containerName}>
                     <Text style={styles.textName}>REGISTER</Text>
-                </View>
                 <View style={styles.containerInfo}>
                     {/* You are? */}
                     <View style={styles.containerYouAre}>
@@ -178,63 +176,59 @@ const styles = StyleSheet.create({
         alignContent: 'space-around',
         flex: 1,
     },
-    waperLogo: {
-        height: height / 2.57 - 57 + height / 15,
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-    },
+
     logoStyle: {
-        width: height / 2.57 - 57, //205
-        height: height / 2.57 - 57, //205
-    },
-    containerName: {
+        marginTop: height < 812 ? (height < 667 ? 20 : 45) : 50,
+        width: height < 736 ? (height < 667 ? 180 : 205) : 230,
+        height: height < 736 ? (height < 667 ? 180 : 205) : 230,
         alignSelf: 'center',
     },
+
     textName: {
         fontSize: 28,
         fontWeight: 'bold',
         fontFamily: 'System',
         color: '#ffff',
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        alignSelf: 'center'
     },
     containerInfo: {
         flex: 6,
-        marginTop: height / 66,
+        marginTop: height < 667 ? 5 : 10,
     },
     containerYouAre: {
         flex: 1,
         alignSelf: 'center'
-
     },
     textQA: {
         fontSize: 16,
         color: '#ffffff',
         backgroundColor: 'transparent',
-        marginBottom: 5,
+        marginBottom: height < 736 ? 5 : 12,
     },
     containerAge: {
         flex: 1,
-        marginTop: height / 50,
+        marginTop: height < 667 ? 14 : 0,
         alignItems: 'center',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
 
     },
     containerTextAge: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: width - (width / 8.33),
+        width: width < 414 ? width - 40 : width - 50,
     },
     containerHobby: {
         flex: 2,
-        width: width - (width / 8.33),
+        width: width < 414 ? width - 40 : width - 50,
         alignSelf: 'center',
     },
     containerButton: {
-        // flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        height: (height / 10 - (height - 370) / 12.78) + 16,
+        height: height < 812 ? (height < 736 ? (height < 667 ? 60 : 70) : 80) : 90,
+        // marginBottom: height < 812 ? 5 : 10,
     },
     containerButton01: {
         justifyContent: 'center',
@@ -242,34 +236,34 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     waperLogin: {
-        width: (width - (width / 8.33)) / 2 - 5, //330
-        height: (height / 10 - (height - 370) / 12.78),
+        width:  width < 414 ? width/2 - 25 : width/2 - 30,
+        height: height < 667 ? 40 : 45,
         backgroundColor: '#F15F66',
         shadowColor: '#ED969B',
         shadowOffset: { width: 1, height: 1.3, },
         shadowOpacity: 84,
         shadowRadius: 1,
-        borderRadius: height / 28,
+        borderRadius: height < 667 ? 20 : 22.5,
         alignItems: 'center',
         justifyContent: 'center',
 
     },
     textButton: {
-        fontSize: (height + 2000) / 148, //18
+        fontSize: 18,
         fontFamily: 'System',
         fontWeight: 'bold',
         color: '#ffff',
         backgroundColor: 'transparent'
     },
     waperRegister: {
-        width: (width - (width / 8.33)) / 2 - 5,
-        height: (height / 10 - (height - 370) / 12.78),//height/14,
+        width: width < 414 ? width/2 - 25 : width/2 - 30,
+        height: height < 667 ? 40 : 45,
         backgroundColor: '#FFA8AC',
         shadowColor: '#ED969B',
         shadowOffset: { width: 1, height: 1.3, },
         shadowOpacity: 84,
         shadowRadius: 1,
-        borderRadius: height / 28,
+        borderRadius: height < 667 ? 20 : 22.5,
         alignItems: 'center',
         justifyContent: 'center',
 

@@ -40,8 +40,8 @@ export default class App extends Component {
     this.state = {};
     this.Global = Global;
   }
-  componentDidMount() {}
-  componentWillMount() {}
+  componentDidMount() { }
+  componentWillMount() { }
 
   render() {
     return (
@@ -61,16 +61,7 @@ export default class App extends Component {
           }}
           Global={this.Global}
         >
-          <Scene
-            initial
-            key="register"
-            title=""
-            component={Register}
-            hideNavBar={true}
-            sceneStyle={{
-              paddingTop: 0
-            }}
-          />
+
           <Scene
             //  initial
             key="main"
@@ -82,10 +73,20 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="registerInfo"
             title=""
             component={RegisterInfo}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            // initial
+            key="register"
+            title=""
+            component={Register}
             hideNavBar={true}
             sceneStyle={{
               paddingTop: 0
@@ -164,7 +165,7 @@ export default class App extends Component {
               paddingTop: 0
             }}
           />
-                    <Scene
+          <Scene
             // initial
             key="searchResult"
             title={""}
