@@ -73,7 +73,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            initial
+            // initial
             key="registerInfo"
             title=""
             component={RegisterInfo}
@@ -103,7 +103,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="forgot"
             title=""
             component={Forgot}
@@ -238,16 +238,6 @@ export default class App extends Component {
               paddingTop: 0
             }}
           />
-          {/* <Scene
-            // initial
-            key="example"
-            title={""}
-            component={App00}
-            hideNavBar={true}
-            sceneStyle={{
-              paddingTop: 0
-            }}
-          /> */}
         </Router>
         <Footer Global={this.Global} />
       </View>

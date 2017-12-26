@@ -45,7 +45,7 @@ export default class Login extends Component {
                         <Icon name="user-o" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
                         <TextInput placeholder={'User Name'} style={styles.styleUserName}
                             onChangeText={username => {
-                                this.setState({ userName: username.toLowerCase() });
+                                this.setState({ userName: username});
                             }}
                             placeholderTextColor={'#DDDDDD'}
                             value={this.state.userName}
@@ -58,7 +58,7 @@ export default class Login extends Component {
                             placeholderTextColor={'#DDDDDD'}
                             secureTextEntry={true}
                             onChangeText={pass => {
-                                this.setState({ pass: pass.toLowerCase() });
+                                this.setState({ pass: pass});
                             }}
                             value={this.state.pass}
                         />

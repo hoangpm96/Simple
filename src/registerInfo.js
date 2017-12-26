@@ -74,7 +74,7 @@ export default class RegisterInfo extends Component {
                 <View style={styles.waperLogo}>
                     <Image source={logo} style={styles.logoStyle} />
                 </View>
-                    <Text style={styles.textName}>REGISTER</Text>
+                <Text style={styles.textName}>REGISTER</Text>
                 <View style={styles.containerInfo}>
                     {/* You are? */}
                     <View style={styles.containerYouAre}>
@@ -83,20 +83,20 @@ export default class RegisterInfo extends Component {
                             <TouchableOpacity
                                 onPress={() => {
                                     // Actions.login();
-                                    this.setState({isMale: true});
+                                    this.setState({ isMale: true });
                                 }}
                             >
-                                <View style={[styles.waperLogin,this.state.isMale ? {backgroundColor: '#F15F66'} : {backgroundColor: '#FFA8AC'},{ marginRight: 5 }]}>
+                                <View style={[styles.waperLogin, this.state.isMale ? { backgroundColor: '#F15F66' } : { backgroundColor: '#FFA8AC' }, { marginRight: 5 }]}>
                                     <Text style={styles.textButton}>MALE</Text>
                                 </View>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => {
                                     // Actions.registerInfo();
-                                    this.setState({isMale: false});
+                                    this.setState({ isMale: false });
                                 }}
                             >
-                                <View style={[styles.waperRegister, , !this.state.isMale? {backgroundColor: '#F15F66'} : {backgroundColor: '#FFA8AC'},{ marginLeft: 5 }]}>
+                                <View style={[styles.waperRegister, , !this.state.isMale ? { backgroundColor: '#F15F66' } : { backgroundColor: '#FFA8AC' }, { marginLeft: 5 }]}>
                                     <Text style={styles.textButton}>FEMALE</Text>
                                 </View>
                             </TouchableOpacity>
@@ -123,22 +123,22 @@ export default class RegisterInfo extends Component {
                     </View>
                     {/* What are your hobbies? */}
                     <View style={styles.containerHobby}>
-                    <Text style={[styles.textQA, {flex: 1}]}>What are your hobbies?</Text>
-                    <View style={{ marginTop: height / 160, alignItems: 'flex-start', backgroundColor: 'rgba(202,148,157,1)',borderRadius: height / 40, flex: 6 }}>
-                    <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', alignItems: 'flex-start', backgroundColor: 'transparent'}}>
-                            <TagInput
-                                value={this.state.tags}
-                                onChange={this.onChangeTags}
-                                labelExtractor={this.labelExtractor}
-                                text={this.state.text}
-                                onChangeText={this.onChangeText}
-                                tagColor="#FFA8AC"
-                                tagTextColor="#ffffff"
-                                inputProps={inputProps}
-                                maxHeight={height/5.8}
-                            />
+                        <Text style={[styles.textQA, { flex: 1 }]}>What are your hobbies?</Text>
+                        <View style={{ marginTop: height / 160, alignItems: 'flex-start', backgroundColor: 'rgba(202,148,157,1)', borderRadius: height / 40, flex: 6 }}>
+                            <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', alignItems: 'flex-start', backgroundColor: 'transparent' }}>
+                                <TagInput
+                                    value={this.state.tags}
+                                    onChange={this.onChangeTags}
+                                    labelExtractor={this.labelExtractor}
+                                    text={this.state.text}
+                                    onChangeText={this.onChangeText}
+                                    tagColor="#FFA8AC"
+                                    tagTextColor="#ffffff"
+                                    inputProps={inputProps}
+                                    maxHeight={height / 5.8}
+                                />
+                            </View>
                         </View>
-                    </View>
                     </View>
                 </View>
                 {/* Button */}
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     waperLogin: {
-        width:  width < 414 ? width/2 - 25 : width/2 - 30,
+        width: width < 414 ? width / 2 - 25 : width / 2 - 30,
         height: height < 667 ? 40 : 45,
         backgroundColor: '#F15F66',
         shadowColor: '#ED969B',
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent'
     },
     waperRegister: {
-        width: width < 414 ? width/2 - 25 : width/2 - 30,
+        width: width < 414 ? width / 2 - 25 : width / 2 - 30,
         height: height < 667 ? 40 : 45,
         backgroundColor: '#FFA8AC',
         shadowColor: '#ED969B',
