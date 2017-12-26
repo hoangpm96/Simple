@@ -7,10 +7,10 @@ import {
   View,
   Image,
   Dimensions,
-  FlatList,
   TouchableOpacity,
-  ScrollView,
-  TextInput
+  TextInput,
+  TouchableHighlight,
+  ImageBackground
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 const { width, height } = Dimensions.get("window");
@@ -19,267 +19,215 @@ import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 
+import Global from "./models/global";
 @autobind
 @observer
+
 export default class Login extends Component {
   constructor(props) {
     super(props);
     this.Global = this.props.Global;
+    background = require('./img/background.png');
+    logo = require('./img/logo.png');
+    // Global.isFooter.set(false);
     this.state = {
-      userName: "",
-      pass: "",
-      isChecked: false
+        userName: "",
+        pass: "",
+        isChecked: false
     };
   }
   render() {
     return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: "#ae522e",
-          justifyContent: "center",
-          alignItems: "center",
-          paddingBottom: 50
-        }}
-      >
-        <View
-          style={{
-            width: 230,
-            height: 230,
-            borderRadius: 115,
-            backgroundColor: "#ffdb95"
-          }}
-        >
-          <Image
-            source={require("./img/logo-app.png")}
-            style={{
-              width: 230,
-              height: 230,
-              resizeMode: "contain"
-            }}
-          />
-        </View>
+      <ImageBackground source={background} style={styles.waperContainer} >
+          <View style={styles.waperLogo}>
+              <Image source={logo} style={styles.logoStyle} />
+          </View>
+          <View style={styles.containerName}>
+              <Text style={styles.textName}>LOGIN</Text>
+          </View>
 
-        <TextInput
-          placeholder="Username..."
-          placeholderTextColor="#fff"
-          selectionColor="#fff"
-          underlineColorAndroid="transparent"
-          style={{
-            width: width - 50,
-            height: 50,
-            borderRadius: 25,
-            borderColor: "#fff",
-            borderWidth: 1,
-            backgroundColor: "rgba(0,0,0,.1)",
-            paddingLeft: 20,
-            fontStyle: this.state.userName === "" ? "italic" : "normal",
-            fontSize: 18,
-            color: "#fff",
-            marginTop: 30
-          }}
-          onChangeText={username => {
-            this.setState({ userName: username.toLowerCase() });
-          }}
-          value={this.state.userName}
-        />
-
-        <TextInput
-          placeholder="Password..."
-          placeholderTextColor="#fff"
-          selectionColor="#fff"
-          underlineColorAndroid="transparent"
-          secureTextEntry={true}
-          style={{
-            width: width - 50,
-            height: 50,
-            borderRadius: 25,
-            borderColor: "#fff",
-            borderWidth: 1,
-            backgroundColor: "rgba(0,0,0,.1)",
-            paddingLeft: 20,
-            fontStyle: this.state.pass === "" ? "italic" : "normal",
-            fontSize: 18,
-            color: "#fff",
-            marginTop: 15
-          }}
-          onChangeText={pass => {
-            this.setState({ pass: pass.toLowerCase() });
-          }}
-          value={this.state.pass}
-        />
-        <View
-          style={{
-            alignItems: "flex-end",
-            width: width - 50,
-            marginTop: 5,
-            paddingRight: 10
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                color: "#ffdb95",
-                textAlign: "right",
-                fontStyle: "italic",
-                textDecorationLine: "underline",
-                textDecorationColor: "#ffdb95"
-              }}
-            >
-              Forgot password?
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/*<View*/}
-          {/*style={{*/}
-            {/*alignItems: "center",*/}
-            {/*width: width - 50,*/}
-            {/*marginTop: 5,*/}
-            {/*paddingLeft: 5,*/}
-            {/*flexDirection: "row"*/}
-          {/*}}*/}
-        {/*>*/}
-          {/*<TouchableOpacity*/}
-            {/*onPress={() => {*/}
-              {/*let isCheck = this.state.isChecked;*/}
-              {/*this.setState({*/}
-                {/*isChecked: !isCheck*/}
-              {/*});*/}
-            {/*}}*/}
-            {/*style={{*/}
-              {/*marginTop: 5,*/}
-              {/*width: 25,*/}
-              {/*height: 25,*/}
-              {/*borderRadius: 5,*/}
-              {/*borderColor: "#ebebeb",*/}
-              {/*borderWidth: 1,*/}
-              {/*justifyContent: "center",*/}
-              {/*alignItems: "center"*/}
-            {/*}}*/}
-          {/*>*/}
-            {/*{this.state.isChecked &&*/}
-              {/*<Icon name="check" color="#ffdb95" size={20} />}*/}
-          {/*</TouchableOpacity>*/}
-          {/*<Text*/}
-            {/*style={{*/}
-              {/*color: "#ffdb95",*/}
-              {/*fontSize: 18,*/}
-              {/*paddingLeft: 8*/}
-            {/*}}*/}
-          {/*>*/}
-            {/*Remember me*/}
-          {/*</Text>*/}
-        {/*</View>*/}
-
-        <TouchableOpacity
-          onPress={() => {
-              this.Global.isFooter = true;
-              Actions.homePage();
-          }}
-          style={{
-            width: 200,
-            height: 50,
-            borderRadius: 5,
-            borderWidth: 1,
-            borderColor: "#fff",
-            marginTop: 20,
-            justifyContent: "center",
-            alignItems: "center"
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 20,
-              color: "#ffdb95"
-            }}
-          >
-            Login
+          <View style={styles.containerForm}>
+              <View style={styles.containerUserName}>
+                  <Icon name="user-o" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
+                  <TextInput placeholder={'User Name'} style={styles.styleUserName}
+                      onChangeText={username => {
+                          this.setState({ userName: username.toLowerCase() });
+                      }}
+                      placeholderTextColor={'#DDDDDD'}
+                      value={this.state.userName}
+                  />
+              </View>
+              <View style={styles.containerPassword}>
+                  <Icon name="key" color='#DDDDDD' size={24} style={{ marginLeft: 19 }} />
+                  <TextInput style={styles.stylePassword}
+                      placeholder={'Password'}
+                      placeholderTextColor={'#DDDDDD'}
+                      secureTextEntry={true}
+                      onChangeText={pass => {
+                          this.setState({ pass: pass.toLowerCase() });
+                      }}
+                      value={this.state.pass}
+                  />
+              </View>
+              <View style={styles.containerLink}>
+                  <TouchableOpacity
+                      onPress={() => {
+                          // this.Global.isFooter = false;
+                          Actions.registerInfo();
+                      }}
+                  >
+                      <Text style={styles.textForgot}>
+                          Register
           </Text>
-        </TouchableOpacity>
-          <View style={{
-              width: width - 20,
-              marginTop: 20,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center'
-          }}>
-              <View style={{
-                  width: 80,
-                  height: 1,
-                  backgroundColor: '#ebebeb'
-              }}/>
-              <Text style={{
-                  color: '#ffdb95',
-                  fontSize: 16,
-                  paddingLeft: 5,
-                  paddingRight: 5
-              }}>
-                  OR CONNECT WITH
-              </Text>
-              <View style={{
-                  width: 80,
-                  height: 1,
-                  backgroundColor: '#ebebeb'
-              }}/>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                      onPress={() => {
+                          // this.Global.isFooter = false;
+                          Actions.forgot();
+                      }}
+                  >
+                      <Text style={styles.textForgot}>
+                          Forgot Password?
+                      </Text>
+                  </TouchableOpacity>
+              </View>
           </View>
-
-          <View style={{
-              flexDirection: 'row',
-              top: 15
-          }}>
-              <TouchableOpacity style={{
-                  width: 160,
-                  height: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#3B5998',
-                  flexDirection: 'row',
-                  borderRadius: 25
-              }}>
-                  <Icon
-                    name="facebook"
-                    color="#fff"
-                    size={20}
-                  />
-                  <Text style={{
-                      color: '#fff',
-                      paddingLeft: 5,
-                      fontSize: 17
-                  }}>
-                      Facebook
-                  </Text>
+          <View style={styles.containerButton}>
+              {/* Button Login */}
+              <TouchableOpacity
+                      onPress={() => {
+                          this.Global.isFooter = true;
+                          Actions.love();
+                          this.Global.pressStatus = "love";
+                      }}
+                  >
+                      <View style={styles.waperLogin}>
+                          <Text style={styles.textLogin}>LOGIN</Text>
+                      </View>
               </TouchableOpacity>
-
-              <TouchableOpacity style={{
-                  width: 160,
-                  height: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#FF0000',
-                  flexDirection: 'row',
-                  borderRadius: 25,
-                  marginLeft: 10
-              }}>
-                  <Icon
-                      name="google-plus"
-                      color="#fff"
-                      size={20}
-                  />
-                  <Text style={{
-                      color: '#fff',
-                      paddingLeft: 5,
-                      fontSize: 17
-                  }}>
-                      Google
-                  </Text>
-              </TouchableOpacity>
+              {/* Connect FB/G */}
+              <View style={styles.waperConnect}>
+              <Icon name="facebook-square" color='#ffffff' size={height/20} style={{marginRight: 7, backgroundColor: 'transparent'}}/>
+              <Icon name="google" color='#ffffff' size={height/20} style={{marginLeft: 7, backgroundColor: 'transparent'}}/> 
+              </View>
           </View>
-      </View>
-    );
+      </ImageBackground>
+  );
   }
 }
+const styles = StyleSheet.create({
+  waperContainer: {
+      flexDirection: 'column',
+      alignContent: 'space-around',
+      flex: 1,
+  },
+  waperLogo: {
+      height: height / 2.57,
+  },
+  logoStyle: {
+      marginTop: height / 12, //56
+      width: height / 3.26, //205
+      height: height / 3.26, //205
+      alignSelf: 'center',
+  },
+  containerName: {
+      height: height / 12,
+      alignSelf: 'center',
+      // backgroundColor: 'blue'
+  },
+  textName: {
+      fontSize: 28,  //42
+      fontWeight: 'bold',
+      fontFamily: 'System',
+      color: '#ffff',
+      backgroundColor: 'transparent'
+  },
+  containerForm: {
+      marginTop: (height+4000) / 203,//23
+      height: (height+4000) / 35.9, //130
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
+  containerUserName: {
+      width: width - (width / 8.33), //330
+      height: (height/10-(height-370)/12.78),//48, //48
+      borderRadius: height / 28,
+      backgroundColor: 'rgba(202,148,157,1)',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      marginBottom: 4,
+      flexDirection: 'row'
+  },
+  styleUserName: {
+      marginLeft: 10,
+      borderColor: 'transparent',
+      fontSize: 14,
+      color: '#ffffff',
+      width: width - (width / 8.33) - 70,
+  },
+  containerPassword: {
+      width: width - (width / 8.40), //330
+      height: (height/10-(height-370)/12.78), //48
+      borderRadius: height / 28,
+      backgroundColor: 'rgba(202,148,157,1)',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      // marginBottom: 3,
+      flexDirection: 'row'
+  },
+  stylePassword: {
+      marginLeft: 10,
+      marginRight: 20,
+      borderColor: 'transparent',
+      fontSize: 14,
+      color: '#ffffff',
+      width: width - (width / 8.33) - 70,
+  },
+  containerLink: {
+      width: width - (width / 8.33),
+      height: height / 36.35,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      // backgroundColor: 'red'
+  },
+  textForgot: {
+      backgroundColor: 'transparent',
+      fontSize: 16,
+      color: '#ffffff',
+      fontStyle: 'italic'
+  },
+  containerButton: {
+      height: height / 3.421,//195
+      justifyContent: 'center',
+      alignItems: 'center',
+      // backgroundColor: 'green'
+  },
+  waperLogin: {
+      width: width - (width / 8.40), //330
+      height: (height/10-(height-370)/12.78), //48,
+      marginTop: 10,
+      backgroundColor: '#F15F66',
+      shadowColor: '#ED969B',
+      shadowOffset: { width: 1, height: 1.3, },
+      shadowOpacity: 84,
+      shadowRadius: 1,
+      borderRadius: 25,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: height / 20,
+
+  },
+  textLogin: {
+      fontSize: 18,
+      fontFamily: 'System',
+      fontWeight: 'bold',
+      color: '#ffff',
+      backgroundColor: 'transparent'
+  },
+  waperConnect: {
+      flexDirection: 'row',
+      height: height/20,
+  }
+
+
+})

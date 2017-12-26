@@ -1,3 +1,5 @@
+
+
 import React, { Component } from "react";
 import { Actions, Router, Scene } from "react-native-mobx";
 import {
@@ -5,290 +7,403 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
+  Slider,
   Dimensions,
-  FlatList,
   TouchableOpacity,
+  ImageBackground,
+  ListView,
+  RefreshControl,
+  Animated,
   ScrollView,
-  TextInput
+  TouchableHighlight,
+  TextInput,
+  Button,
+  Alert,
+  Platform
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-import Modal from "react-native-modalbox";
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import SimplePicker from 'react-native-simple-picker';
+import { observable } from "mobx";
+import { autobind } from "core-decorators";
+import { observer } from "mobx-react/native";
+import TagInput from 'react-native-tag-input';
+import Expand from 'react-native-simple-expand';
 const { width, height } = Dimensions.get("window");
+const data = require('./data/api.json');
+const citys = ['Ha Noi', 'Quang Ngai', 'Quang Nam', 'Hai Phong', 'Can Tho', 'Da Nang', 'Lao Cai', 'Lang Son', 'Kien Giang', 'Tien Giang', 'Ho Chi Minh City', 'Long An', 'Dong Nai', 'Vung Tau', 'Hue', 'Phu Yen', 'Gia Lai', 'Daklak', 'Lam Dong', 'Quang Binh', 'Quang Tri', 'Binh Dinh', 'Binh Thuan', 'Tay Ninh', 'Binh Duong'];
+const dictricts = ['Dictrict 1', 'Dictrict 2', 'Dictrict 3', 'Dictrict 4', 'Dictrict 5', 'Dictrict 6', 'Dictrict 7', 'Dictrict 8', 'Dictrict 9', 'Dictrict 10', 'Dictrict 11', 'Dictrict 12', 'Thu Duc Dictrict', 'Tan Binh Dictrict', 'Tan Phu Dictrict', 'Phu Nhuan Dictrict', 'Binh Thanh Dictrict', 'Binh Chanh Dictrict', 'Nha Be Dictrict', 'Can Gio Dictrict', 'Cu Chi Dictrict', '37', '38', '39', '40'];
+const inputProps = {
+  keyboardType: 'default',
+  placeholder: 'hobby',
+  placeholderTextColor: 'white',
+  color: 'white',
+  autoFocus: true,
+  style: {
+    fontSize: 15,
+    marginVertical: Platform.OS == 'ios' ? 0 : -2,
+    marginTop: 10
+  },
+};
+@autobind
+@observer
+export default class SearchFriend extends Component {
 
-let dataSearch = [
-  {
-    img: require("./img/menu/coffee-cocktails/espresso.jpg"),
-    title: "Espresso",
-    description:
-      "Tart and refreshing coffee with Italian character, with a nice smooth cream-colored nut. Feel aroma of real coffee, which will charge you for the day.",
-    price: 50000
-  },
-  {
-    img: require("./img/menu/hot-drinks/classess-cocoa.jpg"),
-    title: "Classic Cocoa",
-    description:
-      "Sweet-sweet chocolate drink - a unique blend of dark chocolate sauce and whipped milk. Adorned with a cap of whipped cream and chocolate topping of dark chocolate.",
-    price: 40000
-  },
-  {
-    img: require("./img/menu/iced-coffee/smothie.jpg"),
-    title: "Smothie",
-    description:
-      "Ice drink with a taste of tropical fruits, consisting of natural fruit puree, fruit juice with the addition of ice. All the ingredients are whipped in the blender.",
-    price: 30000
-  },
-  {
-    img: require("./img/menu/iced-coffee/moccacino.jpg"),
-    title: "White Iced Moccacino",
-    description:
-      "Invigorating, refreshing iced coffee, espresso-based, cold milk with the addition of ice, white chocolate sauce and chocolate powder. All the ingredients are whipped in the blender.\n" +
-      "We recommend to add the syrup - coconut. The combination of opposites - the icy calm passions and carnival mokkachino coconut paradise.",
-    price: 30000
-  },
-  {
-    img: require("./img/menu/desserts/vienna-strudel.jpg"),
-    title: "Vienna Strudel",
-    description:
-      "Cherry strudel with ice-cream.\n" +
-      "Strudel with apples and cinnamon with ice-cream.\n" +
-      "Cottage cheese strudel with raspberries and ice-cream.",
-    price: 20000
-  },
-  {
-    img: require("./img/menu/desserts/petit-four.jpg"),
-    title: "Petit four",
-    description:
-      "Petit four with apple.\n" +
-      "Petit four with mango.\n" +
-      "Petit four with raspberry.",
-    price: 20000
-  }
-];
-
-let dataSearchresult = [
-  {
-    img: require("./img/menu/coffee-cocktails/espresso.jpg"),
-    title: "Espresso",
-    description:
-      "Tart and refreshing coffee with Italian character, with a nice smooth cream-colored nut. Feel aroma of real coffee, which will charge you for the day.",
-    price: 50000
-  }
-];
-export default class PlaceOrder extends Component {
   constructor(props) {
     super(props);
+
     this.Global = this.props.Global;
+    this.Global.isFooter = true;
     this.state = {
-      txtSearch: "",
-      onFocus: false,
+      tags: [],
+      text: "",
+      age: 18,
+      selectedCity: "Select City",
+      selectedDictrict: "Select Dictrict",
+      sliderOneChanging: false,
+      sliderOneValue: [5],
+      multiSliderValue: [18, 23],
+      weight: [55, 75],
+      height: [150, 180],
+      animatedValue: new Animated.Value(0)
     };
   }
+  onChangeTags = (tags) => {
+    this.setState({ tags });
+  }
+
+  onChangeText = (text) => {
+    this.setState({ text });
+
+    const lastTyped = text.charAt(text.length - 1);
+    const parseWhen = [',', ' ', ';', '\n'];
+
+    if (parseWhen.indexOf(lastTyped) > -1) {
+      this.setState({
+        tags: [...this.state.tags, this.state.text],
+        text: "",
+      });
+    }
+  }
+
+  labelExtractor = (tag) => tag;
+
+  multiSliderValuesChange = (values) => {
+    this.setState({
+      multiSliderValue: values,
+    });
+  }
+  weightChange = (values) => {
+    this.setState({
+      weight: values,
+    });
+  }
+  heightChange = (values) => {
+    this.setState({
+      height: values,
+    });
+  }
   render() {
-    let placeholder = (
-      <TouchableOpacity
-        style={{
-          flexDirection: "row",
-          position: "absolute",
-          backgroundColor: "transparent",
-          alignItems: "center",
-          left: this.state.onFocus ? 37 : null
-        }}
-      >
-        <Icon name="search" size={15} color="#ffdb95" />
-        <Text
-          style={{
-            fontSize: 18,
-            color: "#ffdb95",
-            paddingLeft: 5
-          }}
-        >
-          Search
-        </Text>
-      </TouchableOpacity>
-    );
+    const animatedValue = this.state.animatedValue;
     return (
       <View
-        style={{
-          flex: 1,
-          backgroundColor: "#ae522e"
-        }}
+        // source={require("./img/background01.png")}
+        style={styles.background}
       >
-        <View
-          style={{
-            width: width,
-            height: 80,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#8A180C"
-          }}
+        <Animated.View>
+          <View style={styles.headerContainer}>
+            <View style={styles.headerTextContain}>
+              <Text style={styles.headerText}>
+                SEARCH
+                  </Text>
+            </View>
+          </View>
+        </Animated.View>
+        <Text style={{ marginTop: 20, color: '#ffff', fontSize: 24, fontWeight: 'bold', backgroundColor: 'transparent' }}>{this.state.open ? 'SEARCH WITH ADDRESS' : ' SEARCH AROUND'}</Text>
+        <ScrollView
+          style={{ width: width, height: height }}
+          removeClippedSubviews={true}
+        // canCancelContentTouches={false}
         >
-            {this.state.txtSearch === "" ? placeholder : null}
-            <TextInput
-            selectionColor="#fff"
-            underlineColorAndroid="transparent"
-            style={{
-              fontStyle: this.state.txtSearch === "" ? "italic" : "normal",
-              fontSize: 18,
-              color: "#fff",
-              paddingLeft: 15,
-              width: width - 40,
-              height: 50,
-              borderRadius: 5,
-              backgroundColor: "rgba(255,255,255,.1)",
-              flexDirection: "row",
-              alignItems: "center"
-            }}
-            onChangeText={txtSearch => {
-              this.setState({ txtSearch: txtSearch });
-            }}
-            value={this.state.txtSearch}
-            onFocus={() => {
-              this.setState({
-                onFocus: true
-              });
-            }}
-            onSubmitEditing={() => {
-              this.setState({
-                onFocus: false
-              });
-            }}
-          />
-        </View>
-        {!(this.state.txtSearch !== "" && !this.state.onFocus)
-          ? <View
-              style={{
-                flex: 1,
-                paddingTop: 40,
-                alignItems: "center"
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 25
-                }}
-              >
-                Trending Searches
-              </Text>
-              <FlatList
-                style={{
-                  paddingTop: 20
-                }}
-                data={dataSearch}
-                renderItem={({ item, index }) => this._renderTrend(item, index)}
-                keyExtractor={(item, index) => index}
+          <View style={styles.containerHobby}>
+            <View style={{
+              marginTop: 16, height: 30, backgroundColor: '#CEB7C3',
+              borderTopLeftRadius: 16, borderTopRightRadius: 16,
+              justifyContent: 'center'
+            }}>
+              <Text style={{
+                color: "#ffffff",
+                alignSelf: 'center',
+                fontWeight: 'bold'
+              }}>
+                Hobbies?
+          </Text>
+            </View>
+            <View style={{ alignItems: 'flex-start', backgroundColor: 'rgba(202,148,157,1)', borderBottomLeftRadius: 16, borderBottomRightRadius: 16, height: 150 }}>
+              <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', alignItems: 'flex-start', backgroundColor: 'transparent' }}>
+                <TagInput
+                  value={this.state.tags}
+                  onChange={this.onChangeTags}
+                  labelExtractor={this.labelExtractor}
+                  text={this.state.text}
+                  onChangeText={this.onChangeText}
+                  tagColor="#FFA8AC"
+                  tagTextColor="#ffffff"
+                  inputProps={inputProps}
+                  maxHeight={135}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.containerAge}>
+            <View style={styles.containerTextAge}>
+              <Text style={styles.textQA}>Age?</Text>
+              <Text style={styles.textQA}>{this.state.multiSliderValue[0]} - {this.state.multiSliderValue[1]}</Text>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <MultiSlider
+
+                values={[this.state.multiSliderValue[0], this.state.multiSliderValue[1]]}
+                sliderLength={width - 50}
+                onValuesChange={this.multiSliderValuesChange}
+                min={16}
+                max={40}
+                step={1}
+                minimumTrackTintColor='#F15F66'
+                maximumTrackTintColor='#FFA8AC'
+                allowOverlap
+                snapped
               />
             </View>
-          : <FlatList
-              style={{}}
-              data={dataSearchresult}
-              renderItem={({ item, index }) => this._renderSearch(item, index)}
-              keyExtractor={(item, index) => index}
-            />}
+
+          </View>
+          <View style={{ marginTop: -15 }}>
+            <Expand
+              minHeight={0}
+              // containerStyle={{ flexGrow: 1 }}
+              ref="expand"
+              value={this.state.open}
+              animatedValue={animatedValue}>
+              <View>
+                <View >
+                  <Animated.View style={{ height: 140, justifyContent: 'center', backgroundColor: 'transparent' }}>
+                    <View style={styles.containerHeight}>
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.refs.picker.show();
+                        }
+                        }
+                        style={[styles.containerUserName, { marginTop: 5 }]}
+                      >
+                        <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
+                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedCity}</Text>
+
+                      </TouchableOpacity>
+                      <SimplePicker
+                        ref={'picker'}
+                        options={citys}
+                        itemStyle={{
+                          fontSize: 25,
+                          color: '#F15F66',
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                        }}
+                        buttonStyle={{
+                          fontSize: 18,
+                          color: '#F15F66',
+                          fontWeight: 'bold'
+                        }}
+                        confirmText='Select'
+                        onSubmit={(option) => {
+                          this.setState({
+                            selectedCity: option,
+                            selectedDictrict: 'Select Dictrict'
+                          });
+                        }}
+                      />
+
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.refs.picker2.show();
+                        }
+                        }
+                        style={[styles.containerUserName, { marginTop: 5 }]}
+                      >
+                        <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
+                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedDictrict}</Text>
+
+                      </TouchableOpacity>
+                      <SimplePicker
+                        ref={'picker2'}
+                        options={dictricts}
+                        itemStyle={{
+                          fontSize: 25,
+                          color: '#F15F66',
+                          textAlign: 'center',
+                          fontWeight: 'bold',
+                        }}
+                        buttonStyle={{
+                          fontSize: 18,
+                          color: '#F15F66',
+                          fontWeight: 'bold'
+                        }}
+                        confirmText='Select'
+                        onSubmit={(option) => {
+                          this.setState({
+                            selectedDictrict: option,
+                          });
+                        }}
+                      />
+                    </View>
+                  </Animated.View>
+                </View>
+              </View>
+            </Expand>
+            <View>
+              <TouchableOpacity style={styles.toggle} onPress={() => this.setState({ open: !this.state.open })}>
+                <Text style={this.state.open ? styles.arrow : styles.arrow2}>{this.state.open ? 'SEARCH AROUND ▲' : 'SEARCH WITH ADDRESS ▼'}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+        <TouchableOpacity
+          onPress={() => {
+            this.Global.isFooter = true;
+            this.Global.pressStatus = "search";
+            Actions.searchResult();
+          }}
+        >
+          <View style={styles.containterAdd}>
+            <Icon name="search" color='#ffffff' size={23} />
+          </View>
+        </TouchableOpacity>
+
+
       </View>
     );
   }
-  _renderTrend(item, index) {
-    return (
-      <TouchableOpacity
-        key={index}
-        style={{
-          backgroundColor: "transparent",
-          alignItems: "center",
-          marginTop: 10
-        }}
-        onPress={() => {
-          Actions.detailInfo({ title: item.title, item: item });
-        }}
-      >
-        <Text
-          style={{
-            color: "#ffdb95",
-            fontSize: 18
-          }}
-        >
-          {item.title}
-        </Text>
-      </TouchableOpacity>
-    );
-  }
-
-  _renderSearch(item, index) {
-    return (
-      <TouchableOpacity
-        key={"index" + index}
-        style={{
-          height: 120,
-          width: width,
-          justifyContent: "center",
-          flexDirection: "row",
-          borderBottomColor: "rgba(0, 0, 0, 0.15)",
-          borderBottomWidth: 1.5,
-          borderStyle: "solid",
-          padding: 10
-        }}
-        onPress={() => {
-          Actions.detailInfo({ title: item.title, item: item });
-        }}
-      >
-        <Image
-          source={item.img}
-          style={{
-            width: 100,
-            height: 100,
-            resizeMode: "cover",
-            borderWidth: 1,
-            borderColor: "#fff"
-          }}
-        />
-        <View
-          style={{
-            width: width - 100 - 30,
-            paddingLeft: 10
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row"
-            }}
-          >
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 18,
-                fontWeight: "bold",
-                flex: 1.4
-              }}
-            >
-              {item.title}
-            </Text>
-            <Text
-              style={{
-                textAlign: "right",
-                color: "#ffdb95",
-                fontWeight: "bold",
-                flex: 1,
-                fontSize: 16
-              }}
-            >
-              {this.Global.formatThousand(item.price, ".")} VND
-            </Text>
-          </View>
-          <Text
-            ellipsizeMode="tail"
-            numberOfLines={3}
-            style={{
-              paddingTop: 5,
-              color: "#fff",
-              fontSize: 15,
-              width: width - 120 - 30
-            }}
-          >
-            {item.description}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }
 }
+
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    alignItems: "center",
+    backgroundColor: '#CC6666'
+  },
+  headerContainer: {
+    width: width,
+    height: (height + 1000) / 21.37,
+    alignItems: "center",
+    justifyContent: 'center',
+    backgroundColor: '#F15F66',
+    flexDirection: "row"
+  },
+  buttonClose: {
+    width: 55,
+    height: 64,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  headerTextContain: {
+    alignItems: "center",
+    marginTop: (height + 1000) / 58,
+    alignSelf: 'center'
+  },
+  headerText: {
+    color: "#ffffff",
+    fontSize: 28,
+    fontWeight: 'bold'
+  },
+  containerHobby: {
+    flex: 2,
+    width: width - (width / 8.33),
+    alignSelf: 'center',
+  },
+  containerAge: {
+    marginTop: 16,
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
+  containerWeight: {
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
+  containerHeight: {
+    // marginTop: 16,
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  },
+  containerTextAge: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: width - (width / 8.33),
+  },
+  textQA: {
+    fontSize: 16,
+    color: '#ffffff',
+    backgroundColor: 'transparent',
+    marginBottom: 5,
+  },
+  textAdd: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontWeight: 'bold',
+    backgroundColor: "transparent",
+    alignSelf: 'center'
+  },
+  containterAdd: {
+    position: 'absolute',
+    left: -(height + 719) / 66,
+    bottom: 10,
+    width: (height + 719) / 33,
+    height: (height + 719) / 33,
+    borderRadius: ((height + 719) / 33) / 2,
+    backgroundColor: '#F15F66',
+    borderWidth: 1,
+    borderColor: 'rgba(226,39,44,0.2)',
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  toggle: {
+    alignItems: 'center',
+  },
+  arrow: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    backgroundColor: 'transparent',
+    marginBottom: 70
+  },
+  arrow2: {
+    marginTop: 15,
+    color: '#ffffff',
+    fontWeight: 'bold',
+    backgroundColor: 'transparent'
+  },
+  containerUserName: {
+    width: width - (width / 8.33), //330
+    height: (height / 10 - (height - 370) / 12.78), //48
+    borderRadius: height / 28,
+    backgroundColor: 'rgba(202,148,157,1)',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row'
+  },
+  styleUserName: {
+    marginLeft: 10,
+    borderColor: 'transparent',
+    fontSize: 14,
+    color: '#ffffff',
+    width: width - (width / 8.33) - 70,
+  },
+});

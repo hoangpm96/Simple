@@ -15,6 +15,7 @@ class Global {
   }
   @observable isFooter = false;
   @observable myCart = [];
+  @observable pressStatus = "love";
 }
 const global = new Global();
 export default global;

@@ -8,23 +8,26 @@ import {
   Platform
 } from "react-native";
 import { Actions, Router, Scene } from "react-native-mobx";
-import HomePage from "./homepage";
-import Menu from "./menu";
-import InfoMenu from "./infoMenu";
-import DetailInfo from "./detail-info";
-import Order from "./orders";
-import AboutUs from "./about-us";
-import Event from "./events";
-import InfoEvent from "./info-event";
-import Contacts from "./contacts";
+import Love from "./love";
 import Login from "./login";
-import Register from "./register";
-import Main from "./main";
+import Forgot from "./forgotpw";
+import RegisterInfo from "./registerInfo";
 import Footer from "./components/footer";
-import Cart from "./cart";
-import PlaceOrder from "./place-order";
-import Search from "./search";
-import Account from "./account";
+import Example from "./message/App"
+import Chat from "./chat";
+import AddChat from "./addChat";
+import Messager from "./messager";
+import Register from "./register"
+import Main from "./main";
+import SearchFriend from "./search";
+import SearchResult from "./searchResult"
+import Profile from "./profile";
+import DeleteAccount from "./deleteAccount";
+import ChangePassword from "./changePassword";
+import ChangeLanguage from "./changeLanguage";
+import AboutUs from "./aboutUs";
+import EditProfile from "./editProfile";
+// import App00 from "./example";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
@@ -60,7 +63,28 @@ export default class App extends Component {
           Global={this.Global}
         >
           <Scene
-              key="main"
+            // initial
+            key="example"
+            title=""
+            component={Example}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            // initial
+            key="register"
+            title=""
+            component={Register}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+             initial
+            key="main"
             title=""
             component={Main}
             hideNavBar={true}
@@ -69,7 +93,18 @@ export default class App extends Component {
             }}
           />
           <Scene
-              key="login"
+            // initial
+            key="registerInfo"
+            title=""
+            component={RegisterInfo}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            // initial
+            key="login"
             title=""
             component={Login}
             hideNavBar={true}
@@ -78,191 +113,157 @@ export default class App extends Component {
             }}
           />
           <Scene
-              initial
-              key="homePage"
+            // initial
+            key="forgot"
             title=""
-            component={HomePage}
+            component={Forgot}
             hideNavBar={true}
             sceneStyle={{
               paddingTop: 0
             }}
           />
           <Scene
-            key="menu"
-            title="Menu"
-            component={Menu}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
-          />
-          <Scene
-            key="infoMenu"
-            title={""}
-            component={InfoMenu}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
-          />
-          <Scene
-            key="detailInfo"
-            title={""}
-            component={DetailInfo}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
-          />
-          <Scene
-            key="order"
-            title={"Order"}
-            component={Order}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
-          />
-          <Scene
-            key="aboutUs"
-            title={"About Us"}
-            component={AboutUs}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
-          />
-          <Scene
-            key="event"
-            title={"Events"}
-            component={Event}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
-          />
-          <Scene
-            key="infoEvent"
-            title={"Events"}
-            component={InfoEvent}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
-          />
-          <Scene
-            key="cart"
-            title={"Cart"}
-            component={Cart}
+            // initial
+            key="love"
+            title=""
+            component={Love}
             hideNavBar={true}
-            schema="modal"
-            direction="vertical"
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
-            }}
             sceneStyle={{
-              paddingTop: 0
+              paddingTop: 0,
             }}
           />
           <Scene
-            key="contacts"
-            title={"Contacts"}
-            component={Contacts}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
+            // initial
+            key="chat"
+            title=""
+            component={Chat}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0,
             }}
           />
           <Scene
-            key="register"
-            title={"Register"}
-            component={Register}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
+            // initial
+            key="messager"
+            title=""
+            component={Messager}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0,
             }}
           />
           <Scene
-            key="placeOrder"
-            title={"Place Order"}
-            component={PlaceOrder}
-            hideNavBar={false}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            titleStyle={{
-              color: "#fff",
-              fontSize: 20
+            // initial
+            key="addchat"
+            title=""
+            component={AddChat}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0,
             }}
           />
           <Scene
+            // initial
             key="search"
             title={""}
-            component={Search}
+            component={SearchFriend}
             hideNavBar={true}
             navigationBarStyle={{
               backgroundColor: "#000"
             }}
             sceneStyle={{
-                paddingTop: 0
+              paddingTop: 0
+            }}
+          />
+                    <Scene
+            // initial
+            key="searchResult"
+            title={""}
+            component={SearchResult}
+            hideNavBar={true}
+            navigationBarStyle={{
+              backgroundColor: "#000"
+            }}
+            sceneStyle={{
+              paddingTop: 0
             }}
           />
           <Scene
-            key="account"
+            // initial
+            key="profile"
             title={""}
-            component={Account}
+            component={Profile}
             hideNavBar={true}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
             sceneStyle={{
-                paddingTop: 0
+              paddingTop: 0
             }}
           />
+          <Scene
+            // initial
+            key="deleteAccount"
+            title={""}
+            component={DeleteAccount}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            // initial
+            key="changePassword"
+            title={""}
+            component={ChangePassword}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            // initial
+            key="changeLanguage"
+            title={""}
+            component={ChangeLanguage}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            // initial
+            key="aboutUs"
+            title={""}
+            component={AboutUs}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            // initial
+            key="editProfile"
+            title={""}
+            component={EditProfile}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          {/* <Scene
+            // initial
+            key="example"
+            title={""}
+            component={App00}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          /> */}
         </Router>
         <Footer Global={this.Global} />
       </View>
     );
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
