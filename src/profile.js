@@ -88,7 +88,7 @@ export default class Profile extends Component {
               >
                 <Icon name="lock" color='#ffffff' size={
                   height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
-                <Text style={styles.textLogin}>Change Password</Text>
+                <Text style={styles.textButton}>Change Password</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
@@ -102,7 +102,7 @@ export default class Profile extends Component {
               >
                 <Icon name="user-times" color='#ffffff' size={
                    height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
-                <Text style={styles.textLogin}>Delete Account</Text>
+                <Text style={styles.textButton}>Delete Account</Text>
               </TouchableOpacity>
             </View>
           </View >
@@ -118,7 +118,7 @@ export default class Profile extends Component {
               >
                 <Icon name="language" color='#ffffff' size={
                    height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
-                <Text style={styles.textLogin}>Change Language</Text>
+                <Text style={styles.textButton}>Change Language</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
@@ -132,7 +132,7 @@ export default class Profile extends Component {
               >
                 <Icon name="users" color='#ffffff' size={
                    height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
-                <Text style={styles.textLogin}>About Us</Text>
+                <Text style={styles.textButton}>About Us</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -232,6 +232,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ffff',
     backgroundColor: 'transparent',
+  },
+  textButton: {
+    fontSize: width < 375 ? 14 : 16,
+    fontFamily: 'System',
+    fontWeight: 'bold',
+    color: '#ffff',
+    backgroundColor: 'transparent',
+    marginTop: height < 812 ? (height < 736 ? (height < 667 ? 2 : 5) : 8) : 12,
   },
   editButton: {
     backgroundColor: '#ffffff',
