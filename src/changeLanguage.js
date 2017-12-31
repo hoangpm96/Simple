@@ -51,27 +51,13 @@ export default class ChangeLanguage extends Component {
     render() {
         const animatedValue = this.state.animatedValue;
         return (
-            <ImageBackground
-                source={require("./img/background01.png")}
-                style={styles.background}
-            >
-                <Animated.View>
-                    <View style={styles.headerContainer}>
-                        <View style={styles.headerTextContain}>
-                            <Text style={styles.headerText}>
-                                LANGUAGE
-                  </Text>
-                        </View>
-                    </View>
+            <View style={styles.background}>
+                <Animated.View style={styles.headerContainer}>
+                    <Text style={styles.headerText}>
+                        LANGUAGE
+            </Text>
                     <TouchableOpacity
-                        style={
-                            {
-                                justifyContent: 'center',
-                                position: 'absolute',
-                                top: 40,
-                                left: 10
-                            }
-                        }
+                        style={styles.backButton}
                         onPress={() => {
                             this.Global.isFooter = true;
                             Actions.pop();
@@ -81,50 +67,47 @@ export default class ChangeLanguage extends Component {
                         <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
                     </TouchableOpacity>
                 </Animated.View>
-                <View>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.Global.isFooter = true;
-                            Actions.pop();
-                            this.Global.pressStatus = "profile";
-                        }}
-                    >
-                        <View style={styles.containerLanguage}>
-                            <Image
-                                source={require("./img/Vietnam-icon.png")}
-                                style={styles.flag}
-                            />
-                            <View style={styles.containerLg}>
-                                <Text style={styles.language}>
-                                    Vietnamese
-              </Text>
-                                <Icon name="chevron-right" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.Global.isFooter = true;
-                            Actions.pop();
-                            this.Global.pressStatus = "profile";
-                        }}
-                    >
-                        <View style={styles.containerLanguage}>
-                            <Image
-                                source={require("./img/US-language.png")}
-                                style={styles.flag}
-                            />
-                            <View style={styles.containerLg}>
-                                <Text style={styles.language}>
-                                    United States
-                                  </Text>
-                                <Icon name="chevron-right" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
-                            </View>
-                        </View>
-                    </TouchableOpacity>
 
-                </View>
-            </ImageBackground>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.Global.isFooter = true;
+                        Actions.pop();
+                        this.Global.pressStatus = "profile";
+                    }}
+                    style={styles.containerLanguage}
+                >
+                    <Image
+                        source={require("./img/Vietnam-icon.png")}
+                        style={styles.flag}
+                    />
+                    <View style={styles.containerLg}>
+                        <Text style={styles.language}>
+                            Vietnamese
+              </Text>
+                        <Icon name="chevron-right" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        this.Global.isFooter = true;
+                        Actions.pop();
+                        this.Global.pressStatus = "profile";
+                    }}
+                    style={styles.containerLanguage}
+                >
+                    <Image
+                        source={require("./img/US-language.png")}
+                        style={styles.flag}
+                    />
+                    <View style={styles.containerLg}>
+                        <Text style={styles.language}>
+                            United States
+                                  </Text>
+                        <Icon name="chevron-right" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
+                    </View>
+                </TouchableOpacity>
+
+            </View>
         );
     }
 }
@@ -133,22 +116,18 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: '#F15F66'
+        backgroundColor: '#CC6666'
     },
     headerContainer: {
         width: width,
-        height: (height + 1000) / 21.37,
+        height: height < 812 ? 65 : 75,
         alignItems: "center",
         justifyContent: 'center',
         backgroundColor: '#F15F66',
         flexDirection: "row"
     },
-    headerTextContain: {
-        alignItems: "center",
-        marginTop: (height + 1000) / 58,
-        alignSelf: 'center'
-    },
     headerText: {
+        marginTop: height < 812 ? 20 : 30,
         color: "#ffffff",
         fontSize: 28,
         fontWeight: 'bold'
@@ -156,7 +135,6 @@ const styles = StyleSheet.create({
     containerLanguage: {
         width: width - 40,
         height: 50,
-        // backgroundColor: 'green',
         marginTop: 10,
         flexDirection: 'row'
     },
@@ -176,12 +154,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: width - 70,
         height: 30,
-        // backgroundColor: 'blue', 
         alignItems: 'center',
         justifyContent: 'space-between',
         alignContent: 'center',
         alignSelf: 'center',
         borderBottomWidth: 1,
         borderBottomColor: '#ffffff'
+    },
+    backButton: {
+        justifyContent: 'center',
+        position: 'absolute',
+        top: height < 812 ? 32 : 40,
+        left: 10
     }
 });
