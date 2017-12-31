@@ -57,210 +57,107 @@ export default class Profile extends Component {
       { cancelable: false }
     )
   }
-//   componentWillMount(){
-//     console.log("render");    
-//   }
+
   render() {
     return (
-      <View
-      //source={require("./img/background01.png")}
-      style={styles.background}>
-      <View style={styles.container}>
+      <View style={styles.background}>
         <View style={styles.containerInfo}>
-              <Image
-                source={require("./img/hoangphan.jpg")}
-                style={styles.avatar}
-              />
-              <Text style={styles.textName}>Hoang Phan</Text>
-              <View style={styles.containerlover}>
-                <View style={styles.lover}>
-                  <Text style={{fontSize:14, fontWeight: 'bold', color: '#ffffff'}}>13 lover</Text>
-                  </View>
-                <Text style={{fontSize:18, fontWeight: 'bold', color: '#ffffff'}}>|</Text>
-                <View style={styles.loved}>
-                <Text style={{fontSize:14, fontWeight: 'bold', color: '#ffffff'}}>13 loved</Text>
-                </View>
-              </View>
+          <Image
+            source={require("./img/hoangphan.jpg")}
+            style={styles.avatar}
+          />
+          <Text style={styles.textName}>Hoang Phan</Text>
+          <View style={styles.containerlover}>
+            <Text style={[styles.lover, { textAlign: 'right', marginRight: 5 }]}>13 lover</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>|</Text>
+            <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5 }]}>13 loved</Text>
+          </View>
 
         </View>
 
         <View style={styles.containerButton}>
           <View style={styles.containrGroupBtn}>
-          <View style={{flex: 1}}>
-          <TouchableOpacity
-          style={{
-            width: width/2 - 30,
-          backgroundColor: '#F15F66',
-          // backgroundColor: 'transparent',
-          shadowColor: '#ED969B',
-          shadowOffset: { width: 1, height: 1.3, },
-          shadowOpacity: 84,
-          shadowRadius: 1,
-          borderRadius: 25,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 15,
-          marginBottom: 10,
-          marginLeft: 15,
-          marginRight: 5,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          }}
-              onPress={() => {
-                this.Global.isFooter = false;
-                Actions.changePassword();
-                this.Global.pressStatus = "love";
-              }}
-            >
-            <Icon name="lock" color='#ffffff' size={50} />
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity
+                style={[styles.detailButton, { marginTop: 15, marginBottom: 10, marginLeft: 15, marginRight: 5, }]}
+                onPress={() => {
+                  this.Global.isFooter = false;
+                  Actions.changePassword();
+                  this.Global.pressStatus = "love";
+                }}
+              >
+                <Icon name="lock" color='#ffffff' size={
+                  height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
                 <Text style={styles.textLogin}>Change Password</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{flex: 1}}>
-            <TouchableOpacity
-                      style={{
-                        width: width/2 - 30,
-                      backgroundColor: '#F15F66',
-                      shadowColor: '#ED969B',
-                      shadowOffset: { width: 1, height: 1.3, },
-                      shadowOpacity: 84,
-                      shadowRadius: 1,
-                      borderRadius: 25,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginTop: 15,
-                      marginBottom: 10,
-                      marginLeft: 5,
-                      marginRight: 15,
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      }}
-              onPress={() => {
-                this.Global.isFooter = false;
-                Actions.deleteAccount();
-                this.Global.pressStatus = "love";
-              }}
-            >
-            <Icon name="user-times" color='#ffffff' size={50} />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity
+                style={[styles.detailButton, { marginTop: 15, marginBottom: 10, marginLeft: 5, marginRight: 15, }]}
+                onPress={() => {
+                  this.Global.isFooter = false;
+                  Actions.deleteAccount();
+                  this.Global.pressStatus = "love";
+                }}
+              >
+                <Icon name="user-times" color='#ffffff' size={
+                   height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
                 <Text style={styles.textLogin}>Delete Account</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
             </View>
           </View >
           <View style={styles.containrGroupBtn}>
-          <View style={{flex: 1}}>
-          <TouchableOpacity
-          style={{
-            width: width/2 - 30,
-          backgroundColor: '#F15F66',
-          shadowColor: '#ED969B',
-          shadowOffset: { width: 1, height: 1.3, },
-          shadowOpacity: 84,
-          shadowRadius: 1,
-          borderRadius: 25,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 10,
-          marginBottom: 15,
-          marginLeft: 15,
-          marginRight: 5,
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          }}
-              onPress={() => {
-                this.Global.isFooter = false;
-                Actions.changeLanguage();
-                this.Global.pressStatus = "profile";
-              }}
-            >
-            <Icon name="language" color='#ffffff' size={50} />
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity
+                style={[styles.detailButton, { marginTop: 10, marginBottom: 15, marginLeft: 15, marginRight: 5, }]}
+                onPress={() => {
+                  this.Global.isFooter = false;
+                  Actions.changeLanguage();
+                  this.Global.pressStatus = "profile";
+                }}
+              >
+                <Icon name="language" color='#ffffff' size={
+                   height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
                 <Text style={styles.textLogin}>Change Language</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{flex: 1}}>
-            <TouchableOpacity
-                      style={{
-                        width: width/2 - 30,
-                      backgroundColor: '#F15F66',
-                      shadowColor: '#ED969B',
-                      shadowOffset: { width: 1, height: 1.3, },
-                      shadowOpacity: 84,
-                      shadowRadius: 1,
-                      borderRadius: 25,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginTop: 10,
-                      marginBottom: 15,
-                      marginLeft: 5,
-                      marginRight: 15,
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      }}
-              onPress={() => {
-                this.Global.isFooter = false;
-                Actions.aboutUs();
-                this.Global.pressStatus = "profile";
-              }}
-            >
-            <Icon name="users" color='#ffffff' size={70} />
+              </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity
+                style={[styles.detailButton, { marginTop: 10, marginBottom: 15, marginLeft: 5, marginRight: 15, }]}
+                onPress={() => {
+                  this.Global.isFooter = false;
+                  Actions.aboutUs();
+                  this.Global.pressStatus = "profile";
+                }}
+              >
+                <Icon name="users" color='#ffffff' size={
+                   height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
                 <Text style={styles.textLogin}>About Us</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
             </View>
           </View>
 
         </View>
-
-        <View style={styles.containerSignOut}>
-            <TouchableOpacity
-              onPress={() => {
-                this.Global.isFooter = false;
-                Actions.login();
-                this.Global.pressStatus = "love";
-              }}
-            >
-              <View style={styles.waperLogin}>
-                <Text style={styles.textLogin}>SIGN OUT</Text>
-              </View>
-            </TouchableOpacity>
-        </View>
-          <TouchableOpacity
-            style={
-              {
-                backgroundColor: '#ffffff',
-                // alignContent: 'center',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-                position: 'absolute',
-                top: height / 2.6,
-                left: width / 2 - 20,
-                borderWidth: 1,
-                borderColor: '#F15F66',
-              }
-            }
-            onPress={() => {
-              this.Global.isFooter = false;
-              Actions.editProfile();
-              this.Global.pressStatus = "profile";
-            }}
-          >
-            <Icon name="edit" color='#F15F66' size={25} />
-          </TouchableOpacity>
-      </View>
-
+        <TouchableOpacity
+          onPress={() => {
+            this.Global.isFooter = false;
+            Actions.login();
+            this.Global.pressStatus = "love";
+          }}
+          style={styles.waperLogin}
+        >
+          <Text style={styles.textLogin}>SIGN OUT</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={() => {
+            this.Global.isFooter = false;
+            Actions.editProfile();
+            this.Global.pressStatus = "profile";
+          }}
+        >
+          <Icon name="edit" color='#F15F66' size={25} />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -269,100 +166,100 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: '#CC6666'
+    backgroundColor: '#CC6666',
   },
-  container: {
-    flex: 1,
-    // backgroundColor: 'red',
-    width: width
-  },
-  containerInfo:{
-    flex: 5.5,
+  containerInfo: {
+    height: height < 812 ? (height < 736 ? (height < 667 ? 260 : 306) : 338) : 372,
+    width: width,
     backgroundColor: '#F15F66',
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
     alignItems: 'center'
-    
-  },
-  containerButton:{
-    flex: 5,
-    marginTop: 15,
-    // backgroundColor: 'green',
-    width: width
-  },
-  containerSignOut:{
-    flex: 1.5,
-    // backgroundColor: 'yellow',
-    // width: width,
-    alignItems: 'center',
-    justifyContent: 'center',
 
   },
+  containerButton: {
+    height: height < 812 ? (height < 736 ? (height < 667 ? 236 : 278) : 306) : 338,
+    marginTop: 15,
+    width: width,
+  },
   avatar: {
-    width: 170,
-    height: 170,
+    width: height < 812 ? (height < 736 ? (height < 667 ? 166 : 200) : 220) : 220,
+    height: height < 812 ? (height < 736 ? (height < 667 ? 166 : 200) : 220) : 220,
     resizeMode: "cover",
-    borderRadius: 85,
+    borderRadius: height < 812 ? (height < 736 ? (height < 667 ? 83 : 100) : 110) : 110,
     borderWidth: 3,
     borderColor: '#ffffff',
-    marginTop: 40,
-    // alignSelf: 'center'
+    marginTop: height < 812 ? (height < 736 ? (height < 667 ? 25 : 35) : 45) : 75,
   },
-  textName:{
+  textName: {
     color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 2,
+    marginTop: 3,
+    marginBottom: height < 812 ? (height < 736 ? 0 : 2) : 4,
   },
-  containerlover:{
-    // marginTop: 3,
+  containerlover: {
     alignItems: 'center',
     height: 20,
-    // backgroundColor: 'green',
     flexDirection: 'row',
-    justifyContent: 'center'
   },
-  lover:{
-    alignItems: 'flex-end',
-    marginRight: 5,
+  lover: {
     height: 20,
     width: 80,
-    // backgroundColor: 'green'
-  },
-  loved:{
-    alignItems: 'flex-start',
-    marginLeft: 5,
-    height: 20,
-    width: 80,
-    // backgroundColor: 'green'
+    fontSize: 14, fontWeight: 'bold', color: '#ffffff'
   },
   containrGroupBtn: {
     flex: 1,
     width: width,
-    // backgroundColor: 'red',
-    // borderColor: '#ffff',
-    // borderWidth: 1,
     flexDirection: 'row'
   },
   waperLogin: {
-    width: width - (width / 8.40), //330
-    height: (height/10-(height-370)/12.78), //48,
+    marginTop: height < 812 ? (height < 736 ? (height < 667 ? 2 : 5) : 8) : 12,
+    width: width < 414 ? width - 40 : width - 50,
+    height: height < 667 ? 40 : 45,
     backgroundColor: '#FFA8AC',
     shadowColor: '#ED969B',
     shadowOffset: { width: 1, height: 1.3, },
     shadowOpacity: 84,
     shadowRadius: 1,
-    borderRadius: 25,
-    marginBottom: 10,
+    borderRadius: height < 667 ? 20 : 22.5,
     alignItems: 'center',
     justifyContent: 'center',
-
-},
-textLogin: {
-    fontSize: 16,
+  },
+  textLogin: {
+    fontSize: width < 375 ? 14 : 16,
     fontFamily: 'System',
     fontWeight: 'bold',
     color: '#ffff',
-    backgroundColor: 'transparent'
-},
+    backgroundColor: 'transparent',
+  },
+  editButton: {
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 40,
+    borderRadius: 20,
+    position: 'absolute',
+    top: height < 812 ? (height < 736 ? (height < 667 ? 240 : 286) : 318) : 352,
+    left: width / 2 - 20,
+    borderWidth: 1,
+    borderColor: '#F15F66',
+  },
+  detailButton: {
+    width: width / 2 - 30,
+    backgroundColor: '#F15F66',
+    shadowColor: '#ED969B',
+    shadowOffset: { width: 1, height: 1.3, },
+    shadowOpacity: 84,
+    shadowRadius: 1,
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  }
 })
