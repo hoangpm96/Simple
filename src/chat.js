@@ -66,7 +66,6 @@ export default class Chat extends Component {
   }
   _renderRow(rowData) {
     return (
-      <View>
         <TouchableOpacity style={styles.viewContainer} 
                     onPress={() => {
                       this.Global.isFooter = false;
@@ -79,61 +78,32 @@ export default class Chat extends Component {
             source={{ uri: rowData.image }}
           />
           <View style={styles.viewInformation}>
-            <View style={styles.chatStyle}>
-              {/* Tên */}
               <View style={[styles.informationTextContain,{flexDirection: 'row'}]}>
               <Text style={{fontSize: 20, color: 'green'}}>*</Text>
                 <Text numberOfLines={1} style={[styles.informationStyle, {fontSize: 16}]}  >  {rowData.name}, {rowData.age}</Text>
               </View>
-              {/* Que quan */}
-              <View style={styles.informationTextContain}>
-                {/* <Text style={styles.titleContain}>Age: </Text> */}
-                <Text numberOfLines={1} style={[styles.informationStyle, {marginTop: 2}]}  >{rowData.chat}</Text>
-              </View>
-            </View>
-            <View style={styles.styleTextTime}>
-            <TouchableOpacity
-            onPress={() => {
-              this.Global.isFooter = false;
-              this.Global.pressStatus = "search";
-              Actions.addchat();
-            }}
-            >
-            <Text style={{color: 'white'}}> 1 min ago</Text>
-            </TouchableOpacity>
-            </View>
+                <Text numberOfLines={1} style={[styles.informationStyle, {marginTop: 2, marginRight: 5}]}  >{rowData.chat}</Text>
+          <Text style={styles.styleTextTime}> 1 min ago</Text>
           </View>
-
         </TouchableOpacity >
-      </View>
     )
-    // debugger;
   }
   render() {
 
     return (
-      <ImageBackground
-        source={require("./img/background01.png")}
-        style={styles.background}
-      >
-        <Animated.View>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerTextContain}>
-              <Text style={styles.headerText}>
-                CHAT
-            </Text>
-            </View>
-          </View>
-        </Animated.View>
+      <View style={styles.background}>
+        <Animated.View style={styles.headerContainer}>
+        <Text style={styles.headerText}>
+          CHAT
+      </Text>
+  </Animated.View>
                 <SwipeListView contentContainerStyle={styles.loveContainer}
           dataSource={this.ds.cloneWithRows(this.state.listViewData)}
           renderRow={this._renderRow}
           renderHiddenRow={(data, secId, rowId, rowMap) => (
-            <View style={styles.rowBack}>
-              <TouchableOpacity style={[styles.backRightBtn, styles.backRightBtnRight]} onPress={_ => this.deleteRow(secId, rowId, rowMap)}>
-                <Icon name="trash" color='#F15F66' size={32} />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={[styles.backRightBtnRight]} onPress={_ => this.deleteRow(secId, rowId, rowMap)}>
+            <Icon name="trash" color='#F15F66' size={32} />
+          </TouchableOpacity>
           )}
           rightOpenValue={-75}
           disableRightSwipe={true}
@@ -149,12 +119,11 @@ export default class Chat extends Component {
             this.Global.pressStatus = "search";
             Actions.addchat();
           }}
+          style={styles.containterAdd}
         >
-          <View style={styles.containterAdd}>
           <Icon name="search" color='#ffffff' size={23} />
-          </View>
         </TouchableOpacity>
-      </ImageBackground>
+      </View>
     );
   }
 }
@@ -167,18 +136,14 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     width: width,
-    height: (height + 1000) / 21.37,
+    height: height < 812 ? 65 : 75,
     alignItems: "center",
     justifyContent: 'center',
     backgroundColor: '#F15F66',
     flexDirection: "row"
   },
-  headerTextContain: {
-    alignItems: "center",
-    marginTop: (height + 1000) / 58,
-    alignSelf: 'center'
-  },
   headerText: {
+    marginTop: height < 812 ? 20 : 30,
     color: "#ffffff",
     fontSize: 28,
     fontWeight: 'bold'
@@ -192,43 +157,32 @@ const styles = StyleSheet.create({
   },
   viewContainer: {
     width: width - 20,
-    height: height / 10,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    backgroundColor: "transparent",
-    // backgroundColor: 'green',
+    height: 54,
+    backgroundColor: "#CC6666",
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: "#CC6666",
   },
   avatar_image: {
-    height: height / 12,
-    width: height / 12,
+    height: 46,
+    width: 46,
     resizeMode: "cover",
-    borderRadius: height / 24,
+    borderRadius: 23,
     marginTop: 4,
     marginBottom: 4,
     marginLeft: 2,
     alignSelf: 'center'
   },
   viewInformation: {
-    // marginRight: 20,
-    alignContent: 'center',
-    justifyContent: 'space-around',
-    marginTop: 5,
-    // marginBottom: 5,
-  },
-  chatStyle: {
     alignContent: 'space-around',
     alignItems: 'center',
     justifyContent: 'space-around',
+    marginLeft: 10,
+    marginTop: 5,
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255, 0.3)',
-    marginLeft: 10
-    // backgroundColor: 'blue'
   },
+
   informationTextContain: {
-    // marginLeft: 10,
     marginRight: 5 
   },
   informationStyle: {
@@ -237,30 +191,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     fontWeight: 'bold',
-    // marginRight: 10,
-    width: width - height / 6,
+    width: width - 100,
     alignSelf: 'center',
     marginBottom: 10,
   },
-  informationStyleHobby: {
-    color: '#ffff',
-    fontSize: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    width: width - 40 - height / 5.5,
-    // flex: 1,
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    alignSelf: 'center'
-  },
   containterAdd: {
     position: 'absolute',
-    left: -(height + 719) / 66,
-    bottom: 10,
-    width: (height + 719) / 33,
-    height: (height + 719) / 33,
-    borderRadius: ((height + 719) / 33) / 2,
+    left: height < 812 ? (height < 736 ? (height < 667 ? (width - 39)/2 : (width - 42)/2 ) : (width - 44)/2 ) : (width - 48)/2,
+    bottom: height < 812 ? 15: 25,
+    width: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
+    height: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
+    borderRadius: height < 812 ? (height < 736 ? (height < 667 ? 19.5 : 21 ) : 22 ) : 24,
     backgroundColor: '#F15F66',
     borderWidth: 1,
     borderColor: 'rgba(226,39,44,0.2)',
@@ -269,34 +210,16 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   styleTextTime: {
-    position: 'absolute',
+    color: 'white', position: 'absolute',
     right: 2,
-    top: 5
-  },
-  backRightBtn: {
-    alignItems: 'center',
-    bottom: 0,
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    width: 75
+    top: 3
   },
   backRightBtnRight: {
     backgroundColor: '#Ffffff',
-    right: 0,
-    // marginTop: 10,
-    // marginBottom: 10,
-
-  },
-  backTextWhite: {
-    color: '#F15F66'
-  },
-  rowBack: {
     alignItems: 'center',
-    backgroundColor: 'transparent',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 15,
+    justifyContent: 'center',
+    width: 54,
+    height: 54,
+    alignSelf: 'flex-end'
   },
 });

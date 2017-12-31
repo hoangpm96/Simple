@@ -111,12 +111,11 @@ export default class Love extends Component {
             this.Global.pressStatus = "search";
             Actions.search();
           }}
+          style={styles.containterAdd}
         >
-          <View style={styles.containterAdd}>
             <Text style={styles.textAdd}>
               +
       </Text>
-          </View>
         </TouchableOpacity>
       </View>
     );
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
   },
   containterAdd: {
     position: 'absolute',
-    left: height < 812 ? (height < 736 ? (height < 667 ? -19.5 : -21 ) : -22 ) : -24,
+    left: height < 812 ? (height < 736 ? (height < 667 ? (width - 39)/2 : (width - 42)/2 ) : (width - 44)/2 ) : (width - 48)/2,
     bottom: height < 812 ? 15: 25,
     width: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
     height: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
