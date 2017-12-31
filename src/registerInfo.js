@@ -222,7 +222,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         height: height < 812 ? (height < 736 ? (height < 667 ? 60 : 70) : 80) : 90,
-        // marginBottom: height < 812 ? 5 : 10,
     },
     containerButton01: {
         justifyContent: 'center',

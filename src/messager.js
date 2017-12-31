@@ -200,11 +200,9 @@ export default class Example extends React.Component {
   renderFooter(props) {
     if (this.state.typingText) {
       return (
-        <View style={styles.footerContainer}>
           <Text style={styles.footerText}>
             {this.state.typingText}
           </Text>
-        </View>
       );
     }
     return null;
@@ -212,24 +210,18 @@ export default class Example extends React.Component {
 
   render() {
     return (
-      <ImageBackground
-      source={require("./img/background01.png")}
-      style={styles.background}
-    >
-
-          <Animated.View>
-          <View style={[styles.headerContainer, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-            <TouchableOpacity
-              onPress={() => {
-                Actions.pop();
-                this.Global.isFooter = true;
-                this.Global.pressStatus = "messager";
-              }}
-            >
-              <View style={{ height: 50, width: 50, alignContent: 'center', justifyContent: 'center' }}>
-                <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
-              </View>
-            </TouchableOpacity>
+      <View style={styles.background}>
+          <Animated.View style={styles.headerContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              Actions.chat();
+              this.Global.isFooter = true;
+              this.Global.pressStatus = "chat";
+            }}
+            style={styles.backbutton}
+          >
+            <Icon name="chevron-left" color='#ffffff' size={22} />
+          </TouchableOpacity>
             <View style={styles.containerUserName}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={{ color: 'green', fontSize: 30, marginTop: 10 }}>*</Text>
@@ -239,7 +231,6 @@ export default class Example extends React.Component {
               </View>
               <Text style={{ fontSize: 13, color: '#ffffff', marginLeft: 10 }}>Lass access</Text>
             </View>
-          </View>
         </Animated.View>
 
       <GiftedChat
@@ -259,73 +250,43 @@ export default class Example extends React.Component {
         renderCustomView={this.renderCustomView}
         renderFooter={this.renderFooter}
       />
-    </ImageBackground>
+    </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  footerContainer: {
-    marginTop: 5,
-    marginLeft: 10,
-    marginRight: 10,
-    marginBottom: 10,
-  },
   footerText: {
     fontSize: 14,
     color: '#ffff',
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
+    margin: 10
   },
   background: {
-    // alignItems: "center",
+    backgroundColor: '#CC6666',
     width: width,
     height: height
   },
   headerContainer: {
     width: width,
-    height: (height + 1000) / 21.37,
+    height: height < 812 ? 70 : 85,
     alignItems: "flex-end",
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     backgroundColor: '#F15F66',
     flexDirection: "row"
   },
-  headerTextContain: {
-    alignItems: "center",
-    marginTop: (height + 1000) / 58,
-    alignSelf: 'center'
-  },
-  headerText: {
-    color: "#ffffff",
-    fontSize: 28,
-    fontWeight: 'bold'
-  },
-
-  avatar_image: {
-    height: height / 15 - 4,
-    width: height / 15 - 4,
-    resizeMode: "cover",
-    borderRadius: 15,
-    marginTop: 4,
-    marginBottom: 4,
-    marginLeft: 2,
-    alignSelf: 'center'
-  },
-  informationStyle: {
-    color: '#ffff',
-    fontSize: 13,
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 'bold',
-    // marginRight: 10,
-    width: width - 120,
-    alignSelf: 'center'
-  },
   containerUserName: {
     width: width - 70,
-    height: 50, //48
+    height: 48, //48
     justifyContent: 'space-around',
     alignItems: 'flex-start',
-    marginBottom: 5,
+    marginBottom: 10,
     marginRight: 15,
   },
+  backbutton: { 
+    marginLeft: 15, 
+    marginBottom: height < 667 ? 14 : 16,
+    alignContent: 'center', 
+    justifyContent: 'center',
+  }
 });
