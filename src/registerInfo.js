@@ -71,9 +71,7 @@ export default class RegisterInfo extends Component {
     render() {
         return (
             <ImageBackground source={background} style={styles.waperContainer} >
-                <View style={styles.waperLogo}>
                     <Image source={logo} style={styles.logoStyle} />
-                </View>
                 <Text style={styles.textName}>REGISTER</Text>
                 <View style={styles.containerInfo}>
                     {/* You are? */}
@@ -106,7 +104,6 @@ export default class RegisterInfo extends Component {
                             <Text style={styles.textQA}>How old are you?</Text>
                             <Text style={styles.textQA}>I'm {this.state.age} years old</Text>
                         </View>
-                        {/* <View style={{backgroundColor: 'green'}}> */}
                         <Slider
                             style={{ width: width - (width / 8.33) }}
                             step={1}
@@ -117,7 +114,6 @@ export default class RegisterInfo extends Component {
                             value={this.state.age}
                             onValueChange={val => this.setState({ age: val })}
                         />
-                        {/* </View> */}
                     </View>
                     {/* What are your hobbies? */}
                     <View style={styles.containerHobby}>

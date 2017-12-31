@@ -83,10 +83,7 @@ export default class Love extends Component {
   render() {
 
     return (
-      <ImageBackground
-        source={require("./img/background01.png")}
-        style={styles.background}
-      >
+      <View style={styles.background}>
         <Animated.View style={styles.headerContainer}>
               <Text style={styles.headerText}>
                 WISH LIST
@@ -121,7 +118,7 @@ export default class Love extends Component {
       </Text>
           </View>
         </TouchableOpacity>
-      </ImageBackground>
+      </View>
     );
   }
 }
@@ -130,7 +127,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: 'rgba(226,39,44,0.7)'
+    backgroundColor: '#CC6666'
   },
   headerContainer: {
     width: width,

@@ -204,7 +204,7 @@ export default class SearchFriend extends Component {
                         style={[styles.containerUserName, { marginTop: 5 }]}
                       >
                         <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedDictrict}</Text>
+                        <Text style={styles.dictricts}>{this.state.selectedDictrict}</Text>
 
                       </TouchableOpacity>
                       <SimplePicker
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
   },
   containerHobby: {
     flex: 2,
-    width: width - (width / 8.33),
+    width: width < 414 ? width - 40 : width - 50,
     alignSelf: 'center',
   },
   containerAge: {
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
   containerTextAge: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: width - (width / 8.33),
+    width: width < 414 ? width - 40 : width - 50,
   },
   textQA: {
     fontSize: 16,
@@ -355,9 +355,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   containerUserName: {
-    width: width - (width / 8.33), //330
-    height: (height / 10 - (height - 370) / 12.78), //48
-    borderRadius: height / 28,
+    width: width < 414 ? width - 40 : width - 50,
+    height: height < 667 ? 40 : 45,
+    borderRadius: height < 667 ? 20 : 22.5,
     backgroundColor: 'rgba(202,148,157,1)',
     justifyContent: 'flex-start',
     alignItems: 'center',
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     fontSize: 14,
     color: '#ffffff',
-    width: width - (width / 8.33) - 70,
+    width: width < 414 ? width - 110 : width - 120,
   },
   textSearch: {
     marginTop: 20, 
@@ -403,5 +403,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'flex-start', 
     backgroundColor: 'transparent' 
+  },
+  dictricts: { 
+    fontSize: 14, 
+    color: '#DDDDDD', 
+    marginTop: 2, 
+    marginLeft: 10 
   }
 });
