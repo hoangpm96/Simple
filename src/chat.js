@@ -10,7 +10,6 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  ImageBackground,
   ListView,
   RefreshControl,
   Animated,
