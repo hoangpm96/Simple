@@ -179,7 +179,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            initial
+            // initial
             key="profile"
             title={""}
             component={Profile}
@@ -229,7 +229,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="editProfile"
             title={""}
             component={EditProfile}

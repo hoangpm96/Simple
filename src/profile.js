@@ -79,7 +79,7 @@ export default class Profile extends Component {
           <View style={styles.containrGroupBtn}>
             <View style={{ flex: 1 }}>
               <TouchableOpacity
-                style={[styles.detailButton, { marginTop: 15, marginBottom: 10, marginLeft: 15, marginRight: 5, }]}
+                style={[styles.detailButton, { marginTop: 15, marginBottom: 10, marginLeft: 20, marginRight: 10, }]}
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.changePassword();
@@ -87,13 +87,13 @@ export default class Profile extends Component {
                 }}
               >
                 <Icon name="lock" color='#ffffff' size={
-                  height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
+                  height < 812 ? (height < 736 ? (height < 667 ? 45 : 55) : 65) : 75} />
                 <Text style={styles.textButton}>Change Password</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
               <TouchableOpacity
-                style={[styles.detailButton, { marginTop: 15, marginBottom: 10, marginLeft: 5, marginRight: 15, }]}
+                style={[styles.detailButton, { marginTop: 15, marginBottom: 10, marginLeft: 10, marginRight: 20, }]}
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.deleteAccount();
@@ -101,7 +101,7 @@ export default class Profile extends Component {
                 }}
               >
                 <Icon name="user-times" color='#ffffff' size={
-                   height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
+                   height < 812 ? (height < 736 ? (height < 667 ? 45 : 55) : 65) : 75} />
                 <Text style={styles.textButton}>Delete Account</Text>
               </TouchableOpacity>
             </View>
@@ -109,7 +109,7 @@ export default class Profile extends Component {
           <View style={styles.containrGroupBtn}>
             <View style={{ flex: 1 }}>
               <TouchableOpacity
-                style={[styles.detailButton, { marginTop: 10, marginBottom: 15, marginLeft: 15, marginRight: 5, }]}
+                style={[styles.detailButton, { marginTop: 10, marginBottom: 15, marginLeft: 20, marginRight: 10,}]}
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.changeLanguage();
@@ -117,13 +117,13 @@ export default class Profile extends Component {
                 }}
               >
                 <Icon name="language" color='#ffffff' size={
-                   height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
+                   height < 812 ? (height < 736 ? (height < 667 ? 45 : 55) : 65) : 75} />
                 <Text style={styles.textButton}>Change Language</Text>
               </TouchableOpacity>
             </View>
             <View style={{ flex: 1 }}>
               <TouchableOpacity
-                style={[styles.detailButton, { marginTop: 10, marginBottom: 15, marginLeft: 5, marginRight: 15, }]}
+                style={[styles.detailButton, { marginTop: 10, marginBottom: 15, marginLeft: 10, marginRight: 20, }]}
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.aboutUs();
@@ -131,7 +131,7 @@ export default class Profile extends Component {
                 }}
               >
                 <Icon name="users" color='#ffffff' size={
-                   height < 812 ? (height < 736 ? (height < 667 ? 50 : 55) : 65) : 75} />
+                   height < 812 ? (height < 736 ? (height < 667 ? 45 : 55) : 65) : 75} />
                 <Text style={styles.textButton}>About Us</Text>
               </TouchableOpacity>
             </View>
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
 
   },
   containerButton: {
-    height: height < 812 ? (height < 736 ? (height < 667 ? 236 : 278) : 306) : 338,
+    height: height < 812 ? (height < 736 ? (height < 667 ? 196 : 233) : 258) : 286,
     marginTop: 15,
     width: width,
   },
@@ -214,8 +214,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   waperLogin: {
-    marginTop: height < 812 ? (height < 736 ? (height < 667 ? 2 : 5) : 8) : 12,
-    width: width < 414 ? width - 40 : width - 50,
+    marginTop: height < 812 ? (height < 736 ? (height < 667 ? 2 : 5) : 10) : 15,
+    width: width - 40,
     height: height < 667 ? 40 : 45,
     backgroundColor: '#FFA8AC',
     shadowColor: '#ED969B',
@@ -234,12 +234,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   textButton: {
-    fontSize: width < 375 ? 14 : 16,
+    fontSize: width < 375 ? 13 : 16,
     fontFamily: 'System',
     fontWeight: 'bold',
     color: '#ffff',
     backgroundColor: 'transparent',
-    marginTop: height < 812 ? (height < 736 ? (height < 667 ? 2 : 5) : 8) : 12,
+    marginTop: height < 812 ? (height < 736 ? (height < 667 ? 0 : 3) : 5) : 8,
   },
   editButton: {
     backgroundColor: '#ffffff',

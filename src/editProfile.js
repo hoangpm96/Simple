@@ -116,366 +116,301 @@ export default class EditProfile extends Component {
         }
     }
     labelExtractor = (tag) => tag;
-    // onActionsPress() {
-    //     ActionSheetIOS.showActionSheetWithOptions({
-    //         tintColor: '#F15F66',
-    //         options: ['Cancel', 'Male', 'Female'],
-    //         cancelButtonIndex: 0,
-    //     },
-    //         (buttonIndex) => {
-    //             if (buttonIndex !== 0) {
-    //                 this.setState({
-    //                     selected: buttonIndex
-    //                 })
-    //             }
-    //         });
-    // }
+    onActionsPress() {
+        ActionSheetIOS.showActionSheetWithOptions({
+            tintColor: '#F15F66',
+            options: ['Cancel', 'Male', 'Female'],
+            cancelButtonIndex: 0,
+        },
+            (buttonIndex) => {
+                if (buttonIndex !== 0) {
+                    this.setState({
+                        selected: buttonIndex
+                    })
+                }
+            });
+    }
     render() {
         return (
-            <ImageBackground
-                source={require("./img/background01.png")}
-                style={styles.background}>
-                <View style={styles.container}>
-                    <View style={styles.containerInfo}>
-                        <View style={[styles.viewAvatar, { marginTop: 40, }]}>
-                        <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />
-                            {/* {this.state.image ? this.renderImage(this.state.image) : <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />} */}
-                            <TouchableOpacity style={[styles.viewAvatar, {
-                                backgroundColor: 'rgba(0,0,0,0.5)',
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                bottom: 0,
-                                right: 0,
-                                justifyContent: 'center'
-                            }]}
-                                // Edit Avatar
-                                onPress={() => {Alert.alert(1)}}
-                            >
-                                <Icon name="camera" color='#F15F66' size={50} style={{ alignSelf: 'center' }} />
-                            </TouchableOpacity>
-                        </View>
+            <View style={styles.background}>
+                <View style={styles.containerInfo}>
+                    <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />
+                    {/* {this.state.image ? this.renderImage(this.state.image) : <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />} */}
+                    <TouchableOpacity style={styles.viewAvatar}
+                        // Edit Avatar
+                        onPress={() => { Alert.alert('1') }}
+                    >
+                        <Icon name="camera" color='#F15F66' size={50} style={{ alignSelf: 'center' }} />
+                    </TouchableOpacity>
+                    <TextInput
+                        placeholder="Name..."
+                        placeholderTextColor="#fff"
+                        selectionColor="#fff"
+                        style={styles.textName}
+                        keyboardType='default'
+                        autoCapitalize='words'
+                        textAlignVertical='center'
+                        keyboardAppearance='light'
+                        maxLength={60}
+                        maxHeight={150}
+                        textAlign='center'
+                        onChangeText={userName => {
+                            this.setState({ userName: userName });
+                        }}
+                        value={this.state.userName}
+                    />
+                    <View style={styles.containerlover}>
+                        <Text style={[styles.lover, { textAlign: 'right', marginRight: 5, marginTop: 5 }]}>13 lover</Text>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff', marginTop: 5 }}>|</Text>
+                        <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5, marginTop: 5 }]}>13 loved</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => {
+                            this.Global.isFooter = true;
+                            Actions.pop();
+                            this.Global.pressStatus = "profile";
+                        }}
+                    >
+                        <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
+                    </TouchableOpacity>
+                </View>
+
+                <ScrollView style={styles.containerEdit}>
+                    <View style={styles.containerEmail}>
+                        <Text style={[styles.text, { marginTop: 2, width: 80 }]}>Email: </Text>
                         <TextInput
-                            placeholder="Name..."
+                            placeholder="Email..."
                             placeholderTextColor="#fff"
                             selectionColor="#fff"
-                            style={styles.textName}
+                            style={styles.inputEmail}
                             keyboardType='default'
                             autoCapitalize='words'
                             textAlignVertical='center'
                             keyboardAppearance='light'
                             maxLength={60}
-                            maxHeight={150}
-                            textAlign='center'
-                            onChangeText={userName => {
-                                this.setState({ userName: userName });
+                            maxHeight={width - 90}
+                            textAlign='left'
+                            onChangeText={Email => {
+                                this.setState({ Email: Email });
                             }}
-                            value={this.state.userName}
+                            value={this.state.Email}
                         />
-                        <View style={styles.containerlover}>
-                            <View style={styles.lover}>
-                                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#ffffff' }}>13 lover</Text>
-                            </View>
-                            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>|</Text>
-                            <View style={styles.loved}>
-                                <Text style={{ fontSize: 14, fontWeight: 'bold', color: '#ffffff' }}>13 loved</Text>
-                            </View>
-                        </View>
-                        <TouchableOpacity
-
-                            style={
-                                {
-                                    justifyContent: 'center',
-                                    position: 'absolute',
-                                    top: 25,
-                                    left: 10
-                                }
-                            }
-                            onPress={() => {
-                                this.Global.isFooter = true;
-                                Actions.pop();
-                                this.Global.pressStatus = "profile";
+                    </View>
+                    <View style={styles.viewQuote}>
+                        <TextInput
+                            placeholder="Quote..."
+                            placeholderTextColor="#fff"
+                            selectionColor="#fff"
+                            style={styles.inputQuote}
+                            keyboardType='default'
+                            textAlignVertical='top'
+                            keyboardAppearance='light'
+                            maxLength={60}
+                            maxHeight={width - 100}
+                            textAlign='left'
+                            multiline={true}
+                            onChangeText={Quote => {
+                                this.setState({ Quote: Quote });
                             }}
+                            value={this.state.Quote}
+                        />
+                    </View>
+                    <View style={styles.viewGenderAge}>
+                        <Text style={styles.text}>Gender:</Text>
+                        <TouchableOpacity
+                            onPress={
+                                this.onActionsPress
+                            }
+
                         >
-                            <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
+                            <Text style={styles.changeElement}>
+                                {options[this.state.selected]}</Text>
+
                         </TouchableOpacity>
+                        <Text style={styles.text}>Age: </Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.refs.picker.show();
+                            }
+                            }
+                        >
+                            <Text style={styles.changeElement}>
+                                {this.state.selectedAge}</Text>
 
+                        </TouchableOpacity>
+                        <SimplePicker
+                            ref={'picker'}
+                            options={ages}
+                            itemStyle={{
+                                fontSize: 25,
+                                color: '#F15F66',
+                                textAlign: 'center',
+                                fontWeight: 'bold',
+                            }}
+                            buttonStyle={{
+                                fontSize: 18,
+                                color: '#F15F66',
+                                fontWeight: 'bold'
+                            }}
+                            confirmText='Select'
+                            onSubmit={(option) => {
+                                this.setState({
+                                    selectedAge: option,
+                                });
+                            }}
+                        />
                     </View>
-                    <View style={{ flex: 6, alignItems: 'center' }}>
-                        <ScrollView style={{ marginTop: 20, width: width, alignContent: 'center' }}>
-                            <View style={{ flexDirection: 'row', marginTop: 10, alignSelf: 'center' }}>
-                                <Text style={{ fontSize: 16, color: 'white', fontWeight: 'bold', backgroundColor: 'transparent', width: 60 }}>Email: </Text>
-                                <TextInput
-                                    placeholder="Email..."
-                                    placeholderTextColor="#fff"
-                                    selectionColor="#fff"
-                                    style={styles.inputEmail}
-                                    keyboardType='default'
-                                    autoCapitalize='words'
-                                    textAlignVertical='center'
-                                    keyboardAppearance='light'
-                                    maxLength={60}
-                                    maxHeight={width - 100}
-                                    textAlign='left'
-                                    onChangeText={Email => {
-                                        this.setState({ Email: Email });
-                                    }}
-                                    value={this.state.Email}
-                                />
-                            </View>
-                            <View style={styles.viewQuote}>
-                                <TextInput
-                                    placeholder="Quote..."
-                                    placeholderTextColor="#fff"
-                                    selectionColor="#fff"
-                                    style={styles.inputQuote}
-                                    keyboardType='default'
-                                    textAlignVertical='top'
-                                    keyboardAppearance='light'
-                                    maxLength={60}
-                                    maxHeight={width - 100}
-                                    textAlign='left'
-                                    multiline={true}
-                                    onChangeText={Quote => {
-                                        this.setState({ Quote: Quote });
-                                    }}
-                                    value={this.state.Quote}
-                                />
-                            </View>
-                            <View style={styles.viewSex}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.textYouAre}>Gender:</Text>
-                                    <TouchableOpacity
-                                        onPress={
-                                            this.onActionsPress
-                                        }
-                                        style={styles.viewMale}
-                                    >
-                                        <Text style={{
-                                            fontSize: 16,
-                                            color: '#ffffff',
-                                            // marginLeft: 10,
-                                            backgroundColor: 'transparent'
-                                        }
-                                        }>{options[this.state.selected]}</Text>
+                    <View style={styles.viewGenderAge}>
+                        <Text style={styles.text}>Weight:</Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.refs.pickerWeight.show();
+                            }
+                            }
+                        >
+                            <Text style={styles.changeElement}>{this.state.selectedWeight}</Text>
 
-                                    </TouchableOpacity>
-                                </View>
+                        </TouchableOpacity>
+                        <SimplePicker
+                            ref={'pickerWeight'}
+                            options={weights}
+                            itemStyle={{
+                                fontSize: 25,
+                                color: '#F15F66',
+                                textAlign: 'center',
+                                fontWeight: 'bold',
+                            }}
+                            buttonStyle={{
+                                fontSize: 18,
+                                color: '#F15F66',
+                                fontWeight: 'bold'
+                            }}
+                            confirmText='Select'
+                            onSubmit={(option) => {
+                                this.setState({
+                                    selectedWeight: option,
+                                });
+                            }}
+                        />
+                        <Text style={styles.text}>Height: </Text>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.refs.pickerHeight.show();
+                            }
+                            }
+                        >
+                            <Text style={styles.changeElement}>{this.state.selectedHeight}</Text>
 
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.textYouAre}>Age: </Text>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            this.refs.picker.show();
-                                        }
-                                        }
-                                        style={styles.viewMale}
-                                    >
-                                        <Text style={{
-                                            fontSize: 16,
-                                            color: '#ffffff',
-                                            backgroundColor: 'transparent'
-                                        }
-                                        }>{this.state.selectedAge}</Text>
+                        </TouchableOpacity>
+                        <SimplePicker
+                            ref={'pickerHeight'}
+                            options={heights}
+                            itemStyle={{
+                                fontSize: 25,
+                                color: '#F15F66',
+                                textAlign: 'center',
+                                fontWeight: 'bold',
+                            }}
+                            buttonStyle={{
+                                fontSize: 18,
+                                color: '#F15F66',
+                                fontWeight: 'bold'
+                            }}
+                            confirmText='Select'
+                            onSubmit={(option) => {
+                                this.setState({
+                                    selectedHeight: option,
+                                });
+                            }}
+                        />
+                    </View>
+                    <Text style={[styles.text, { marginTop: 10, marginLeft: 10 }]}>What are your hobbies?</Text>
 
-                                    </TouchableOpacity>
-                                    <SimplePicker
-                                        ref={'picker'}
-                                        options={ages}
-                                        itemStyle={{
-                                            fontSize: 25,
-                                            color: '#F15F66',
-                                            textAlign: 'center',
-                                            fontWeight: 'bold',
-                                        }}
-                                        buttonStyle={{
-                                            fontSize: 18,
-                                            color: '#F15F66',
-                                            fontWeight: 'bold'
-                                        }}
-                                        confirmText='Select'
-                                        onSubmit={(option) => {
-                                            this.setState({
-                                                selectedAge: option,
-                                            });
-                                        }}
-                                    />
-                                </View>
-
-                            </View>
-                            <View style={styles.viewSex}>
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.textYouAre}>Weight:</Text>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            this.refs.pickerWeight.show();
-                                        }
-                                        }
-                                        style={styles.viewMale}
-                                    >
-                                        <Text style={{
-                                            fontSize: 16,
-                                            color: '#ffffff',
-                                            backgroundColor: 'transparent'
-                                        }
-                                        }>{this.state.selectedWeight}</Text>
-
-                                    </TouchableOpacity>
-                                    <SimplePicker
-                                        ref={'pickerWeight'}
-                                        options={weights}
-                                        itemStyle={{
-                                            fontSize: 25,
-                                            color: '#F15F66',
-                                            textAlign: 'center',
-                                            fontWeight: 'bold',
-                                        }}
-                                        buttonStyle={{
-                                            fontSize: 18,
-                                            color: '#F15F66',
-                                            fontWeight: 'bold'
-                                        }}
-                                        confirmText='Select'
-                                        onSubmit={(option) => {
-                                            this.setState({
-                                                selectedWeight: option,
-                                            });
-                                        }}
-                                    />
-                                </View>
-
-                                <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.textYouAre}>Height: </Text>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            this.refs.pickerHeight.show();
-                                        }
-                                        }
-                                        style={styles.viewMale}
-                                    >
-                                        <Text style={{
-                                            fontSize: 16,
-                                            color: '#ffffff',
-                                            backgroundColor: 'transparent'
-                                        }
-                                        }>{this.state.selectedHeight}</Text>
-
-                                    </TouchableOpacity>
-                                    <SimplePicker
-                                        ref={'pickerHeight'}
-                                        options={heights}
-                                        itemStyle={{
-                                            fontSize: 25,
-                                            color: '#F15F66',
-                                            textAlign: 'center',
-                                            fontWeight: 'bold',
-                                        }}
-                                        buttonStyle={{
-                                            fontSize: 18,
-                                            color: '#F15F66',
-                                            fontWeight: 'bold'
-                                        }}
-                                        confirmText='Select'
-                                        onSubmit={(option) => {
-                                            this.setState({
-                                                selectedHeight: option,
-                                            });
-                                        }}
-                                    />
-                                </View>
-
-                            </View>
-                            <View style={styles.containerHobby}>
-                                <Text style={[styles.textYouAre, { marginTop: 10 }]}>What are your hobbies?</Text>
-                                <View style={{ marginTop: 20, alignItems: 'flex-start', backgroundColor: 'rgba(202,148,157,1)', borderRadius: height / 40, height: 150 }}>
-                                    <View style={{ marginLeft: 10, marginBottom: 10, marginRight: 10, flexDirection: 'row', alignItems: 'flex-start', backgroundColor: 'transparent' }}>
-                                        <TagInput
-                                            value={this.state.tags}
-                                            onChange={this.onChangeTags}
-                                            labelExtractor={this.labelExtractor}
-                                            text={this.state.text}
-                                            onChangeText={this.onChangeText}
-                                            tagColor="#FFA8AC"
-                                            tagTextColor="#ffffff"
-                                            inputProps={inputProps}
-                                            maxHeight={145}
-                                        />
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={styles.containerAddress}>
-                                <Text style={[styles.textYouAre, { marginBottom: 4 }]}>Address:</Text>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.refs.pickerCity.show();
-                                    }
-                                    }
-                                    style={[styles.containerCity, { marginTop: 5 }]}
-                                >
-                                    <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-                                    <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedCity}</Text>
-
-                                </TouchableOpacity>
-                                <SimplePicker
-                                    ref={'pickerCity'}
-                                    options={citys}
-                                    itemStyle={{
-                                        fontSize: 25,
-                                        color: '#F15F66',
-                                        textAlign: 'center',
-                                        fontWeight: 'bold',
-                                    }}
-                                    buttonStyle={{
-                                        fontSize: 18,
-                                        color: '#F15F66',
-                                        fontWeight: 'bold'
-                                    }}
-                                    confirmText='Select'
-                                    onSubmit={(option) => {
-                                        this.setState({
-                                            selectedCity: option,
-                                            selectedDictrict: 'Select Dictrict'
-                                        });
-                                    }}
-                                />
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.refs.pickerDistrict.show();
-                                    }
-                                    }
-                                    style={[styles.containerCity, { marginTop: 5 }]}
-                                >
-                                    <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-                                    <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedDictrict}</Text>
-
-                                </TouchableOpacity>
-                                <SimplePicker
-                                    ref={'pickerDistrict'}
-                                    options={dictricts}
-                                    itemStyle={{
-                                        fontSize: 25,
-                                        color: '#F15F66',
-                                        textAlign: 'center',
-                                        fontWeight: 'bold',
-                                    }}
-                                    buttonStyle={{
-                                        fontSize: 18,
-                                        color: '#F15F66',
-                                        fontWeight: 'bold'
-                                    }}
-                                    confirmText='Select'
-                                    onSubmit={(option) => {
-                                        this.setState({
-                                            selectedDictrict: option,
-                                        });
-                                    }}
-                                />
-                            </View>
-                        </ScrollView>
+                    <View style={{ marginTop: 10, width: width - 20, marginLeft: 10, alignItems: 'center', backgroundColor: 'rgba(202,148,157,1)', borderRadius: height / 40, height: 150 }}>
+                        <View style={{ marginLeft: 10, marginBottom: 10, marginRight: 10, flexDirection: 'row', alignItems: 'flex-start', backgroundColor: 'transparent' }}>
+                            <TagInput
+                                value={this.state.tags}
+                                onChange={this.onChangeTags}
+                                labelExtractor={this.labelExtractor}
+                                text={this.state.text}
+                                onChangeText={this.onChangeText}
+                                tagColor="#FFA8AC"
+                                tagTextColor="#ffffff"
+                                inputProps={inputProps}
+                                maxHeight={145}
+                            />
+                        </View>
                     </View>
 
-                </View>
+                    <Text style={[styles.text, { marginLeft: 10, marginTop: 10 }]}>Address:</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.refs.pickerCity.show();
+                        }
+                        }
+                        style={styles.containerAddress}
+                    >
+                        <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
+                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedCity}</Text>
+
+                    </TouchableOpacity>
+                    <SimplePicker
+                        ref={'pickerCity'}
+                        options={citys}
+                        itemStyle={{
+                            fontSize: 25,
+                            color: '#F15F66',
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                        }}
+                        buttonStyle={{
+                            fontSize: 18,
+                            color: '#F15F66',
+                            fontWeight: 'bold'
+                        }}
+                        confirmText='Select'
+                        onSubmit={(option) => {
+                            this.setState({
+                                selectedCity: option,
+                                selectedDictrict: 'Select Dictrict'
+                            });
+                        }}
+                    />
+
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.refs.pickerDistrict.show();
+                        }
+                        }
+                        style={[styles.containerAddress, { marginTop: 5, marginBottom: 50 }]}
+                    >
+                        <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
+                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedDictrict}</Text>
+
+                    </TouchableOpacity>
+                    <SimplePicker
+                        ref={'pickerDistrict'}
+                        options={dictricts}
+                        itemStyle={{
+                            fontSize: 25,
+                            color: '#F15F66',
+                            textAlign: 'center',
+                            fontWeight: 'bold',
+                        }}
+                        buttonStyle={{
+                            fontSize: 18,
+                            color: '#F15F66',
+                            fontWeight: 'bold'
+                        }}
+                        confirmText='Select'
+                        onSubmit={(option) => {
+                            this.setState({
+                                selectedDictrict: option,
+                            });
+                        }}
+                    />
+                </ScrollView>
                 <TouchableOpacity
                     onPress={() => {
                         this.Global.isFooter = true;
@@ -487,7 +422,7 @@ export default class EditProfile extends Component {
                         <Icon name="check" color='#ffffff' size={23} />
                     </View>
                 </TouchableOpacity>
-            </ImageBackground>
+            </View>
         );
     }
 }
@@ -495,88 +430,59 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: '#F15F66'
-    },
-    container: {
-        flex: 1,
-        // backgroundColor: 'red',
-        width: width
+        backgroundColor: '#CC6666',
     },
     containerInfo: {
-        flex: 4,
+        height: height < 812 ? (height < 736 ? (height < 667 ? 240 : 286) : 318) : 342,
+        width: width,
         backgroundColor: '#F15F66',
         borderBottomLeftRadius: 30,
         borderBottomRightRadius: 30,
         alignItems: 'center'
-
-    },
-    containerDelete: {
-        flex: 6,
-        width: width,
-        alignItems: 'center',
-    },
-    containerSignOut: {
-        flex: 1.5,
-        // backgroundColor: 'yellow',
-        // width: width,
-        alignItems: 'center',
-        justifyContent: 'center',
-
     },
     avatar: {
-        width: 170,
-        height: 170,
+        width: height < 812 ? (height < 736 ? (height < 667 ? 166 : 200) : 220) : 220,
+        height: height < 812 ? (height < 736 ? (height < 667 ? 166 : 200) : 220) : 220,
         resizeMode: "cover",
-        borderRadius: 85,
+        borderRadius: height < 812 ? (height < 736 ? (height < 667 ? 83 : 100) : 110) : 110,
         borderWidth: 3,
         borderColor: '#ffffff',
-        // marginTop: 40,
-        // alignSelf: 'center'
+        marginTop: height < 812 ? (height < 736 ? (height < 667 ? 25 : 35) : 45) : 65,
     },
     viewAvatar: {
-        width: 170,
-        height: 170,
-        // resizeMode: "cover",
-        borderRadius: 85,
-        // borderWidth: 3,
-        // borderColor: '#ffffff',
-        // marginTop: 40,
-        // alignSelf: 'center'
+        width: height < 812 ? (height < 736 ? (height < 667 ? 166 : 200) : 220) : 220,
+        height: height < 812 ? (height < 736 ? (height < 667 ? 166 : 200) : 220) : 220,
+        borderRadius: height < 812 ? (height < 736 ? (height < 667 ? 83 : 100) : 110) : 110,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        position: 'absolute',
+        top: height < 812 ? (height < 736 ? (height < 667 ? 25 : 35) : 45) : 65,
+        left: height < 812 ? (height < 736 ? (height < 667 ? 77 : 87) : 97) : 78,
+        justifyContent: 'center'
     },
     textName: {
         color: '#ffffff',
         fontSize: 18,
         fontWeight: 'bold',
-        marginTop: 2,
+        marginTop: height < 812 ? 2 : 5,
         width: 150,
         alignSelf: 'center',
         borderBottomWidth: 1,
         borderBottomColor: '#ffff'
     },
     containerlover: {
-        marginTop: 3,
         alignItems: 'center',
         height: 20,
-        // backgroundColor: 'green',
         flexDirection: 'row',
-        justifyContent: 'center'
     },
     lover: {
-        alignItems: 'flex-end',
-        marginRight: 5,
         height: 20,
         width: 80,
-    },
-    loved: {
-        alignItems: 'flex-start',
-        marginLeft: 5,
-        height: 20,
-        width: 80,
+        fontSize: 14,
+        fontWeight: 'bold', color: '#ffffff'
     },
     inputEmail: {
         color: '#ffffff',
         fontSize: 16,
-        // fontWeight: 'bold',
         marginTop: 2,
         width: width - 100,
         alignSelf: 'center',
@@ -584,8 +490,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ffff'
     },
     viewQuote: {
-        marginTop: 25,
-        width: width - 40,
+        marginTop: 15,
+        width: width - 20,
         height: 57,
         backgroundColor: 'rgba(202,148,157,1)',
         alignSelf: 'center'
@@ -593,39 +499,29 @@ const styles = StyleSheet.create({
     inputQuote: {
         color: '#ffffff',
         fontSize: 16,
-        width: width - 50,
+        width: width - 30,
         height: 55,
         margin: 5,
     },
-    viewSex: {
-        width: width - 40,
-        height: 40,
+    viewGenderAge: {
+        width: width - 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         alignContent: 'center',
         marginTop: 10,
-        alignSelf: 'center'
-    }
-    ,
-    textYouAre: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: '#ffffff',
-        backgroundColor: 'transparent',
-        alignSelf: 'flex-start',
+        alignSelf: 'center',
     },
-    viewMale: {
-        marginLeft: 20,
-        flexDirection: 'row',
+    changeElement: {
         alignItems: 'center',
         alignContent: 'center',
+        textAlign: 'center',
+        fontSize: 16,
+        color: '#ffffff',
+        textDecorationLine: 'underline',
+        backgroundColor: 'transparent',
         borderBottomWidth: 1,
         borderBottomColor: '#ffffff'
-    },
-    containerHobby: {
-        width: width - 40,
-        alignSelf: 'center'
     },
     containterAdd: {
         position: 'absolute',
@@ -642,21 +538,36 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     containerAddress: {
-        marginTop: 16,
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        width: width - 40,
-        alignSelf: 'center',
-        marginBottom: 70
-    },
-    containerCity: {
-        width: width - (width / 8.33), //330
-        height: (height / 10 - (height - 370) / 12.78), //48
-        borderRadius: height / 28,
+        width: width - 20,
+        height: height < 667 ? 40 : 45,
+        borderRadius: height < 667 ? 20 : 22.5,
         backgroundColor: 'rgba(202,148,157,1)',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginLeft: 10,
+        marginTop: 10
     },
+    backButton: {
+        justifyContent: 'center',
+        position: 'absolute',
+        top: height < 812 ? 30 : 50,
+        left: 10
+    },
+    containerEdit: {
+        alignSelf: 'center',
+        width: width,
+    },
+    containerEmail: {
+        flexDirection: 'row',
+        marginTop: 10,
+        alignSelf: 'center'
+    },
+    text: {
+        fontSize: 16,
+        color: 'white',
+        fontWeight: 'bold',
+        backgroundColor: 'transparent',
+    }
 
 })
