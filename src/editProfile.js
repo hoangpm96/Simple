@@ -22,12 +22,11 @@ import {
     NativeModules
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-// import { ActionSheetCustom as ActionSheet } from 'react-native-custom-actionsheet';
 import SimplePicker from 'react-native-simple-picker';
-// import ImagePicker from 'react-native-image-crop-picker';
 import TagInput from 'react-native-tag-input';
 import Modal from "react-native-modalbox";
-// var ImagePicker = NativeModules.ImageCropPicker;
+import ImagePicker from 'react-native-image-picker';
+
 const { width, height } = Dimensions.get("window");
 const inputProps = {
     keyboardType: 'default',
@@ -73,9 +72,72 @@ export default class EditProfile extends Component {
             selectedDictrict: "Dictrict 1",
             tags: ["dog", "guitar", "dance", "swimming", "readbook"],
             text: "",
-            image: null,
+            // image: null,
+            avatarSource: null,
+            videoSource: null
         };
     }
+    selectPhotoTapped() {
+        const options = {
+          quality: 1.0,
+          maxWidth: 500,
+          maxHeight: 500,
+          storageOptions: {
+            skipBackup: true
+          }
+        };
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+      
+            if (response.didCancel) {
+              console.log('User cancelled photo picker');
+            }
+            else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+              console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+              let source = { uri: response.uri };
+      
+              // You can also display the image using data:
+              // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+      
+              this.setState({
+                avatarSource: source
+              });
+            }
+          });
+        }
+      
+        selectVideoTapped() {
+          const options = {
+            title: 'Video Picker',
+            takePhotoButtonTitle: 'Take Video...',
+            mediaType: 'video',
+            videoQuality: 'medium'
+          };
+      
+          ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+      
+            if (response.didCancel) {
+              console.log('User cancelled video picker');
+            }
+            else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+              console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+              this.setState({
+                videoSource: response.uri
+              });
+            }
+          });
+        }
     // pickSingle(cropit, circular = false) {
     //     ImagePicker.openPicker({
     //         width: 300,
@@ -134,11 +196,13 @@ export default class EditProfile extends Component {
         return (
             <View style={styles.background}>
                 <View style={styles.containerInfo}>
-                    <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />
+                    {/* <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} /> */}
+                    <Image style={styles.avatar} source={this.state.avatarSource ? this.state.avatarSource : require("./img/hoangphan.jpg")}/>
                     {/* {this.state.image ? this.renderImage(this.state.image) : <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />} */}
                     <TouchableOpacity style={styles.viewAvatar}
                         // Edit Avatar
-                        onPress={() => { Alert.alert('1') }}
+                        // onPress={() => { Alert.alert('1') }}
+                        onPress={this.selectPhotoTapped.bind(this)}
                     >
                         <Icon name="camera" color='#F15F66' size={50} style={{ alignSelf: 'center' }} />
                     </TouchableOpacity>
