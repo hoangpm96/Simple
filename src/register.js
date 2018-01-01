@@ -10,7 +10,9 @@ import {
   TouchableOpacity,
   TextInput,
   TouchableHighlight,
-  ImageBackground
+  ImageBackground,
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { autobind } from "core-decorators";
@@ -30,13 +32,14 @@ export default class Register extends Component {
       userName: "",
       email: "",
       pass: "",
-      isChecked: false
+      isChecked: false,
+      animating: false
     };
   }
 
-  signup = async (email, password) => {
-    email = '521342322222414@gmail.com'
-    password = '123123123'
+  signup = async (email, password, username) => {
+    this.setState({ animating : true });
+ 
     try {
       let result = await firebase.auth().createUserWithEmailAndPassword(email, password);
       console.log(result);
@@ -49,6 +52,7 @@ export default class Register extends Component {
         .push({
           email: email,
           created_at: creationTime,
+          username: username,
           gender: this.Global.registerIsMale ? "male" : "female",
           age: this.Global.registerAge
         });
@@ -63,6 +67,7 @@ export default class Register extends Component {
         }); 
       }
 
+      this.setState({ animating: false });
       this.Global.isFooter = true;
       Actions.search();
       this.Global.pressStatus = "search";
@@ -73,14 +78,29 @@ export default class Register extends Component {
 
       // Navigate to the Home page, the user is auto logged in
     } catch (error) {
-      //  TODO: Show error popup here
-      console.log(error.toString());
+      
+
+      this.setState({ animating: false });
+      Alert.alert(
+        this.Global.APP_NAME,
+        error.toString(),
+        [
+          { text: "OK", onPress: () => console.log("OK Pressed") }
+        ],
+        { cancelable: false }
+      );
+      
     }
   };
 
   render() {
     return (
+
+
       <ImageBackground source={background} style={styles.waperContainer}>
+    
+    
+      
         <Image source={logo} style={styles.logoStyle} />
         <Text style={styles.textName}>REGISTER</Text>
         <View style={{ flex: 1 }}>
@@ -137,6 +157,14 @@ export default class Register extends Component {
                 value={this.state.pass}
               />
             </View>
+            {/* TODO: Update UI  */}
+            <ActivityIndicator
+               animating = {this.state.animating}
+               color = '#fff'
+               size = "large"
+               style = {styles.activityIndicator}
+               />
+
             <View style={styles.containerLink}>
               <TouchableOpacity
                 onPress={() => {
@@ -161,7 +189,7 @@ export default class Register extends Component {
             <TouchableOpacity
               onPress={() => {
 
-                this.signup(this.state.email,this.state.pass);
+                this.signup(this.state.email,this.state.pass,this.state.userName);
                 
               }}
             >
@@ -276,6 +304,11 @@ const styles = StyleSheet.create({
   waperConnect: {
     flexDirection: 'row',
     height: 40
+  },
+  activityIndicator: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: 80
   }
 
 

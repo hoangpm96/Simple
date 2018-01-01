@@ -21,6 +21,14 @@ class Global {
 
   @observable myCart = [];
   @observable pressStatus = "love";
+
+  @observable activityIndicator = {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    height: 80
+  };
+  @observable APP_NAME = "Simple";
 }
 const global = new Global();
 export default global;
