@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     waperLogin: {
-        width: width < 414 ? width - 40 : width - 50,
+        width: width < 414 ? width / 2 - 25 : width / 2 - 30,
         height: height < 667 ? 40 : 45,
         backgroundColor: '#F15F66',
         shadowColor: '#ED969B',
