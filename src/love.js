@@ -84,7 +84,13 @@ export default class Love extends Component {
 
   _renderRow(rowData) {
     return (
-        <View style={styles.viewContainer} >
+        <TouchableOpacity 
+        onPress={() => {
+          this.Global.isFooter = true;
+          this.Global.pressStatus = "love";
+          Actions.loverProfile();
+        }}
+        style={styles.viewContainer} >
           <Image
             style={styles.avatar_image}
             source={{ uri: rowData.image }}
@@ -95,7 +101,7 @@ export default class Love extends Component {
               <Text numberOfLines={1} style={styles.informationStyleHobby}  >* Hobbies: {rowData.hobbies}</Text>
               <Text numberOfLines={1} style={styles.informationStyle}  >* Height: {rowData.height}</Text>
           </View>
-        </View>
+        </TouchableOpacity>
     )
   }
   render() {
