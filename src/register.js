@@ -72,10 +72,6 @@ export default class Register extends Component {
       Actions.search();
       this.Global.pressStatus = "search";
      
-
-
-
-
       // Navigate to the Home page, the user is auto logged in
     } catch (error) {
       
