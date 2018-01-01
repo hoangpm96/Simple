@@ -6,14 +6,19 @@ import { observer } from "mobx-react/native";
 
 @autobind
 class Global {
-    constructor(props){}
+  constructor(props) {}
   @observable dataMenu = [];
 
   formatThousand(x, a) {
     x = String(x);
     return x.replace(/\B(?=(\d{3})+(?!\d))/g, a);
   }
+  // For registerInfo.js
+  @observable registerAge = 1;
+  @observable registerTags = [];
+  @observable registerIsMale = false;
   @observable isFooter = false;
+
   @observable myCart = [];
   @observable pressStatus = "love";
 }

@@ -20,7 +20,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import TagInput from 'react-native-tag-input';
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
-import firebase from "firebase";
+
 const { width, height } = Dimensions.get("window");
 
 const inputProps = {
@@ -69,19 +69,7 @@ export default class RegisterInfo extends Component {
 
   labelExtractor = tag => tag;
 
-  signup = async (email, pass) => {
-    try {
-    console.log("Here");
-      await firebase.auth().createUserWithEmailAndPassword(email, pass);
-
-      console.log("Account created");
-      debugger;
-
-      // Navigate to the Home page, the user is auto logged in
-    } catch (error) {
-      console.log(error.toString());
-    }
-  };
+  
 
   render() {
     return (
@@ -200,8 +188,11 @@ export default class RegisterInfo extends Component {
           <TouchableOpacity
             onPress={() => {
               this.Global.isFooter = false;
-                this.signup('vankhoa@gmail.com','123455');
-              // Actions.register();
+                
+                this.Global.registerAge = this.state.age;
+                this.Global.registerTags = this.state.tags;
+                this.Global.registerIsMale = this.state.isMale;
+                Actions.register();
             }}
           >
             <View style={[styles.waperLogin, { marginLeft: 5 }]}>

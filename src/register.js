@@ -16,7 +16,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 const { width, height } = Dimensions.get("window");
-
+import firebase from "firebase";
+import { forEach } from "@firebase/util";
 @autobind
 @observer
 export default class Register extends Component {
@@ -33,7 +34,49 @@ export default class Register extends Component {
     };
   }
 
-  
+  signup = async (email, password) => {
+    email = '521342322222414@gmail.com'
+    password = '123123123'
+    try {
+      let result = await firebase.auth().createUserWithEmailAndPassword(email, password);
+      console.log(result);
+      let { creationTime } = result.metadata;
+      
+      // create users
+      let userResult = await firebase
+        .database()
+        .ref("users")
+        .push({
+          email: email,
+          created_at: creationTime,
+          gender: this.Global.registerIsMale ? "male" : "female",
+          age: this.Global.registerAge
+        });
+    
+
+     for ( let tag of this.Global.registerTags  ) {
+        await firebase
+        .database()
+        .ref("tags").child(tag)
+        .set({
+          userId: userResult.key
+        }); 
+      }
+
+      this.Global.isFooter = true;
+      Actions.search();
+      this.Global.pressStatus = "search";
+     
+
+
+
+
+      // Navigate to the Home page, the user is auto logged in
+    } catch (error) {
+      //  TODO: Show error popup here
+      console.log(error.toString());
+    }
+  };
 
   render() {
     return (
@@ -117,9 +160,9 @@ export default class Register extends Component {
             {/* Button Login */}
             <TouchableOpacity
               onPress={() => {
-                this.Global.isFooter = true;
-                Actions.search();
-                this.Global.pressStatus = "search";
+
+                this.signup(this.state.email,this.state.pass);
+                
               }}
             >
               <View style={styles.waperLogin}>
