@@ -20,6 +20,7 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import TagInput from 'react-native-tag-input';
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
+import firebase from "firebase";
 const { width, height } = Dimensions.get("window");
 
 const inputProps = {
@@ -36,133 +37,181 @@ const inputProps = {
 @autobind
 @observer
 export default class RegisterInfo extends Component {
-    constructor(props) {
-        super(props);
-        background = require('./img/background.png');
-        logo = require('./img/logo.png');
-        this.Global = this.props.Global;
-        this.state = {
-            age: 18,
-            tags: [],
-            text: "",
-            isMale: true,
-        };
+  constructor(props) {
+    super(props);
+    background = require("./img/background.png");
+    logo = require("./img/logo.png");
+    this.Global = this.props.Global;
+    this.state = {
+      age: 18,
+      tags: [],
+      text: "",
+      isMale: true
+    };
+  }
+  onChangeTags = tags => {
+    this.setState({ tags });
+  };
+
+  onChangeText = text => {
+    this.setState({ text });
+
+    const lastTyped = text.charAt(text.length - 1);
+    const parseWhen = [",", " ", ";", "\n"];
+
+    if (parseWhen.indexOf(lastTyped) > -1) {
+      this.setState({
+        tags: [...this.state.tags, this.state.text],
+        text: ""
+      });
     }
-    onChangeTags = (tags) => {
-        this.setState({ tags });
+  };
+
+  labelExtractor = tag => tag;
+
+  signup = async (email, pass) => {
+    try {
+    console.log("Here");
+      await firebase.auth().createUserWithEmailAndPassword(email, pass);
+
+      console.log("Account created");
+      debugger;
+
+      // Navigate to the Home page, the user is auto logged in
+    } catch (error) {
+      console.log(error.toString());
     }
+  };
 
-    onChangeText = (text) => {
-        this.setState({ text });
-
-        const lastTyped = text.charAt(text.length - 1);
-        const parseWhen = [',', ' ', ';', '\n'];
-
-        if (parseWhen.indexOf(lastTyped) > -1) {
-            this.setState({
-                tags: [...this.state.tags, this.state.text],
-                text: "",
-            });
-        }
-    }
-
-    labelExtractor = (tag) => tag;
-
-    render() {
-        return (
-            <ImageBackground source={background} style={styles.waperContainer} >
-                    <Image source={logo} style={styles.logoStyle} />
-                <Text style={styles.textName}>REGISTER</Text>
-                <View style={styles.containerInfo}>
-                    {/* You are? */}
-                    <View style={styles.containerYouAre}>
-                        <Text style={styles.textQA}>You are?</Text>
-                        <View style={styles.containerButton01}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ isMale: true });
-                                }}
-                            >
-                                <View style={[styles.waperLogin, this.state.isMale ? { backgroundColor: '#F15F66' } : { backgroundColor: '#FFA8AC' }, { marginRight: 5 }]}>
-                                    <Text style={styles.textButton}>MALE</Text>
-                                </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    this.setState({ isMale: false });
-                                }}
-                            >
-                                <View style={[styles.waperRegister, , !this.state.isMale ? { backgroundColor: '#F15F66' } : { backgroundColor: '#FFA8AC' }, { marginLeft: 5 }]}>
-                                    <Text style={styles.textButton}>FEMALE</Text>
-                                </View>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    {/* How old are you? */}
-                    <View style={styles.containerAge}>
-                        <View style={styles.containerTextAge}>
-                            <Text style={styles.textQA}>How old are you?</Text>
-                            <Text style={styles.textQA}>I'm {this.state.age} years old</Text>
-                        </View>
-                        <Slider
-                            style={{ width: width - (width / 8.33) }}
-                            step={1}
-                            minimumTrackTintColor='#F15F66'
-                            maximumTrackTintColor='#FFA8AC'
-                            minimumValue={16}
-                            maximumValue={40}
-                            value={this.state.age}
-                            onValueChange={val => this.setState({ age: val })}
-                        />
-                    </View>
-                    {/* What are your hobbies? */}
-                    <View style={styles.containerHobby}>
-                        <Text style={[styles.textQA, { flex: 1 }]}>What are your hobbies?</Text>
-                        <View style={{ marginTop: height / 160, alignItems: 'flex-start', backgroundColor: 'rgba(202,148,157,1)', borderRadius: height / 40, flex: 6 }}>
-                            <View style={{ marginLeft: 10, marginRight: 10, flexDirection: 'row', alignItems: 'flex-start', backgroundColor: 'transparent' }}>
-                                <TagInput
-                                    value={this.state.tags}
-                                    onChange={this.onChangeTags}
-                                    labelExtractor={this.labelExtractor}
-                                    text={this.state.text}
-                                    onChangeText={this.onChangeText}
-                                    tagColor="#FFA8AC"
-                                    tagTextColor="#ffffff"
-                                    inputProps={inputProps}
-                                    maxHeight={height / 5.8}
-                                />
-                            </View>
-                        </View>
-                    </View>
+  render() {
+    return (
+      <ImageBackground source={background} style={styles.waperContainer}>
+        <Image source={logo} style={styles.logoStyle} />
+        <Text style={styles.textName}>REGISTER</Text>
+        <View style={styles.containerInfo}>
+          {/* You are? */}
+          <View style={styles.containerYouAre}>
+            <Text style={styles.textQA}>You are?</Text>
+            <View style={styles.containerButton01}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ isMale: true });
+                }}
+              >
+                <View
+                  style={[
+                    styles.waperLogin,
+                    this.state.isMale
+                      ? { backgroundColor: "#F15F66" }
+                      : { backgroundColor: "#FFA8AC" },
+                    { marginRight: 5 }
+                  ]}
+                >
+                  <Text style={styles.textButton}>MALE</Text>
                 </View>
-                {/* Button */}
-                <View style={styles.containerButton}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.Global.isFooter = false;
-                            Actions.login();
-                        }}
-                    >
-                        <View style={[styles.waperRegister, { marginRight: 5 }]}>
-                            <Text style={styles.textButton}>LOGIN</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() => {
-                            this.Global.isFooter = false;
-                            Actions.register();
-                        }}
-                    >
-                        <View style={[styles.waperLogin, { marginLeft: 5 }]}>
-                            <Text style={styles.textButton}>NEXT</Text>
-                        </View>
-                    </TouchableOpacity>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ isMale: false });
+                }}
+              >
+                <View
+                  style={[
+                    styles.waperRegister,
+                    ,
+                    !this.state.isMale
+                      ? { backgroundColor: "#F15F66" }
+                      : { backgroundColor: "#FFA8AC" },
+                    { marginLeft: 5 }
+                  ]}
+                >
+                  <Text style={styles.textButton}>FEMALE</Text>
                 </View>
-
-
-            </ImageBackground>
-        );
-    }
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* How old are you? */}
+          <View style={styles.containerAge}>
+            <View style={styles.containerTextAge}>
+              <Text style={styles.textQA}>How old are you?</Text>
+              <Text style={styles.textQA}>I'm {this.state.age} years old</Text>
+            </View>
+            <Slider
+              style={{ width: width - width / 8.33 }}
+              step={1}
+              minimumTrackTintColor="#F15F66"
+              maximumTrackTintColor="#FFA8AC"
+              minimumValue={16}
+              maximumValue={40}
+              value={this.state.age}
+              onValueChange={val => this.setState({ age: val })}
+            />
+          </View>
+          {/* What are your hobbies? */}
+          <View style={styles.containerHobby}>
+            <Text style={[styles.textQA, { flex: 1 }]}>
+              What are your hobbies?
+            </Text>
+            <View
+              style={{
+                marginTop: height / 160,
+                alignItems: "flex-start",
+                backgroundColor: "rgba(202,148,157,1)",
+                borderRadius: height / 40,
+                flex: 6
+              }}
+            >
+              <View
+                style={{
+                  marginLeft: 10,
+                  marginRight: 10,
+                  flexDirection: "row",
+                  alignItems: "flex-start",
+                  backgroundColor: "transparent"
+                }}
+              >
+                <TagInput
+                  value={this.state.tags}
+                  onChange={this.onChangeTags}
+                  labelExtractor={this.labelExtractor}
+                  text={this.state.text}
+                  onChangeText={this.onChangeText}
+                  tagColor="#FFA8AC"
+                  tagTextColor="#ffffff"
+                  inputProps={inputProps}
+                  maxHeight={height / 5.8}
+                />
+              </View>
+            </View>
+          </View>
+        </View>
+        {/* Button */}
+        <View style={styles.containerButton}>
+          <TouchableOpacity
+            onPress={() => {
+              this.Global.isFooter = false;
+              Actions.login();
+            }}
+          >
+            <View style={[styles.waperRegister, { marginRight: 5 }]}>
+              <Text style={styles.textButton}>LOGIN</Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              this.Global.isFooter = false;
+                this.signup('vankhoa@gmail.com','123455');
+              // Actions.register();
+            }}
+          >
+            <View style={[styles.waperLogin, { marginLeft: 5 }]}>
+              <Text style={styles.textButton}>NEXT</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    );
+  }
 }
 const styles = StyleSheet.create({
     waperContainer: {

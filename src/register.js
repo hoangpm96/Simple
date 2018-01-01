@@ -22,8 +22,8 @@ const { width, height } = Dimensions.get("window");
 export default class Register extends Component {
   constructor(props) {
     super(props);
-    background = require('./img/background.png');
-    logo = require('./img/logo.png');
+    background = require("./img/background.png");
+    logo = require("./img/logo.png");
     this.Global = this.props.Global;
     this.state = {
       userName: "",
@@ -32,41 +32,64 @@ export default class Register extends Component {
       isChecked: false
     };
   }
+
+  
+
   render() {
     return (
-      <ImageBackground source={background} style={styles.waperContainer} >
+      <ImageBackground source={background} style={styles.waperContainer}>
         <Image source={logo} style={styles.logoStyle} />
         <Text style={styles.textName}>REGISTER</Text>
         <View style={{ flex: 1 }}>
           <View style={[styles.containerForm, { flex: 5 }]}>
             <View style={styles.containerUserName}>
-              <Icon name="envelope" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-              <TextInput placeholder={'Mail'} style={styles.styleUserName}
+              <Icon
+                name="envelope"
+                color="#DDDDDD"
+                size={24}
+                style={{ marginLeft: 20 }}
+              />
+              <TextInput
+                placeholder={"Mail"}
+                style={styles.styleUserName}
                 onChangeText={email => {
-                  this.setState({ email: email});
+                  this.setState({ email: email });
                 }}
-                placeholderTextColor={'#DDDDDD'}
+                placeholderTextColor={"#DDDDDD"}
                 value={this.state.email}
               />
             </View>
             <View style={styles.containerUserName}>
-              <Icon name="user-o" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-              <TextInput placeholder={'User Name'} style={styles.styleUserName}
+              <Icon
+                name="user-o"
+                color="#DDDDDD"
+                size={24}
+                style={{ marginLeft: 20 }}
+              />
+              <TextInput
+                placeholder={"User Name"}
+                style={styles.styleUserName}
                 onChangeText={username => {
-                  this.setState({ userName: username});
+                  this.setState({ userName: username });
                 }}
-                placeholderTextColor={'#DDDDDD'}
+                placeholderTextColor={"#DDDDDD"}
                 value={this.state.userName}
               />
             </View>
             <View style={styles.containerPassword}>
-              <Icon name="key" color='#DDDDDD' size={24} style={{ marginLeft: 19 }} />
-              <TextInput style={styles.stylePassword}
-                placeholder={'Password'}
-                placeholderTextColor={'#DDDDDD'}
+              <Icon
+                name="key"
+                color="#DDDDDD"
+                size={24}
+                style={{ marginLeft: 19 }}
+              />
+              <TextInput
+                style={styles.stylePassword}
+                placeholder={"Password"}
+                placeholderTextColor={"#DDDDDD"}
                 secureTextEntry={true}
                 onChangeText={pass => {
-                  this.setState({ pass: pass});
+                  this.setState({ pass: pass });
                 }}
                 value={this.state.pass}
               />
@@ -78,9 +101,7 @@ export default class Register extends Component {
                   Actions.login();
                 }}
               >
-                <Text style={styles.textForgot}>
-                  Login
-                </Text>
+                <Text style={styles.textForgot}>Login</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
@@ -88,9 +109,7 @@ export default class Register extends Component {
                   Actions.forgot();
                 }}
               >
-                <Text style={styles.textForgot}>
-                  Forgot Password?
-                            </Text>
+                <Text style={styles.textForgot}>Forgot Password?</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -100,7 +119,7 @@ export default class Register extends Component {
               onPress={() => {
                 this.Global.isFooter = true;
                 Actions.search();
-                this.Global.pressStatus = "search"
+                this.Global.pressStatus = "search";
               }}
             >
               <View style={styles.waperLogin}>
