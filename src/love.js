@@ -316,7 +316,8 @@ const styles = StyleSheet.create({
   textQuote: {
     margin: 10,
     fontSize: 14,
-    color: '#ffff'
+    color: '#ffff',
+    fontStyle: 'italic'
   },
   avatar: {
     width: width < 375 ? width - 50 : width - 40,
