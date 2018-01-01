@@ -1,5 +1,3 @@
-
-
 import React, { Component } from "react";
 import { Actions, Router, Scene } from "react-native-mobx";
 import {
@@ -15,13 +13,20 @@ import {
   RefreshControl,
   Animated,
   TouchableHighlight,
-  TextInput
+  TextInput,
+  Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { SwipeListView } from 'react-native-swipe-list-view';
+import PopupDialog, {
+  DialogTitle,
+  DialogButton,
+  ScaleAnimation,
+} from 'react-native-popup-dialog';
 import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
+const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
 import Global from "./models/global";
 const data = require('./data/api.json');
@@ -33,8 +38,12 @@ export default class Love extends Component {
   constructor(props) {
     super(props);
     this.Global = this.props.Global;
+    this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
+      age2: 21,
+      name: "Huong Giang Ido",
+      Quote: "A woman gives and forgives, a man gets and forgets",
       refreshing: false,
       listViewData: data,
       isSwipe: false
@@ -42,7 +51,9 @@ export default class Love extends Component {
 
     this._renderRow = this._renderRow.bind(this);
   }
-
+  showScaleAnimationDialog() {
+    this.scaleAnimationDialog.show();
+  }
   _onReLoad() {
     this.setState({ refreshing: true });
     this.setState({
@@ -55,6 +66,13 @@ export default class Love extends Component {
     this.setState({
       listViewData: this.state.listViewData,
     });
+    this.Global.firstLogin === true ? 
+    this.scaleAnimationDialog.show()
+    : null
+
+    this.Global.firstLogin === true ? 
+    this.Global.firstLogin = false
+    : null
   }
 
   deleteRow(secId, rowId, rowMap) {
@@ -81,7 +99,7 @@ export default class Love extends Component {
     )
   }
   render() {
-
+    const animatedValue = this.state.animatedValue;
     return (
       <View style={styles.background}>
         <Animated.View style={styles.headerContainer}>
@@ -117,6 +135,52 @@ export default class Love extends Component {
               +
       </Text>
         </TouchableOpacity>
+        <PopupDialog
+          dialogTitle={<DialogTitle title="People you may like!" titleStyle={{backgroundColor: '#CEB7C3'} } titleTextStyle={{color: '#ffff', fontSize: 18, fontWeight: 'bold'}}/>}
+          ref={(popupDialog) => {
+            this.scaleAnimationDialog = popupDialog;
+          }}
+          dialogAnimation={scaleAnimation}
+          width = {width < 375 ? width - 50 : width - 40}
+          height = {width < 375 ? width + 140 : width + 160}
+          dialogStyle = {{backgroundColor: 'rgba(202,148,157,1)'}}
+        >
+          <View style={styles.dialogContentView}>
+            <View style={styles.viewQuote}>
+            <Text style={styles.textQuote}> {this.state.Quote}</Text>
+            </View>
+            <Image
+          source={require("./img/HHKTeam.jpg")}
+          style={styles.avatar}
+        />
+            <View style={styles.containerButton01}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.scaleAnimationDialog.dismiss()
+                  this.Global.firstLogin = false
+                }}
+                style={[styles.waperButton, { backgroundColor: '#FFA8AC', marginRight: 5 }]}
+              >
+                  <Text style={styles.textButton}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.Global.isFooter = false;
+                  this.Global.pressStatus = "chat";
+                  Actions.messager();
+                }}
+                style={[styles.waperButton, { backgroundColor: '#F15F66', marginLeft: 5 }]}
+              >
+                  <Text style={styles.textButton}>Chat</Text>
+              </TouchableOpacity>
+            </View>
+            <View style = {styles.nameAge}>
+            <Text style = {{color: '#ffffff', fontSize: 16}}>
+            {this.state.name} - {this.state.age2}
+              </Text>
+              </View>
+          </View>
+        </PopupDialog>
       </View>
     );
   }
@@ -235,4 +299,72 @@ const styles = StyleSheet.create({
   backTextWhite: {
     color: '#F15F66'
   },
+  dialogContentView: {
+    flex: 1
+  },
+  viewQuote: {
+    marginTop: 10,
+    width: width < 375 ? width - 90: width - 120,
+    height: 58,
+    backgroundColor: '#BAA8AE',
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    borderBottomRightRadius: 15,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15
+  },
+  textQuote: {
+    margin: 10,
+    fontSize: 14,
+    color: '#ffff'
+  },
+  avatar: {
+    width: width < 375 ? width - 50 : width - 40,
+    height: width < 375 ? width - 50 : width - 40,
+    resizeMode: "cover",
+    borderRadius: 15,
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    marginTop: 10,
+  },
+  containerButton01: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+},
+waperButton: {
+  width: width < 375 ? width / 2 - 40 : width / 2 - 35,
+  height: height < 667 ? 40 : 45,
+  backgroundColor: '#F15F66',
+  shadowColor: '#ED969B',
+  shadowOffset: { width: 1, height: 1.3, },
+  shadowOpacity: 84,
+  shadowRadius: 1,
+  borderRadius: height < 667 ? 20 : 22.5,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: width < 375 ? 10 : 13
+
+},
+textButton: {
+  fontSize: 18,
+  fontFamily: 'System',
+  fontWeight: 'bold',
+  color: '#ffff',
+  backgroundColor: 'transparent'
+},
+nameAge: {
+  position: 'absolute',
+  width: width < 375 ? width - 50 : width - 40,
+  height: 35,
+  top: width < 375 ? width - 7: width + 3,
+  left: 0,
+  backgroundColor: 'rgba(0,0,0,0.7)',
+  borderBottomLeftRadius: 15,
+  borderBottomRightRadius: 15,
+  alignContent: 'center',
+  alignItems: 'center',
+  justifyContent: 'center'
+}
 });

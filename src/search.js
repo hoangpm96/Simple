@@ -63,6 +63,8 @@ export default class SearchFriend extends Component {
       tags: [],
       text: "",
       age: 18,
+      age2: 21,
+      name: "Huong Giang Ido",
       selectedCity: "Select City",
       selectedDictrict: "Select Dictrict",
       Quote: "A woman gives and forgives, a man gets and forgets",
@@ -274,23 +276,26 @@ export default class SearchFriend extends Component {
             <View style={styles.containerButton01}>
               <TouchableOpacity
                 onPress={() => {
-                  this.setState({ isMale: true });
+                  //code ham like/ ignore
                 }}
+                style={[styles.waperButton, { backgroundColor: '#FFA8AC', marginRight: 5 }]}
               >
-                <View style={[styles.waperButton, { backgroundColor: '#FFA8AC', marginRight: 5 }]}>
                   <Text style={styles.textButton}>Ignore</Text>
-                </View>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  this.setState({ isMale: false });
+                  // code ham like / ignore
                 }}
+                style={[styles.waperButton, { backgroundColor: '#F15F66', marginLeft: 5 }]}
               >
-                <View style={[styles.waperButton, { backgroundColor: '#F15F66', marginLeft: 5 }]}>
                   <Text style={styles.textButton}>Like</Text>
-                </View>
               </TouchableOpacity>
             </View>
+            <View style = {styles.nameAge}>
+            <Text style = {{color: '#ffffff', fontSize: 16}}>
+            {this.state.name} - {this.state.age2}
+              </Text>
+              </View>
           </View>
         </PopupDialog>
       </View>
@@ -512,4 +517,17 @@ textButton: {
   color: '#ffff',
   backgroundColor: 'transparent'
 },
+nameAge: {
+  position: 'absolute',
+  width: width < 375 ? width - 50 : width - 40,
+  height: 35,
+  top: width < 375 ? width - 7: width + 3,
+  left: 0,
+  backgroundColor: 'rgba(0,0,0,0.7)',
+  borderBottomLeftRadius: 15,
+  borderBottomRightRadius: 15,
+  alignContent: 'center',
+  alignItems: 'center',
+  justifyContent: 'center'
+}
 });

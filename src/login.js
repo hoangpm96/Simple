@@ -93,6 +93,7 @@ export default class Login extends Component {
                             this.Global.isFooter = true;
                             Actions.love();
                             this.Global.pressStatus = "love";
+                            this.Global.firstLogin = true;
                         }}
                     >
                         <View style={styles.waperLogin}>
