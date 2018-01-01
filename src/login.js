@@ -54,7 +54,7 @@ export default class Login extends Component {
             let email = value[0].email; 
             this.login(email, password);
           }else {
-              this.showError("Vui lòng nhập dữ liệu");
+              this.showError("Please enter the correct user name!");
               return; 
           }
         });
@@ -156,7 +156,19 @@ export default class Login extends Component {
           {/* Button Login */}
           <TouchableOpacity
             onPress={() => {
-              this.findEmail(this.state.userName, this.state.pass);
+              if (this.state.userName ==="" || this.statepass ===""){
+                Alert.alert(
+                  this.Global.APP_NAME,
+                  "User Name or Password blank",
+                  [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+                  { cancelable: false }
+                );
+              }
+              else 
+              {
+                this.findEmail(this.state.userName, this.state.pass);
+
+              }
             }}
           >
             <View style={styles.waperLogin}>
@@ -179,6 +191,13 @@ export default class Login extends Component {
             />
           </View>
         </View>
+        {
+          this.state.animating ? 
+          <View style = {styles.waiting}>
+
+          </View>
+          : null
+        }
       </ImageBackground>
     );
   }
@@ -288,5 +307,21 @@ const styles = StyleSheet.create({
   waperConnect: {
     flexDirection: "row",
     height: 40
+  },
+  activityIndicator: {
+    position: 'absolute',
+    top: 0,
+    left: width/2 - 15,
+
+  },
+  waiting: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    width: width,
+    height: height,
+    backgroundColor: "rgba(0,0,0,0.5)"
   }
 });

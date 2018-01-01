@@ -23,7 +23,7 @@ export default class Footer extends Component {
     this.Global = this.props.Global;
     this.pressStatus = this.props.pressStatus;
     //add footer for coding.
-    this.Global.isFooter = true
+    // this.Global.isFooter = true
   }
   render() {
     return (

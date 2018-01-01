@@ -195,6 +195,13 @@ export default class Register extends Component {
             </TouchableOpacity>
           </View>
         </View>
+        {
+          this.state.animating ? 
+          <View style = {styles.waiting}>
+
+          </View>
+          : null
+        }
       </ImageBackground>
     );
   }
@@ -301,11 +308,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 40
   },
-  activityIndicator: {
-    justifyContent: "center",
-    alignItems: "center",
-    height: 80
-  }
+    activityIndicator: {
+      position: 'absolute',
+      top: 0,
+      left: width/2 - 30,
+    },
+    waiting: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      right: 0,
+      width: width,
+      height: height,
+      backgroundColor: "rgba(0,0,0,0.5)"
+    }
 
 
 })
