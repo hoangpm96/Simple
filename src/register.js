@@ -61,10 +61,7 @@ export default class Register extends Component {
      for ( let tag of this.Global.registerTags  ) {
         await firebase
         .database()
-        .ref("tags").child(tag)
-        .set({
-          userId: userResult.key
-        }); 
+        .ref("tags").child(tag).child(userResult.key).set(true);
       }
 
       this.setState({ animating: false });

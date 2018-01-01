@@ -19,6 +19,10 @@ class Global {
   @observable registerIsMale = false;
   @observable isFooter = false;
 
+  // 
+  
+
+
   @observable myCart = [];
   @observable pressStatus = "love";
 
