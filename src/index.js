@@ -209,7 +209,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            initial
+            // initial
             key="changeLanguage"
             title={""}
             component={ChangeLanguage}
@@ -219,7 +219,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="aboutUs"
             title={""}
             component={AboutUs}
