@@ -57,7 +57,12 @@ export default class AddChat extends Component {
     }
     _renderRow(rowData) {
       return (
-          <View style={styles.viewContainer} >
+          <TouchableOpacity style={styles.viewContainer} 
+          onPress={() => {
+            Actions.messager();
+            this.Global.isFooter = false;
+            this.Global.pressStatus = "chat";
+          }}>
             <Image
               style={styles.avatar_image}
               source={{ uri: rowData.image }}
@@ -68,7 +73,7 @@ export default class AddChat extends Component {
                   <Text style={{ color: 'green' }}>*</Text>
                   <Text numberOfLines={1} style={[styles.informationStyle, { fontSize: 16 }]}  >  {rowData.name}, {rowData.age}</Text>
                 </View>
-
+{/* 
 
                 <TouchableOpacity
                   onPress={() => {
@@ -76,11 +81,11 @@ export default class AddChat extends Component {
                     this.Global.isFooter = false;
                     this.Global.pressStatus = "chat";
                   }}
-                >
+                > */}
                   <Icon name="chevron-right" color='#ffffff' size={22} style={{ margin: 10 }} />
-                </TouchableOpacity>
+                {/* </TouchableOpacity> */}
               </View>
-          </View>
+          </TouchableOpacity>
       )
     }
     render() {

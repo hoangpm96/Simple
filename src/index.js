@@ -26,6 +26,7 @@ import ChangePassword from "./changePassword";
 import ChangeLanguage from "./changeLanguage";
 import AboutUs from "./aboutUs";
 import EditProfile from "./editProfile";
+import LoverProfile from "./loverProfile";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
@@ -231,6 +232,16 @@ export default class App extends Component {
             key="editProfile"
             title={""}
             component={EditProfile}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
+          <Scene
+            initial
+            key="loverProfile"
+            title={""}
+            component={LoverProfile}
             hideNavBar={true}
             sceneStyle={{
               paddingTop: 0

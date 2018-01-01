@@ -61,6 +61,7 @@ export default class Login extends Component {
     } catch (error) {
         this.showError(error);
     }
+
   };
   login = async (email, password) => {
     try {
@@ -71,6 +72,80 @@ export default class Login extends Component {
       this.Global.pressStatus = "love";
     } catch (error) {
         this.showError(error);
+
+    render() {
+        return (
+            <ImageBackground source={background} style={styles.waperContainer} >
+                <Image source={logo} style={styles.logoStyle} />
+                <Text style={styles.textName}>LOGIN</Text>
+                <View style={styles.containerForm}>
+                    <View style={styles.containerUserName}>
+                        <Icon name="user-o" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
+                        <TextInput placeholder={'User Name'} style={styles.styleUserName}
+                            onChangeText={username => {
+                                this.setState({ userName: username});
+                            }}
+                            placeholderTextColor={'#DDDDDD'}
+                            value={this.state.userName}
+                        />
+                    </View>
+                    <View style={styles.containerPassword}>
+                        <Icon name="key" color='#DDDDDD' size={24} style={{ marginLeft: 19 }} />
+                        <TextInput style={styles.stylePassword}
+                            placeholder={'Password'}
+                            placeholderTextColor={'#DDDDDD'}
+                            secureTextEntry={true}
+                            onChangeText={pass => {
+                                this.setState({ pass: pass});
+                            }}
+                            value={this.state.pass}
+                        />
+                    </View>
+                    <View style={styles.containerLink}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                // this.Global.isFooter = false;
+                                Actions.registerInfo();
+                            }}
+                        >
+                            <Text style={styles.textForgot}>
+                                Register
+          </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                // this.Global.isFooter = false;
+                                Actions.forgot();
+                            }}
+                        >
+                            <Text style={styles.textForgot}>
+                                Forgot Password?
+                      </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.containerButton}>
+                    {/* Button Login */}
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.Global.isFooter = true;
+                            Actions.love();
+                            this.Global.pressStatus = "love";
+                            this.Global.firstLogin = true;
+                        }}
+                    >
+                        <View style={styles.waperLogin}>
+                            <Text style={styles.textLogin}>LOGIN</Text>
+                        </View>
+                    </TouchableOpacity>
+                    {/* Connect FB/G */}
+                    <View style={styles.waperConnect}>
+                        <Icon name="facebook-square" color='#ffffff' size={height < 667 ? 30 : 40} style={{ marginRight: 7, backgroundColor: 'transparent' }} />
+                        <Icon name="google" color='#ffffff' size={height < 736 ? (height < 667 ? 32 : 35) : 40} style={{ marginLeft: 7, backgroundColor: 'transparent' }} />
+                    </View>
+                </View>
+            </ImageBackground>
+        );
     }
   };
   showError = (errMessage) => {
