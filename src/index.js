@@ -31,7 +31,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 import Global from "./models/global";
-
+import firebase from "firebase";
 @autobind
 @observer
 export default class App extends Component {
@@ -40,7 +40,19 @@ export default class App extends Component {
     this.state = {};
     this.Global = Global;
   }
-  componentDidMount() { }
+  componentDidMount() { 
+    // config firebase
+    var config = {
+    apiKey: "AIzaSyAE-sTE-LGom4QiX-XAzMpGmhOL2kO0DnI",
+    authDomain: "simple-6e793.firebaseapp.com",
+    databaseURL: "https://simple-6e793.firebaseio.com",
+    projectId: "simple-6e793",
+    storageBucket: "simple-6e793.appspot.com",
+    messagingSenderId: "445665131019"
+  };
+  firebase.initializeApp(config);
+
+  }
   componentWillMount() { }
 
   render() {
@@ -63,7 +75,7 @@ export default class App extends Component {
         >
 
           <Scene
-            //  initial
+            initial
             key="main"
             title=""
             component={Main}
