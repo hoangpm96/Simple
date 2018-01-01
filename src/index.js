@@ -20,7 +20,6 @@ import Messager from "./messager";
 import Register from "./register"
 import Main from "./main";
 import SearchFriend from "./search";
-import SearchResult from "./searchResult"
 import Profile from "./profile";
 import DeleteAccount from "./deleteAccount";
 import ChangePassword from "./changePassword";
@@ -63,7 +62,7 @@ export default class App extends Component {
         >
 
           <Scene
-             initial
+            //  initial
             key="main"
             title=""
             component={Main}
@@ -153,23 +152,10 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="search"
             title={""}
             component={SearchFriend}
-            hideNavBar={true}
-            navigationBarStyle={{
-              backgroundColor: "#000"
-            }}
-            sceneStyle={{
-              paddingTop: 0
-            }}
-          />
-          <Scene
-            // initial
-            key="searchResult"
-            title={""}
-            component={SearchResult}
             hideNavBar={true}
             navigationBarStyle={{
               backgroundColor: "#000"

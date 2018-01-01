@@ -8,6 +8,7 @@ import {
   Text,
   View,
   Slider,
+  Image,
   Dimensions,
   TouchableOpacity,
   ImageBackground,
@@ -17,7 +18,6 @@ import {
   ScrollView,
   TouchableHighlight,
   TextInput,
-  Button,
   Alert,
   Platform
 } from "react-native";
@@ -29,6 +29,12 @@ import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 import TagInput from 'react-native-tag-input';
 import Expand from 'react-native-simple-expand';
+import PopupDialog, {
+  DialogTitle,
+  DialogButton,
+  ScaleAnimation,
+} from 'react-native-popup-dialog';
+const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
 const data = require('./data/api.json');
 const citys = ['Ha Noi', 'Quang Ngai', 'Quang Nam', 'Hai Phong', 'Can Tho', 'Da Nang', 'Lao Cai', 'Lang Son', 'Kien Giang', 'Tien Giang', 'Ho Chi Minh City', 'Long An', 'Dong Nai', 'Vung Tau', 'Hue', 'Phu Yen', 'Gia Lai', 'Daklak', 'Lam Dong', 'Quang Binh', 'Quang Tri', 'Binh Dinh', 'Binh Thuan', 'Tay Ninh', 'Binh Duong'];
@@ -52,12 +58,14 @@ export default class SearchFriend extends Component {
   constructor(props) {
     super(props);
     this.Global = this.props.Global;
+    this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     this.state = {
       tags: [],
       text: "",
       age: 18,
       selectedCity: "Select City",
       selectedDictrict: "Select Dictrict",
+      Quote: "A woman gives and forgives, a man gets and forgets",
       sliderOneChanging: false,
       sliderOneValue: [5],
       multiSliderValue: [18, 23],
@@ -100,6 +108,9 @@ export default class SearchFriend extends Component {
     this.setState({
       height: values,
     });
+  }
+  showScaleAnimationDialog() {
+    this.scaleAnimationDialog.show();
   }
   render() {
     const animatedValue = this.state.animatedValue;
@@ -236,16 +247,52 @@ export default class SearchFriend extends Component {
           </View>
         </ScrollView>
         <TouchableOpacity
-          onPress={() => {
-            this.Global.isFooter = true;
-            this.Global.pressStatus = "search";
-            Actions.searchResult();
-          }}
+          onPress={this.showScaleAnimationDialog}
         >
           <View style={styles.containterAdd}>
             <Icon name="search" color='#ffffff' size={23} />
           </View>
         </TouchableOpacity>
+        <PopupDialog
+          dialogTitle={<DialogTitle title="10/20" titleStyle={{backgroundColor: '#CEB7C3'} } titleTextStyle={{color: '#ffff', fontSize: 18, fontWeight: 'bold'}}/>}
+          ref={(popupDialog) => {
+            this.scaleAnimationDialog = popupDialog;
+          }}
+          dialogAnimation={scaleAnimation}
+          width = {width < 375 ? width - 50 : width - 40}
+          height = {width < 375 ? width + 140 : width + 160}
+          dialogStyle = {{backgroundColor: 'rgba(202,148,157,1)'}}
+        >
+          <View style={styles.dialogContentView}>
+            <View style={styles.viewQuote}>
+            <Text style={styles.textQuote}> {this.state.Quote}</Text>
+            </View>
+            <Image
+          source={require("./img/HHKTeam.jpg")}
+          style={styles.avatar}
+        />
+            <View style={styles.containerButton01}>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ isMale: true });
+                }}
+              >
+                <View style={[styles.waperButton, { backgroundColor: '#FFA8AC', marginRight: 5 }]}>
+                  <Text style={styles.textButton}>Ignore</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ isMale: false });
+                }}
+              >
+                <View style={[styles.waperButton, { backgroundColor: '#F15F66', marginLeft: 5 }]}>
+                  <Text style={styles.textButton}>Like</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </PopupDialog>
       </View>
     );
   }
@@ -409,5 +456,60 @@ const styles = StyleSheet.create({
     color: '#DDDDDD', 
     marginTop: 2, 
     marginLeft: 10 
-  }
+  },
+  dialogContentView: {
+    flex: 1
+  },
+  viewQuote: {
+    marginTop: 10,
+    width: width < 375 ? width - 90: width - 120,
+    height: 58,
+    backgroundColor: '#BAA8AE',
+    alignSelf: 'flex-end',
+    marginRight: 10,
+    borderBottomRightRadius: 15,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15
+  },
+  textQuote: {
+    margin: 10,
+    fontSize: 14,
+    color: '#ffff'
+  },
+  avatar: {
+    width: width < 375 ? width - 50 : width - 40,
+    height: width < 375 ? width - 50 : width - 40,
+    resizeMode: "cover",
+    borderRadius: 15,
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    marginTop: 10,
+  },
+  containerButton01: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row'
+},
+waperButton: {
+  width: width < 375 ? width / 2 - 40 : width / 2 - 35,
+  height: height < 667 ? 40 : 45,
+  backgroundColor: '#F15F66',
+  shadowColor: '#ED969B',
+  shadowOffset: { width: 1, height: 1.3, },
+  shadowOpacity: 84,
+  shadowRadius: 1,
+  borderRadius: height < 667 ? 20 : 22.5,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: width < 375 ? 10 : 13
+
+},
+textButton: {
+  fontSize: 18,
+  fontFamily: 'System',
+  fontWeight: 'bold',
+  color: '#ffff',
+  backgroundColor: 'transparent'
+},
 });
