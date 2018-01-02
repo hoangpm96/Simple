@@ -40,11 +40,10 @@ export default class Login extends Component {
     };
   }
   findEmail = async (username, password) => {
-      // test
+    // test
     //
     this.setState({ animating: true });
     try {
-    
       await firebase
         .database()
         .ref("users")
@@ -52,41 +51,42 @@ export default class Login extends Component {
         .equalTo(username)
         .on("value", snapshot => {
           if (snapshot.val()) {
+            
             let value = Object.values(snapshot.val());
-            let email = value[0].email; 
+            let keys = Object.keys(snapshot.val());
+            this.Global.currentUserId = keys[0];
+            let email = value[0].email;
             this.login(email, password);
-          }else {
-              this.showError("Vui lòng nhập dữ liệu");
-              return; 
+          } else {
+            this.showError("Vui lòng nhập dữ liệu");
+            return;
           }
         });
     } catch (error) {
-        this.showError(error);
+      this.showError(error);
     }
-
   };
   login = async (email, password) => {
     try {
-        
       await firebase.auth().signInWithEmailAndPassword(email, password);
-       this.Global.isFooter = true;
-       Actions.love();
-       this.Global.pressStatus = "love";
-       this.Global.firstLogin = true;
+      this.Global.isFooter = true;
+      Actions.love();
+      this.Global.pressStatus = "love";
+      this.Global.firstLogin = true;
     } catch (error) {
-        this.showError(error);
+      this.showError(error);
+    }
+  };
 
-   
-  }};
-  showError = (errMessage) => {
-       this.setState({ animating: false });
-       Alert.alert(
-         this.Global.APP_NAME,
-         errMessage,
-         [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-         { cancelable: false }
-       );
-  }
+  showError = errMessage => {
+    this.setState({ animating: false });
+    Alert.alert(
+      this.Global.APP_NAME,
+      errMessage,
+      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      { cancelable: false }
+    );
+  };
   render() {
     return (
       <ImageBackground source={background} style={styles.waperContainer}>

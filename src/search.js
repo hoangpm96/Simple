@@ -117,7 +117,6 @@ export default class SearchFriend extends Component {
     this.Global = this.props.Global;
     this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     this.state = {
-      
       tags: [],
       text: "",
       age: 18,
@@ -132,7 +131,10 @@ export default class SearchFriend extends Component {
       weight: [55, 75],
       height: [150, 180],
       animatedValue: new Animated.Value(0),
-      animating: false
+      animating: false,
+      userProfiles: [],
+      currentIndex: 0,
+      userIds: []
     };
   }
   onChangeTags = tags => {
@@ -176,22 +178,8 @@ export default class SearchFriend extends Component {
 
   search = async () => {
     this.setState({ animating: true });
+    var tempArr = this.state.userIds;
     try {
-      var userIds =  [];
-      this.setState({ tags: ["choigame", "dulich", "du", "shopping"] });
-
-        // await firebase
-        //     .database()
-        //     .ref("tags")
-        //     .child('dulich')
-        //     .on("value", function(snapshots) {
-        //       snapshots.forEach(function(data) {
-        //         console.log(data.val());
-        //         this.state.userIds.push(data.val());
-        //         debugger;
-        //       });
-        //     });
-
       await Promise.all(
         this.state.tags.map(async tag => {
           await firebase
@@ -200,35 +188,126 @@ export default class SearchFriend extends Component {
             .child(tag)
             .once("value", function(snapshots) {
               snapshots.forEach(function(data) {
-                userIds.push(data.key);
+                tempArr.push(data.key);
               });
             });
         })
-      ).then(data => {
-        
-        console.log(userIds);
-        debugger;
-        this.showScaleAnimationDialog();
-      });
+      )
+        .then(data => {
+          this.setState(prevState => ({
+            userIds: tempArr
+          }));
 
-      // for ( let tag of this.state.tags  ) {
-      //   await firebase
-      //   .database()
-      //       .ref("tags")
-      //       .child(tag)
-      //       .once("value", function(snapshot) {
-      //         snapshot.forEach(function(child) {
-      //          console.log(child.key+": "+child.val());
-      //         })
-      //     })}
-      
-      // console.log(userIds);
-      // debugger;
-      // this.showScaleAnimationDialog();
+          var { userIds, currentIndex } = this.state;
+
+          if (userIds.length > 0 && currentIndex < userIds.length) {
+            this.loadUserFrom(userIds[currentIndex]);
+            this.setState({ currentIndex: this.state.currentIndex + 1 });
+          } else {
+            this.showError(this.Global.errorMessage.noMatch);
+          }
+        })
+
+        .catch(function(e) {
+          this.showError(e);
+        });
     } catch (error) {
       this.showError(error);
     }
   };
+
+  loadUserFrom = async id => {
+    try {
+      await firebase
+        .database()
+        .ref("users")
+        .orderByKey()
+        .equalTo(id)
+        .on("value", snapshot => {
+          if (snapshot.val()) {
+            let value = Object.values(snapshot.val());
+            let email = value[0].email;
+            this.setState({
+              name: value[0].name,
+              age: value[0].age,
+              Quote: value[0].email // TODO: Add user's quote
+            });
+          }
+        });
+      this.showScaleAnimationDialog();
+    } catch (error) {
+      this.showError(error);
+    }
+  };
+
+  findUser = async userIds => {
+    try {
+      await Promise.all(
+        userIds.map(async tag => {
+          await firebase
+            .database()
+            .ref("users")
+            .once("value", function(snapshots) {
+              snapshots.forEach(function(data) {
+                let tempArr = this.state.userProfiles;
+                tempArr.push(data.val());
+                this.setState({ userProfiles: tempArr });
+              });
+            });
+        })
+      ).then(data => {
+        console.log(this.state.userProfiles);
+        debugger;
+        this.findUser(userIds);
+      });
+
+      this.showScaleAnimationDialog();
+    } catch (error) {
+      this.showError(error);
+    }
+  };
+
+  loadNextUser = async ignore => {
+    var { userIds, currentIndex } = this.state;
+    const otherUserId = userIds[currentIndex];
+    debugger;
+    // add to ignore list -> don't this people show next time
+    if (ignore) {
+      await firebase
+        .database()
+        .ref("ignores")
+        .child(this.Global.currentUserId)
+        .child(otherUserId)
+        .set(true);
+        this.setState({
+        currentIndex: this.state.currentIndex + 1
+      });
+      this.autoLoadNew();
+    } else {
+      // add to wish list
+      await firebase
+        .database()
+        .ref("wishList")
+        .child(this.Global.currentUserId)
+        .child(otherUserId)
+        .set(true);
+
+        this.setState({ currentIndex: this.state.currentIndex + 1 });
+        this.autoLoadNew();
+    }
+  };
+
+  autoLoadNew = () => {
+    if (currentIndex < userIds.length) {
+      this.loadUserFrom(otherUserId);
+      this.setState({
+        currentIndex: this.state.currentIndex + 1
+      });
+    } else {
+      this.showError(this.Global.errorMessage.noMatch);
+    }
+  };
+
   showError = errMessage => {
     this.setState({ animating: false });
     Alert.alert(
@@ -436,6 +515,7 @@ export default class SearchFriend extends Component {
               <TouchableOpacity
                 onPress={() => {
                   //code ham like/ ignore
+                  this.loadNextUser(true);
                 }}
                 style={[
                   styles.waperButton,
@@ -447,6 +527,7 @@ export default class SearchFriend extends Component {
               <TouchableOpacity
                 onPress={() => {
                   // code ham like / ignore
+                  this.loadNextUser(false);
                 }}
                 style={[
                   styles.waperButton,
