@@ -19,13 +19,19 @@ import {
     Alert,
     ActionSheetIOS,
     Platform,
-    NativeModules
+    NativeModules,
+    ActivityIndicator
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import SimplePicker from 'react-native-simple-picker';
 import TagInput from 'react-native-tag-input';
 import Modal from "react-native-modalbox";
 import ImagePicker from 'react-native-image-picker';
+import RNFetchBlob from 'react-native-fetch-blob'
+import firebase from "firebase";
+import { async } from "@firebase/util";
+import Global from "./models/global";
+import { each } from "@firebase/database/dist/esm/src/core/util/util";
 
 const { width, height } = Dimensions.get("window");
 const inputProps = {
@@ -49,7 +55,60 @@ const ages = ['16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', 
 const heights = ['140', '141', '142', '143', '144', '145', '146', '147', '148', '149', '150', '151', '152', '153', '154', '155', '156', '157', '158', '159', '160', '161', '162', '163', '190'];
 const weights = ['40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64'];
 
+// const storage = firebase.storage();
+const fs = RNFetchBlob.fs;
+const Blob = RNFetchBlob.polyfill.Blob
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+window.Blob = Blob
+
+    uploadImage = (uri, id, mime = 'images/') =>   {
+        return new Promise((resolve, reject) => {
+        const uploadUri = Platform.OS === 'ios' ? uri.uri.replace('file://', '') : uri.uri
+        const sessionId = new Date().getTime()
+        let uploadBlob = null
+        const imageRef = firebase.storage().ref('images').child(`${sessionId}.jpg`);
+
+        fs.readFile(uploadUri, 'base64')
+            .then((data) => {
+                return Blob.build(data, { type: `${mime};BASE64` })
+            })
+            .then((blob) => {
+                uploadBlob = blob
+                return imageRef.put(blob, { contentType: mime })
+            })
+            .then(() => {
+                uploadBlob.close()
+                return imageRef.getDownloadURL()
+            })
+            .then((url, id) => {
+                resolve(url)
+            })
+            .catch((error) => {
+                reject(error)
+            })
+    })
+}
+
+
 export default class EditProfile extends Component {
+
+    uploadInfoUser = async () => {
+        var imgUrl = await uploadImage(this.state.avatarSource, this.Global.currentUserId, 'images/');
+        try {
+            await firebase.database().ref('users').child(this.Global.currentUserId).update({
+                'avatarUrl': imgUrl
+            })
+            this.Global.isFooter = true;
+            this.Global.pressStatus = "profile";
+            Actions.profile();
+        }
+        catch (error) {
+            // this.setState({
+            //     animating: false
+            // })
+        }
+    }
+
     constructor(props) {
         super(props);
         this.Global = this.props.Global;
@@ -72,95 +131,40 @@ export default class EditProfile extends Component {
             selectedDictrict: "Dictrict 1",
             tags: ["dog", "guitar", "dance", "swimming", "readbook"],
             text: "",
-            // image: null,
             avatarSource: null,
-            videoSource: null
+            animating: false
         };
     }
     selectPhotoTapped() {
         const options = {
-          quality: 1.0,
-          maxWidth: 500,
-          maxHeight: 500,
-          storageOptions: {
-            skipBackup: true
-          }
+            quality: 1.0,
+            maxWidth: 500,
+            maxHeight: 500,
+            storageOptions: {
+                skipBackup: true
+            }
         };
         ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
-      
+
             if (response.didCancel) {
-              console.log('User cancelled photo picker');
+                console.log('User cancelled photo picker');
             }
             else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
+                console.log('ImagePicker Error: ', response.error);
             }
             else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
+                console.log('User tapped custom button: ', response.customButton);
             }
             else {
-              let source = { uri: response.uri };
-      
-              // You can also display the image using data:
-              // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-      
-              this.setState({
-                avatarSource: source
-              });
+                let source = { uri: response.uri };
+                this.setState({
+                    avatarSource: source
+                });
             }
-          });
-        }
-      
-        selectVideoTapped() {
-          const options = {
-            title: 'Video Picker',
-            takePhotoButtonTitle: 'Take Video...',
-            mediaType: 'video',
-            videoQuality: 'medium'
-          };
-      
-          ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
-      
-            if (response.didCancel) {
-              console.log('User cancelled video picker');
-            }
-            else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-            }
-            else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
-            }
-            else {
-              this.setState({
-                videoSource: response.uri
-              });
-            }
-          });
-        }
-    // pickSingle(cropit, circular = false) {
-    //     ImagePicker.openPicker({
-    //         width: 300,
-    //         height: 300,
-    //         cropping: cropit,
-    //         cropperCircleOverlay: circular,
-    //         compressImageMaxWidth: 640,
-    //         compressImageMaxHeight: 480,
-    //         compressImageQuality: 0.5,
-    //         compressVideoPreset: 'MediumQuality',
-    //         includeExif: true,
-    //     }).then(image => {
-    //         this.setState({
-    //             image: { uri: image.path, width: image.width, height: image.height, mime: image.mime },
-    //             images: null
-    //         });
-    //     }).catch(e => {
-    //         Alert.alert(e.message ? e.message : e);
-    //     });
-    // }
-    // renderImage(image) {
-    //     return <Image style={styles.avatar} source={image} />
-    // }
+        });
+    }
+
     onChangeTags = (tags) => {
         this.setState({ tags });
     }
@@ -197,7 +201,7 @@ export default class EditProfile extends Component {
             <View style={styles.background}>
                 <View style={styles.containerInfo}>
                     {/* <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} /> */}
-                    <Image style={styles.avatar} source={this.state.avatarSource ? this.state.avatarSource : require("./img/hoangphan.jpg")}/>
+                    <Image style={styles.avatar} source={this.state.avatarSource ? this.state.avatarSource : require("./img/hoangphan.jpg")} />
                     {/* {this.state.image ? this.renderImage(this.state.image) : <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />} */}
                     <TouchableOpacity style={styles.viewAvatar}
                         // Edit Avatar
@@ -477,15 +481,25 @@ export default class EditProfile extends Component {
                 </ScrollView>
                 <TouchableOpacity
                     onPress={() => {
-                        this.Global.isFooter = true;
-                        this.Global.pressStatus = "profile";
-                        Actions.profile();
+                        console.log(this.Global.currentUserId);
+                        // this.setState(
+                        //     {
+                        //         animating: true
+                        //     }
+                        // )
+                        this.uploadInfoUser();
                     }}
                 >
                     <View style={styles.containterAdd}>
                         <Icon name="check" color='#ffffff' size={23} />
                     </View>
                 </TouchableOpacity>
+                {/* <ActivityIndicator
+              animating={this.state.animating}
+              color="#fff"
+              size="large"
+              style={styles.activityIndicator}
+            /> */}
             </View>
         );
     }
@@ -589,11 +603,11 @@ const styles = StyleSheet.create({
     },
     containterAdd: {
         position: 'absolute',
-        left: height < 812 ? (height < 736 ? (height < 667 ? -19.5 : -21) : -22 ) : - 24,
-        bottom: height < 812 ? 15: 25,
-        width: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
-        height: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42 ) : 44 ) : 48,
-        borderRadius: height < 812 ? (height < 736 ? (height < 667 ? 19.5 : 21 ) : 22 ) : 24,
+        left: height < 812 ? (height < 736 ? (height < 667 ? -19.5 : -21) : -22) : - 24,
+        bottom: height < 812 ? 15 : 25,
+        width: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42) : 44) : 48,
+        height: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42) : 44) : 48,
+        borderRadius: height < 812 ? (height < 736 ? (height < 667 ? 19.5 : 21) : 22) : 24,
         backgroundColor: '#F15F66',
         borderWidth: 1,
         borderColor: 'rgba(226,39,44,0.2)',

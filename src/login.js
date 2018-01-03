@@ -32,8 +32,8 @@ export default class Login extends Component {
     background = require("./img/background.png");
     logo = require("./img/logo.png");
     this.state = {
-      userName: "",
-      pass: "",
+      userName: "Hoang",
+      pass: "123456",
       isChecked: false,
       animating: false
     };
@@ -69,6 +69,8 @@ export default class Login extends Component {
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password).then((user) => {
       this.Global.isFooter = true;
+      console.log(user);
+      console.log(this.Global.currentUserId);
       Actions.love();
       this.Global.pressStatus = "love";
       this.Global.firstLogin = true;
@@ -180,7 +182,6 @@ export default class Login extends Component {
                 }
                 else {
                   this.findEmail(this.state.userName, this.state.pass);
-
                 }
               }}
             >

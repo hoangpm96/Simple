@@ -19,6 +19,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Modal from "react-native-modalbox";
+import firebase from "firebase";
 const { width, height } = Dimensions.get("window");
 
 export default class Profile extends Component {
@@ -34,28 +35,6 @@ export default class Profile extends Component {
       Address: "Quang Ngai",
       isPush: false
     };
-  }
-  _onPress() {
-    Alert.alert(
-      'Question',
-      'Do you want to delete?',
-      [,
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ],
-      { cancelable: false }
-    )
-  }
-  _onPressAdd() {
-    Alert.alert(
-      'Question',
-      'Do you want to Add?',
-      [,
-        { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-        { text: 'OK', onPress: () => console.log('OK Pressed') },
-      ],
-      { cancelable: false }
-    )
   }
 
   render() {
