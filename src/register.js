@@ -15,6 +15,7 @@ import {
   Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 const { width, height } = Dimensions.get("window");
@@ -92,7 +93,11 @@ export default class Register extends Component {
 
       <ImageBackground source={background} style={styles.waperContainer}>
     
-    
+    <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.container}
+          scrollEnabled={false}
+        >
       
         <Image source={logo} style={styles.logoStyle} />
         <Text style={styles.textName}>REGISTER</Text>
@@ -199,11 +204,18 @@ export default class Register extends Component {
           </View>
           : null
         }
+        </KeyboardAwareScrollView>
       </ImageBackground>
     );
   }
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width
+  },
   waperContainer: {
     flexDirection: 'column',
     alignContent: 'space-around',

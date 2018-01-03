@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Actions, Router, Scene } from "react-native-mobx";
 import {
-  AppRegistry,
   StyleSheet,
   Text,
   View,
@@ -9,12 +8,12 @@ import {
   Dimensions,
   TouchableOpacity,
   TextInput,
-  TouchableHighlight,
   ImageBackground,
   ActivityIndicator,
   Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 const { width, height } = Dimensions.get("window");
 
 import { observable } from "mobx";
@@ -51,15 +50,15 @@ export default class Login extends Component {
         .equalTo(username)
         .on("value", snapshot => {
           if (snapshot.val()) {
-            
             let value = Object.values(snapshot.val());
             let keys = Object.keys(snapshot.val());
             this.Global.currentUserId = keys[0];
             let email = value[0].email;
+            //verify password
             this.login(email, password);
-          }else {
-              this.showError("Please enter the correct user name!");
-              return; 
+          } else {
+            this.showError("Please enter the correct user name!");
+            return;
           }
         });
     } catch (error) {
@@ -68,11 +67,19 @@ export default class Login extends Component {
   };
   login = async (email, password) => {
     try {
-      await firebase.auth().signInWithEmailAndPassword(email, password);
+      await firebase.auth().signInWithEmailAndPassword(email, password).then((user) => {
       this.Global.isFooter = true;
       Actions.love();
       this.Global.pressStatus = "love";
       this.Global.firstLogin = true;
+      })
+      .catch((error) => {
+        this.setState({ animating: false });
+        // this.showError(error);
+        const { code, message } = error;
+        Alert.alert(this.Global.APP_NAME, message);
+        return;
+      });;
     } catch (error) {
       this.showError(error);
     }
@@ -89,124 +96,135 @@ export default class Login extends Component {
   };
   render() {
     return (
+
       <ImageBackground source={background} style={styles.waperContainer}>
-        <Image source={logo} style={styles.logoStyle} />
-        <Text style={styles.textName}>LOGIN</Text>
-        <View style={styles.containerForm}>
-          <View style={styles.containerUserName}>
-            <Icon
-              name="user-o"
-              color="#DDDDDD"
-              size={24}
-              style={{ marginLeft: 20 }}
-            />
-            <TextInput
-              placeholder={"User Name"}
-              style={styles.styleUserName}
-              onChangeText={username => {
-                this.setState({ userName: username });
-              }}
-              placeholderTextColor={"#DDDDDD"}
-              value={this.state.userName}
-            />
-          </View>
-          <View style={styles.containerPassword}>
-            <Icon
-              name="key"
-              color="#DDDDDD"
-              size={24}
-              style={{ marginLeft: 19 }}
-            />
-            <TextInput
-              style={styles.stylePassword}
-              placeholder={"Password"}
-              placeholderTextColor={"#DDDDDD"}
-              secureTextEntry={true}
-              onChangeText={pass => {
-                this.setState({ pass: pass });
-              }}
-              value={this.state.pass}
-            />
-          </View>
-          {/* TODO: Update UI  */}
-          <ActivityIndicator
-            animating={this.state.animating}
-            color="#fff"
-            size="large"
-            style={styles.activityIndicator}
-          />
-          <View style={styles.containerLink}>
-            <TouchableOpacity
-              onPress={() => {
-                // this.Global.isFooter = false;
-                Actions.registerInfo();
-              }}
-            >
-              <Text style={styles.textForgot}>Register</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                // this.Global.isFooter = false;
-                Actions.forgot();
-              }}
-            >
-              <Text style={styles.textForgot}>Forgot Password?</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={styles.containerButton}>
-          {/* Button Login */}
-          <TouchableOpacity
-            onPress={() => {
-              if (this.state.userName ==="" || this.statepass ===""){
-                Alert.alert(
-                  this.Global.APP_NAME,
-                  "User Name or Password blank",
-                  [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-                  { cancelable: false }
-                );
-              }
-              else 
-              {
-                this.findEmail(this.state.userName, this.state.pass);
-
-              }
-            }}
-          >
-            <View style={styles.waperLogin}>
-              <Text style={styles.textLogin}>LOGIN</Text>
+        <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.container}
+          scrollEnabled={false}
+        >
+          <Image source={logo} style={styles.logoStyle} />
+          <Text style={styles.textName}>LOGIN</Text>
+          <View style={styles.containerForm}>
+            <View style={styles.containerUserName}>
+              <Icon
+                name="user-o"
+                color="#DDDDDD"
+                size={24}
+                style={{ marginLeft: 20 }}
+              />
+              <TextInput
+                placeholder={"User Name"}
+                style={styles.styleUserName}
+                onChangeText={username => {
+                  this.setState({ userName: username });
+                }}
+                placeholderTextColor={"#DDDDDD"}
+                value={this.state.userName}
+              />
             </View>
-          </TouchableOpacity>
-          {/* Connect FB/G */}
-          <View style={styles.waperConnect}>
-            <Icon
-              name="facebook-square"
-              color="#ffffff"
-              size={height < 667 ? 30 : 40}
-              style={{ marginRight: 7, backgroundColor: "transparent" }}
+            <View style={styles.containerPassword}>
+              <Icon
+                name="key"
+                color="#DDDDDD"
+                size={24}
+                style={{ marginLeft: 19 }}
+              />
+              <TextInput
+                style={styles.stylePassword}
+                placeholder={"Password"}
+                placeholderTextColor={"#DDDDDD"}
+                secureTextEntry={true}
+                onChangeText={pass => {
+                  this.setState({ pass: pass });
+                }}
+                value={this.state.pass}
+              />
+            </View>
+            {/* TODO: Update UI  */}
+            <ActivityIndicator
+              animating={this.state.animating}
+              color="#fff"
+              size="large"
+              style={styles.activityIndicator}
             />
-            <Icon
-              name="google"
-              color="#ffffff"
-              size={height < 736 ? (height < 667 ? 32 : 35) : 40}
-              style={{ marginLeft: 7, backgroundColor: "transparent" }}
-            />
+            <View style={styles.containerLink}>
+              <TouchableOpacity
+                onPress={() => {
+                  // this.Global.isFooter = false;
+                  Actions.registerInfo();
+                }}
+              >
+                <Text style={styles.textForgot}>Register</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  Actions.forgot();
+                }}
+              >
+                <Text style={styles.textForgot}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-        {
-          this.state.animating ? 
-          <View style = {styles.waiting}>
+          <View style={styles.containerButton}>
+            {/* Button Login */}
+            <TouchableOpacity
+              onPress={() => {
+                if (this.state.userName === "" || this.state.pass === "") {
+                  Alert.alert(
+                    this.Global.APP_NAME,
+                    "User Name or Password blank",
+                    [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+                    { cancelable: false }
+                  );
+                }
+                else {
+                  this.findEmail(this.state.userName, this.state.pass);
 
+                }
+              }}
+            >
+              <View style={styles.waperLogin}>
+                <Text style={styles.textLogin}>LOGIN</Text>
+              </View>
+            </TouchableOpacity>
+            {/* Connect FB/G */}
+            <View style={styles.waperConnect}>
+              <Icon
+                name="facebook-square"
+                color="#ffffff"
+                size={height < 667 ? 30 : 40}
+                style={{ marginRight: 7, backgroundColor: "transparent" }}
+              />
+              <Icon
+                name="google"
+                color="#ffffff"
+                size={height < 736 ? (height < 667 ? 32 : 35) : 40}
+                style={{ marginLeft: 7, backgroundColor: "transparent" }}
+              />
+            </View>
           </View>
-          : null
-        }
+          {
+            this.state.animating ?
+              <View style={styles.waiting}>
+
+              </View>
+              : null
+          }
+        </KeyboardAwareScrollView>
+
       </ImageBackground>
     );
   }
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width
+  },
   waperContainer: {
-    flexDirection: "column",
     alignContent: "space-around",
     flex: 1
   },
@@ -313,7 +331,7 @@ const styles = StyleSheet.create({
   activityIndicator: {
     position: 'absolute',
     top: 0,
-    left: width/2 - 15,
+    left: width/2-40
 
   },
   waiting: {

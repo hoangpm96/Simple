@@ -17,6 +17,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import TagInput from 'react-native-tag-input';
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
@@ -74,6 +75,11 @@ export default class RegisterInfo extends Component {
   render() {
     return (
       <ImageBackground source={background} style={styles.waperContainer}>
+              <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.container}
+          scrollEnabled={false}
+        >
         <Image source={logo} style={styles.logoStyle} />
         <Text style={styles.textName}>REGISTER</Text>
         <View style={styles.containerInfo}>
@@ -142,10 +148,10 @@ export default class RegisterInfo extends Component {
             </Text>
             <View
               style={{
-                marginTop: height / 160,
+                marginTop: 6,
                 alignItems: "flex-start",
                 backgroundColor: "rgba(202,148,157,1)",
-                borderRadius: height / 40,
+                borderRadius: 15,
                 flex: 6
               }}
             >
@@ -167,7 +173,7 @@ export default class RegisterInfo extends Component {
                   tagColor="#FFA8AC"
                   tagTextColor="#ffffff"
                   inputProps={inputProps}
-                  maxHeight={height / 5.8}
+                  maxHeight={height<812 ? (height < 736 ? (height < 667 ? 98 : 115):127 ): 140} // height /5.8
                 />
               </View>
             </View>
@@ -200,6 +206,7 @@ export default class RegisterInfo extends Component {
             </View>
           </TouchableOpacity>
         </View>
+        </KeyboardAwareScrollView>
       </ImageBackground>
     );
   }
@@ -210,7 +217,12 @@ const styles = StyleSheet.create({
         alignContent: 'space-around',
         flex: 1,
     },
-
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: width
+    },
     logoStyle: {
         marginTop: height < 812 ? (height < 667 ? 20 : 45) : 50,
         width: height < 736 ? (height < 667 ? 180 : 205) : 230,
