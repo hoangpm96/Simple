@@ -52,9 +52,15 @@ const inputProps = {
 const options = ['Cancel', 'Male', 'Female'];
 const citys = ['Ha Noi', 'Quang Ngai', 'Quang Nam', 'Hai Phong', 'Can Tho', 'Da Nang', 'Lao Cai', 'Lang Son', 'Kien Giang', 'Tien Giang', 'Ho Chi Minh City', 'Long An', 'Dong Nai', 'Vung Tau', 'Hue', 'Phu Yen', 'Gia Lai', 'Daklak', 'Lam Dong', 'Quang Binh', 'Quang Tri', 'Binh Dinh', 'Binh Thuan', 'Tay Ninh', 'Binh Duong'];
 const dictricts = ['Dictrict 1', 'Dictrict 2', 'Dictrict 3', 'Dictrict 4', 'Dictrict 5', 'Dictrict 6', 'Dictrict 7', 'Dictrict 8', 'Dictrict 9', 'Dictrict 10', 'Dictrict 11', 'Dictrict 12', 'Thu Duc Dictrict', 'Tan Binh Dictrict', 'Binh Tan Dictrict', 'Tan Phu Dictrict', 'Phu Nhuan Dictrict', 'Binh Thanh Dictrict', 'Binh Chanh Dictrict', 'Nha Be Dictrict', 'Can Gio Dictrict', 'Cu Chi Dictrict'];
-const ages = ['16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40'];
-const heights = ['140', '141', '142', '143', '144', '145', '146', '147', '148', '149', '150', '151', '152', '153', '154', '155', '156', '157', '158', '159', '160', '161', '162', '163', '190'];
-const weights = ['40', '41', '42', '43', '44', '45', '46', '47', '48', '49', '50', '51', '52', '53', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64'];
+const ages = [];
+const heights = [];
+var weights = [];
+const MAX_HEIGHT = 250
+const MIN_HEIGHT = 100
+const MAX_AGE = 160
+const MIN_AGE = 40
+const MAX_WEIGHT = 120
+const MIN_WEIGHT = 30
 
 // const storage = firebase.storage();
 const fs = RNFetchBlob.fs;
@@ -94,6 +100,18 @@ window.Blob = Blob
 export default class EditProfile extends Component {
     componentWillMount() {
         this.getInforUser(this.Global.currentUserId);
+        this.createSelect();
+    }
+    createSelect() {
+        for (i = MIN_HEIGHT; i <= MAX_HEIGHT; i++ ){
+            heights.push(i);
+        }
+        for (i = MIN_AGE; i <= MAX_AGE; i++ ){
+            ages.push(i);
+        }
+        for (i = MIN_WEIGHT; i <= MAX_WEIGHT; i++ ){
+            weights.push(i);
+        }
     }
     // getHobbies = async (userID)  
     getInforUser = async (userId) => {
@@ -106,6 +124,7 @@ export default class EditProfile extends Component {
             .on("value", snapshot => {
               if (snapshot.val()) {
                 let value = Object.values(snapshot.val());
+                debugger
                 this.setState({
                     userName: value[0].username,
                     Name: value[0].name,
@@ -116,9 +135,16 @@ export default class EditProfile extends Component {
                     selectedDictrict: value[0].dictrict,
                     Email: value[0].email,
                     Quote: value[0].quote,
-                    Avatar: value[0].avatarUrl
+                    Avatar: value[0].avatarUrl,
                 })
-                // debugger
+                debugger
+                for (var tag in value[0].tags) {
+                    this.setState({
+                        tags: [...this.state.tags, tag],
+                    });
+                }
+                console.log(this.state.tags);
+                debugger
                 // let keys = Object.keys(snapshot.val());
                 // this.Global.currentUserId = keys[0];
                 // let email = value[0].email;
@@ -141,9 +167,9 @@ export default class EditProfile extends Component {
     uploadInfoUser = async () => {
         var imgUrl = this.state.avatarSource ? await uploadImage(this.state.avatarSource, this.Global.currentUserId, 'images/'): null;
         try {
-            this.state.avatarSource ? 
+            // this.state.avatarSource ? 
             await firebase.database().ref('users').child(this.Global.currentUserId).update({
-                'avatarUrl': imgUrl,
+                'avatarUrl': imgUrl ? imgUrl : this.state.Avatar,
                 'age': this.state.selectedAge,
                 'name': this.state.Name,
                 'height': this.state.selectedHeight,
@@ -153,18 +179,15 @@ export default class EditProfile extends Component {
                 'email': this.state.Email,
                 'quote': this.state.Quote,
             })
+            await firebase
+                .database()
+                .ref("users").child(this.Global.currentUserId).child('tags').remove();
 
-            :   
-            await firebase.database().ref('users').child(this.Global.currentUserId).update({
-                'age': this.state.selectedAge,
-                'name': this.state.Name,
-                'height': this.state.selectedHeight,
-                'weight': this.state.selectedWeight,
-                'city': this.state.selectedCity,
-                'dictrict': this.state.selectedDictrict,
-                'email': this.state.Email,
-                'quote': this.state.Quote
-            })
+            for ( let tag of this.state.tags  ) {
+                await firebase
+                .database()
+                .ref("users").child(this.Global.currentUserId).child('tags').child(tag).set(true);
+              }
             this.Global.isFooter = true;
             Actions.profile();
         }
@@ -196,7 +219,7 @@ export default class EditProfile extends Component {
             selectedHeight: 150,
             selectedCity: "Ho Chi Minh City",
             selectedDictrict: "Dictrict 1",
-            tags: ["dog", "guitar", "dance", "swimming", "readbook"],
+            tags: [],
             text: "",
             Avatar: null,
             avatarSource: null,
