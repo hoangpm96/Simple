@@ -50,8 +50,8 @@ const inputProps = {
 };
 // const DESTRUCTIVE_INDEX = 4
 const options = ['Cancel', 'Male', 'Female'];
-const citys = ['Ha Noi', 'Quang Ngai', 'Quang Nam', 'Hai Phong', 'Can Tho', 'Da Nang', 'Lao Cai', 'Lang Son', 'Kien Giang', 'Tien Giang', 'Ho Chi Minh City', 'Long An', 'Dong Nai', 'Vung Tau', 'Hue', 'Phu Yen', 'Gia Lai', 'Daklak', 'Lam Dong', 'Quang Binh', 'Quang Tri', 'Binh Dinh', 'Binh Thuan', 'Tay Ninh', 'Binh Duong'];
-const dictricts = ['Dictrict 1', 'Dictrict 2', 'Dictrict 3', 'Dictrict 4', 'Dictrict 5', 'Dictrict 6', 'Dictrict 7', 'Dictrict 8', 'Dictrict 9', 'Dictrict 10', 'Dictrict 11', 'Dictrict 12', 'Thu Duc Dictrict', 'Tan Binh Dictrict', 'Binh Tan Dictrict', 'Tan Phu Dictrict', 'Phu Nhuan Dictrict', 'Binh Thanh Dictrict', 'Binh Chanh Dictrict', 'Nha Be Dictrict', 'Can Gio Dictrict', 'Cu Chi Dictrict'];
+const citys = [];
+const districts = [];
 const ages = [];
 const heights = [];
 var weights = [];
@@ -61,6 +61,7 @@ const MAX_AGE = 160
 const MIN_AGE = 40
 const MAX_WEIGHT = 120
 const MIN_WEIGHT = 30
+const addressData = require('./data/address.json');
 
 // const storage = firebase.storage();
 const fs = RNFetchBlob.fs;
@@ -99,6 +100,9 @@ window.Blob = Blob
 
 export default class EditProfile extends Component {
     componentWillMount() {
+        this.setState({
+            animating: true
+        })
         this.getInforUser(this.Global.currentUserId);
         this.createSelect();
     }
@@ -112,6 +116,21 @@ export default class EditProfile extends Component {
         for (i = MIN_WEIGHT; i <= MAX_WEIGHT; i++ ){
             weights.push(i);
         }
+        for (var city of addressData) {
+            citys.push(city.name)
+        }
+        debugger
+        console.log(citys)
+        this.setState({
+            animating: false
+        })
+    }
+    getDistrict(cityName) {
+    const city = addressData.find(m => m.name == cityName );
+    districts = [];
+    for (district in city.districts){
+        districts.push(city.districts[district]);
+    }
     }
     // getHobbies = async (userID)  
     getInforUser = async (userId) => {
@@ -132,19 +151,18 @@ export default class EditProfile extends Component {
                     selectedHeight: value[0].height,
                     selectedWeight: value[0].weight,
                     selectedCity: value[0].city,
-                    selectedDictrict: value[0].dictrict,
+                    selectedDistrict: value[0].district,
                     Email: value[0].email,
                     Quote: value[0].quote,
                     Avatar: value[0].avatarUrl,
                 })
                 debugger
+                let array = []
                 for (var tag in value[0].tags) {
-                    this.setState({
-                        tags: [...this.state.tags, tag],
-                    });
+                        array.push(tag),
+                    this.setState({tags:  array});
+                    console.log(this.state.tags)
                 }
-                console.log(this.state.tags);
-                debugger
                 // let keys = Object.keys(snapshot.val());
                 // this.Global.currentUserId = keys[0];
                 // let email = value[0].email;
@@ -175,7 +193,7 @@ export default class EditProfile extends Component {
                 'height': this.state.selectedHeight,
                 'weight': this.state.selectedWeight,
                 'city': this.state.selectedCity,
-                'dictrict': this.state.selectedDictrict,
+                'district': this.state.selectedDistrict,
                 'email': this.state.Email,
                 'quote': this.state.Quote,
             })
@@ -214,11 +232,11 @@ export default class EditProfile extends Component {
             Quote: "A woman gives and forgives, a man gets and forgets",
             isPush: false,
             selected: 1,
-            selectedAge: 21,
-            selectedWeight: 45,
-            selectedHeight: 150,
-            selectedCity: "Ho Chi Minh City",
-            selectedDictrict: "Dictrict 1",
+            selectedAge: '21',
+            selectedWeight: '45',
+            selectedHeight: '150',
+            selectedCity: "",
+            selectedDistrict: "",
             tags: [],
             text: "",
             Avatar: null,
@@ -510,6 +528,8 @@ export default class EditProfile extends Component {
                     <TouchableOpacity
                         onPress={() => {
                             this.refs.pickerCity.show();
+                            //code cai district
+                            
                         }
                         }
                         style={styles.containerAddress}
@@ -536,8 +556,9 @@ export default class EditProfile extends Component {
                         onSubmit={(option) => {
                             this.setState({
                                 selectedCity: option,
-                                selectedDictrict: 'Select Dictrict'
+                                selectedDistrict: 'Select District'
                             });
+                            this.getDistrict(option)
                         }}
                     />
 
@@ -549,12 +570,12 @@ export default class EditProfile extends Component {
                         style={[styles.containerAddress, { marginTop: 5, marginBottom: 50 }]}
                     >
                         <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedDictrict}</Text>
+                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedDistrict}</Text>
 
                     </TouchableOpacity>
                     <SimplePicker
                         ref={'pickerDistrict'}
-                        options={dictricts}
+                        options={districts}
                         itemStyle={{
                             fontSize: 25,
                             color: '#F15F66',
@@ -569,7 +590,7 @@ export default class EditProfile extends Component {
                         confirmText='Select'
                         onSubmit={(option) => {
                             this.setState({
-                                selectedDictrict: option,
+                                selectedDistrict: option,
                             });
                         }}
                     />
