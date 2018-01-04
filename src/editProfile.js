@@ -27,7 +27,8 @@ import SimplePicker from 'react-native-simple-picker';
 import TagInput from 'react-native-tag-input';
 import Modal from "react-native-modalbox";
 import ImagePicker from 'react-native-image-picker';
-import RNFetchBlob from 'react-native-fetch-blob'
+import RNFetchBlob from 'react-native-fetch-blob';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import firebase from "firebase";
 import { async } from "@firebase/util";
 import Global from "./models/global";
@@ -91,21 +92,84 @@ window.Blob = Blob
 
 
 export default class EditProfile extends Component {
-
-    uploadInfoUser = async () => {
-        var imgUrl = await uploadImage(this.state.avatarSource, this.Global.currentUserId, 'images/');
+    componentWillMount() {
+        this.getInforUser(this.Global.currentUserId);
+    }
+        
+    getInforUser = async (userId) => {
         try {
+            await firebase
+            .database()
+            .ref("users")
+            .orderByKey()
+            .equalTo(userId)
+            .on("value", snapshot => {
+              if (snapshot.val()) {
+                let value = Object.values(snapshot.val());
+                this.setState({
+                    userName: value[0].username,
+                    Name: value[0].name,
+                    selectedAge: value[0].age,
+                    selectedHeight: value[0].height,
+                    selectedWeight: value[0].weight,
+                    selectedDictrict: value[0].city,
+                    Email: value[0].email,
+                    Quote: value[0].quote,
+                })
+                // let keys = Object.keys(snapshot.val());
+                // this.Global.currentUserId = keys[0];
+                // let email = value[0].email;
+                //verify password
+                // this.login(email, password);
+              } else {
+                this.showError("User had been delete.");
+                return;
+              }
+              debugger
+              console.log(snapshot.val());
+            });
+        }
+        catch(error) {
+            this.setState({
+                animating: false
+            })
+        }
+    }
+    uploadInfoUser = async () => {
+        var imgUrl = this.state.avatarSource ? await uploadImage(this.state.avatarSource, this.Global.currentUserId, 'images/'): null;
+        try {
+            this.state.avatarSource ? 
             await firebase.database().ref('users').child(this.Global.currentUserId).update({
-                'avatarUrl': imgUrl
+                'avatarUrl': imgUrl,
+                'age': this.state.selectedAge,
+                'name': this.state.Name,
+                'height': this.state.Height,
+                'weight': this.state.Weight,
+                'city': this.state.selectedCity,
+                'dictrict': this.state.selectedDictrict,
+                'email': this.state.Email,
+                'quote': this.state.Quote
+            })
+
+            :   
+            await firebase.database().ref('users').child(this.Global.currentUserId).update({
+                'age': this.state.selectedAge,
+                'name': this.state.Name,
+                'height': this.state.Height,
+                'weight': this.state.Weight,
+                'city': this.state.selectedCity,
+                'dictrict': this.state.selectedDictrict,
+                'email': this.state.Email,
+                'quote': this.state.Quote
             })
             this.Global.isFooter = true;
-            this.Global.pressStatus = "profile";
             Actions.profile();
         }
         catch (error) {
-            // this.setState({
-            //     animating: false
-            // })
+            this.setState({
+                animating: false
+            })
+            Alert.alert(this.Global.APP_NAME, error);
         }
     }
 
@@ -114,13 +178,13 @@ export default class EditProfile extends Component {
         this.Global = this.props.Global;
         this.onActionsPress = this.onActionsPress.bind(this);
         this.state = {
-            userName: "Hoang Phan",
-            Name: "Minh Hoang",
-            Age: "21",
-            Height: "180",
-            Weight: "65",
-            Address: "Quang Ngai",
-            Email: "hoangpm.qn96@gmail.com",
+            userName: "",
+            Name: "",
+            Age: "",
+            Height: "",
+            Weight: "",
+            Address: "",
+            Email: "",
             Quote: "A woman gives and forgives, a man gets and forgets",
             isPush: false,
             selected: 1,
@@ -198,10 +262,14 @@ export default class EditProfile extends Component {
     }
     render() {
         return (
-            <View style={styles.background}>
+            <KeyboardAwareScrollView
+            resetScrollToCoords={{ x: 0, y: 0 }}
+            contentContainerStyle={styles.background}
+            scrollEnabled={false}
+          >
                 <View style={styles.containerInfo}>
                     {/* <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} /> */}
-                    <Image style={styles.avatar} source={this.state.avatarSource ? this.state.avatarSource : require("./img/hoangphan.jpg")} />
+                    <Image style={styles.avatar} source={this.state.avatarSource ? this.state.avatarSource : require("./img/avatar-non.png")} />
                     {/* {this.state.image ? this.renderImage(this.state.image) : <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />} */}
                     <TouchableOpacity style={styles.viewAvatar}
                         // Edit Avatar
@@ -223,9 +291,9 @@ export default class EditProfile extends Component {
                         maxHeight={150}
                         textAlign='center'
                         onChangeText={userName => {
-                            this.setState({ userName: userName });
+                            this.setState({ Name: userName });
                         }}
-                        value={this.state.userName}
+                        value={this.state.Name}
                     />
                     <View style={styles.containerlover}>
                         <Text style={[styles.lover, { textAlign: 'right', marginRight: 5, marginTop: 5 }]}>13 lover</Text>
@@ -481,12 +549,14 @@ export default class EditProfile extends Component {
                 </ScrollView>
                 <TouchableOpacity
                     onPress={() => {
-                        console.log(this.Global.currentUserId);
-                        // this.setState(
-                        //     {
-                        //         animating: true
-                        //     }
-                        // )
+                        // this.getInforUser(this.Global.currentUserId);
+                        // console.log(this.Global.currentUserId);
+                        // debugger
+                        this.setState(
+                            {
+                                animating: true
+                            }
+                        )
                         this.uploadInfoUser();
                     }}
                 >
@@ -494,13 +564,20 @@ export default class EditProfile extends Component {
                         <Icon name="check" color='#ffffff' size={23} />
                     </View>
                 </TouchableOpacity>
-                {/* <ActivityIndicator
+                <ActivityIndicator
               animating={this.state.animating}
               color="#fff"
               size="large"
               style={styles.activityIndicator}
-            /> */}
-            </View>
+            />
+                      {
+            this.state.animating ?
+              <View style={styles.waiting}>
+
+              </View>
+              : null
+          }
+            </KeyboardAwareScrollView>
         );
     }
 }
@@ -646,6 +723,22 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         backgroundColor: 'transparent',
-    }
+    },
+    activityIndicator: {
+        position: 'absolute',
+        top: height/2,
+        left: width/2-20,
+    
+      },
+      waiting: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: width,
+        height: height,
+        backgroundColor: "rgba(0,0,0,0.5)"
+      }
 
 })

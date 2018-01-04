@@ -69,11 +69,11 @@ export default class Login extends Component {
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password).then((user) => {
       this.Global.isFooter = true;
-      console.log(user);
-      console.log(this.Global.currentUserId);
-      Actions.love();
+      // console.log(user);
+      // console.log(this.Global.currentUserId);
       this.Global.pressStatus = "love";
       this.Global.firstLogin = true;
+      Actions.love();
       })
       .catch((error) => {
         this.setState({ animating: false });

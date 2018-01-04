@@ -25,7 +25,7 @@ class Global {
   //
 
   @observable myCart = [];
-  @observable pressStatus = "love";
+  @observable pressStatus = "";
 
   @observable
   activityIndicator = {

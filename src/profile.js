@@ -62,7 +62,6 @@ export default class Profile extends Component {
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.changePassword();
-                  this.Global.pressStatus = "love";
                 }}
               >
                 <Icon name="lock" color='#ffffff' size={
@@ -76,7 +75,6 @@ export default class Profile extends Component {
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.deleteAccount();
-                  this.Global.pressStatus = "love";
                 }}
               >
                 <Icon name="user-times" color='#ffffff' size={
@@ -92,7 +90,6 @@ export default class Profile extends Component {
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.changeLanguage();
-                  this.Global.pressStatus = "profile";
                 }}
               >
                 <Icon name="language" color='#ffffff' size={
@@ -106,7 +103,6 @@ export default class Profile extends Component {
                 onPress={() => {
                   this.Global.isFooter = false;
                   Actions.aboutUs();
-                  this.Global.pressStatus = "profile";
                 }}
               >
                 <Icon name="users" color='#ffffff' size={
@@ -121,7 +117,6 @@ export default class Profile extends Component {
           onPress={() => {
             this.Global.isFooter = false;
             Actions.login();
-            this.Global.pressStatus = "love";
           }}
           style={styles.waperLogin}
         >
@@ -132,7 +127,6 @@ export default class Profile extends Component {
           onPress={() => {
             this.Global.isFooter = false;
             Actions.editProfile();
-            this.Global.pressStatus = "profile";
           }}
         >
           <Icon name="edit" color='#F15F66' size={25} />

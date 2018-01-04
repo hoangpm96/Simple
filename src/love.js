@@ -69,10 +69,7 @@ export default class Love extends Component {
     this.Global.firstLogin === true ? 
     this.scaleAnimationDialog.show()
     : null
-
-    this.Global.firstLogin === true ? 
     this.Global.firstLogin = false
-    : null
   }
 
   deleteRow(secId, rowId, rowMap) {
