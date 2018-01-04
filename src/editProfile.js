@@ -95,7 +95,7 @@ export default class EditProfile extends Component {
     componentWillMount() {
         this.getInforUser(this.Global.currentUserId);
     }
-        
+    // getHobbies = async (userID)  
     getInforUser = async (userId) => {
         try {
             await firebase
@@ -112,10 +112,13 @@ export default class EditProfile extends Component {
                     selectedAge: value[0].age,
                     selectedHeight: value[0].height,
                     selectedWeight: value[0].weight,
-                    selectedDictrict: value[0].city,
+                    selectedCity: value[0].city,
+                    selectedDictrict: value[0].dictrict,
                     Email: value[0].email,
                     Quote: value[0].quote,
+                    Avatar: value[0].avatarUrl
                 })
+                // debugger
                 // let keys = Object.keys(snapshot.val());
                 // this.Global.currentUserId = keys[0];
                 // let email = value[0].email;
@@ -143,20 +146,20 @@ export default class EditProfile extends Component {
                 'avatarUrl': imgUrl,
                 'age': this.state.selectedAge,
                 'name': this.state.Name,
-                'height': this.state.Height,
-                'weight': this.state.Weight,
+                'height': this.state.selectedHeight,
+                'weight': this.state.selectedWeight,
                 'city': this.state.selectedCity,
                 'dictrict': this.state.selectedDictrict,
                 'email': this.state.Email,
-                'quote': this.state.Quote
+                'quote': this.state.Quote,
             })
 
             :   
             await firebase.database().ref('users').child(this.Global.currentUserId).update({
                 'age': this.state.selectedAge,
                 'name': this.state.Name,
-                'height': this.state.Height,
-                'weight': this.state.Weight,
+                'height': this.state.selectedHeight,
+                'weight': this.state.selectedWeight,
                 'city': this.state.selectedCity,
                 'dictrict': this.state.selectedDictrict,
                 'email': this.state.Email,
@@ -195,6 +198,7 @@ export default class EditProfile extends Component {
             selectedDictrict: "Dictrict 1",
             tags: ["dog", "guitar", "dance", "swimming", "readbook"],
             text: "",
+            Avatar: null,
             avatarSource: null,
             animating: false
         };
@@ -269,7 +273,7 @@ export default class EditProfile extends Component {
           >
                 <View style={styles.containerInfo}>
                     {/* <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} /> */}
-                    <Image style={styles.avatar} source={this.state.avatarSource ? this.state.avatarSource : require("./img/avatar-non.png")} />
+                    <Image style={styles.avatar} source={this.state.Avatar ? {uri: this.state.Avatar}: (this.state.avatarSource ? this.state.avatarSource : require("./img/avatar-non.png")) } />
                     {/* {this.state.image ? this.renderImage(this.state.image) : <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />} */}
                     <TouchableOpacity style={styles.viewAvatar}
                         // Edit Avatar
