@@ -40,63 +40,12 @@ import Global from "./models/global";
 import { _ } from "react-native-mobx/node_modules/mobx";
 import { async } from "@firebase/util";
 
+import citys from './data/citys'
+import dictricts from './data/dictricts'
 const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
 const data = require("./data/api.json");
-const citys = [
-  "Ha Noi",
-  "Quang Ngai",
-  "Quang Nam",
-  "Hai Phong",
-  "Can Tho",
-  "Da Nang",
-  "Lao Cai",
-  "Lang Son",
-  "Kien Giang",
-  "Tien Giang",
-  "Ho Chi Minh City",
-  "Long An",
-  "Dong Nai",
-  "Vung Tau",
-  "Hue",
-  "Phu Yen",
-  "Gia Lai",
-  "Daklak",
-  "Lam Dong",
-  "Quang Binh",
-  "Quang Tri",
-  "Binh Dinh",
-  "Binh Thuan",
-  "Tay Ninh",
-  "Binh Duong"
-];
-const dictricts = [
-  "Dictrict 1",
-  "Dictrict 2",
-  "Dictrict 3",
-  "Dictrict 4",
-  "Dictrict 5",
-  "Dictrict 6",
-  "Dictrict 7",
-  "Dictrict 8",
-  "Dictrict 9",
-  "Dictrict 10",
-  "Dictrict 11",
-  "Dictrict 12",
-  "Thu Duc Dictrict",
-  "Tan Binh Dictrict",
-  "Tan Phu Dictrict",
-  "Phu Nhuan Dictrict",
-  "Binh Thanh Dictrict",
-  "Binh Chanh Dictrict",
-  "Nha Be Dictrict",
-  "Can Gio Dictrict",
-  "Cu Chi Dictrict",
-  "37",
-  "38",
-  "39",
-  "40"
-];
+
 const inputProps = {
   keyboardType: "default",
   placeholder: "hobby",
