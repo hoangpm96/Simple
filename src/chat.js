@@ -22,8 +22,9 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
-import firebase from "firebase";
 const { width, height } = Dimensions.get("window");
+import firebase from "firebase";
+import { async } from "@firebase/util";
 @autobind
 @observer
 export default class Chat extends Component {
@@ -71,17 +72,17 @@ export default class Chat extends Component {
             .equalTo(id)
             .once("value", snapshot => {
               if (snapshot.val()) {
-              let value = Object.values(snapshot.val());
-              let tempObj = value[0]
-               let keys = Object.keys(snapshot.val());
-              tempObj.id = keys[0];
-               tempUsers.push(tempObj);
+                let value = Object.values(snapshot.val());
+                let tempObj = value[0];
+                let keys = Object.keys(snapshot.val());
+                tempObj.id = keys[0];
+                tempUsers.push(tempObj);
               }
             });
         })
       ).then(data => {
         let userData = this.createDataList(tempUsers);
-        
+
         this.setState({ listViewData: userData });
       });
 
@@ -116,6 +117,58 @@ export default class Chat extends Component {
     });
   }
 
+  checkConversation = async () => {
+    let self = this;
+    var isCreating = true; 
+    
+    await firebase
+      .database()
+      .ref("users/" + this.Global.currentUserId + "/conversations")
+      .child(this.Global.selectedChatUser.id)
+      .once("value", snapshot => {
+        const userData = snapshot.val();
+        if (userData) {
+          
+          console.log(userData.conversationId);
+          self.Global.selectedConversation = userData.conversationId;
+          isCreating = false;
+        } else {
+          self.createConversation();
+          isCreating = true;
+        }
+      });
+
+      if (!isCreating) {
+          Actions.messager();
+      }
+
+
+  };
+  createConversation = async () => {
+     
+      let conver = await firebase
+      .database()
+      .ref("conversations")
+      .push({
+        members: {
+          [this.Global.currentUserId]: true,
+          [this.Global.selectedChatUser.id]: true
+        }
+      });
+
+    await firebase
+      .database()
+      .ref("users")
+      .child(this.Global.currentUserId)
+      .child("conversations")
+      .child(this.Global.selectedChatUser.id)
+      .set({
+        conversationId: conver.key
+      });
+  
+      this.Global.selectedConversation = conver.key
+      Actions.messager();
+  }
   // componentDidMount() {
   //   this.setState({
   //     listViewData: this.state.listViewData
@@ -133,14 +186,21 @@ export default class Chat extends Component {
         style={styles.viewContainer}
         onPress={() => {
           console.log(rowData);
-          
+
           this.Global.selectedChatUser = rowData;
           this.Global.isFooter = false;
           this.Global.pressStatus = "chat";
-          Actions.messager();
+          this.checkConversation();
+
+          // create conversation here
+
+        
         }}
       >
-        <Image style={styles.avatar_image} source={{ uri: rowData.avatarUrl }} />
+        <Image
+          style={styles.avatar_image}
+          source={{ uri: rowData.avatarUrl }}
+        />
         <View style={styles.viewInformation}>
           <View
             style={[styles.informationTextContain, { flexDirection: "row" }]}

@@ -128,7 +128,7 @@ export default class EditProfile extends Component {
                 this.showError("User had been delete.");
                 return;
               }
-              debugger
+              
               console.log(snapshot.val());
             });
         }

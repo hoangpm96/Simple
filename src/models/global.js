@@ -15,10 +15,10 @@ class Global {
   }
 
   @observable currentUserId = "";
-
+  @observable currentUsername = "";
   // For Chat
-
   @observable selectedChatUser = {};
+  @observable selectedConversation = "";
 
   // For registerInfo.js
   @observable registerAge = 1;
@@ -29,7 +29,7 @@ class Global {
   //
 
   @observable myCart = [];
-  @observable pressStatus = "";  
+  @observable pressStatus = "";
 
   @observable
   activityIndicator = {

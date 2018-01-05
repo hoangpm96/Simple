@@ -34,7 +34,7 @@ export default class Login extends Component {
     this.state = {
       userName: "Khoa",
       pass: "123456",
-      isChecked: false,
+      isChecked: false, 
       animating: false
     };
   }
@@ -53,6 +53,7 @@ export default class Login extends Component {
             let value = Object.values(snapshot.val());
             let keys = Object.keys(snapshot.val());
             this.Global.currentUserId = keys[0];
+            this.Global.currentUsername = value[0].username;
             let email = value[0].email;
             //verify password
             this.login(email, password);
