@@ -129,14 +129,6 @@ export default class Example extends React.Component {
       message.createdAt = ele.createdAt;
       // Không phải tin của user hiện tại
       const userId = ele.senderId == this.Global.currentUserId ? 1 : 2;
-      // const userId = 1
-      // let userId = 1;
-      // if ( ele.senderId === this.Global.currentUserId )  {
-      //   userId = 1;
-      // }else {
-      //   userId = 2;
-      // }
-      
       message.user = {
         _id: userId,
         name: ele.username

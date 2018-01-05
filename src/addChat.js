@@ -33,6 +33,7 @@ export default class AddChat extends Component {
       this.Global = this.props.Global;
       this.pressStatus = this.props.pressStatus;
       const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+      // this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.state = {
         dataSource: ds.cloneWithRows(data),
         refreshing: false
@@ -88,6 +89,13 @@ export default class AddChat extends Component {
           </TouchableOpacity>
       )
     }
+
+    onSearchTextChange = (username) => {
+        var arr = [];
+        arr = this.state.dataSource.filter( m => m.name == username );
+        this.setState( {dataSource: arr } );
+    }
+
     render() {
   
       return (
@@ -106,9 +114,7 @@ export default class AddChat extends Component {
             <View style={styles.containerUserName}>
               <Icon name="search" color='#ffffff' size={22} style={{ marginLeft: 10 }} />
               <TextInput placeholder={'Search friend on your wish lish'} style={styles.styleUserName}
-                onChangeText={username => {
-                  this.setState({ userName: username });
-                }}
+                onChangeText={this.onSearchTextChange}
                 placeholderTextColor={'#ffffff'}
                 value={this.state.userName}
               />

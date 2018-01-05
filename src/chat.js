@@ -25,6 +25,7 @@ import { observer } from "mobx-react/native";
 const { width, height } = Dimensions.get("window");
 import firebase from "firebase";
 import { async } from "@firebase/util";
+var _ = require('lodash');
 @autobind
 @observer
 export default class Chat extends Component {
@@ -36,7 +37,10 @@ export default class Chat extends Component {
     this.state = {
       refreshing: false,
       listViewData: [],
-      isSwipe: false
+      isSwipe: false,
+      username: "",
+      saveResult: []
+
     };
 
     this._renderRow = this._renderRow.bind(this);
@@ -84,6 +88,7 @@ export default class Chat extends Component {
         let userData = this.createDataList(tempUsers);
 
         this.setState({ listViewData: userData });
+        this.setState({ saveResult: userData});
       });
 
       // this.showScaleAnimationDialog();
@@ -178,11 +183,20 @@ export default class Chat extends Component {
       this.Global.selectedConversation = conver.key
       Actions.messager();
   }
-  // componentDidMount() {
-  //   this.setState({
-  //     listViewData: this.state.listViewData
-  //   });
-  // }
+  onSearchTextChange = (name) => {
+
+        if (name == "") {
+          this.setState({ listViewData: this.state.saveResult });          
+        }else {
+          var arr = this.state.listViewData.filter(m =>
+            m.username.toLowerCase().includes(name.toLowerCase())
+          );
+          // debugger;
+          this.setState({ listViewData: arr });
+        }        
+        
+       
+    }
   deleteRow(secId, rowId, rowMap) {
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
@@ -235,44 +249,28 @@ export default class Chat extends Component {
     );
   }
   render() {
-    return (
-      <View style={styles.background}>
+    return <View style={styles.background}>
         <Animated.View style={styles.headerContainer}>
           <Text style={styles.headerText}>CHAT</Text>
         </Animated.View>
-        <SwipeListView
-          contentContainerStyle={styles.loveContainer}
-          dataSource={this.ds.cloneWithRows(this.state.listViewData)}
-          renderRow={this._renderRow}
-          renderHiddenRow={(data, secId, rowId, rowMap) => (
-            <TouchableOpacity
-              style={[styles.backRightBtnRight]}
-              onPress={_ => this.deleteRow(secId, rowId, rowMap)}
-            >
+        <View style={styles.loveContainer}>
+          <Icon name="search" color="#ffffff" size={22} style={{ marginLeft: 10 }} />
+          <TextInput placeholder={"Search by username"} style={styles.styleUserName} onChangeText={username => {
+              this.setState({ username });
+              this.onSearchTextChange(username);
+            }} placeholderTextColor={"#ffffff"} value={this.state.username} />
+        </View>
+        <SwipeListView contentContainerStyle={styles.loveContainer} dataSource={this.ds.cloneWithRows(this.state.listViewData)} renderRow={this._renderRow} renderHiddenRow={(data, secId, rowId, rowMap) => <TouchableOpacity style={[styles.backRightBtnRight]} onPress={_ => this.deleteRow(secId, rowId, rowMap)}>
               <Icon name="trash" color="#F15F66" size={32} />
-            </TouchableOpacity>
-          )}
-          rightOpenValue={-75}
-          disableRightSwipe={true}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this._onReLoad.bind(this)}
-            />
-          }
-        />
-        <TouchableOpacity
-          onPress={() => {
+            </TouchableOpacity>} rightOpenValue={-75} disableRightSwipe={true} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onReLoad.bind(this)} />} />
+        <TouchableOpacity onPress={() => {
             this.Global.isFooter = false;
             this.Global.pressStatus = "search";
             Actions.addchat();
-          }}
-          style={styles.containterAdd}
-        >
+          }} style={styles.containterAdd}>
           <Icon name="search" color="#ffffff" size={23} />
         </TouchableOpacity>
-      </View>
-    );
+      </View>;
   }
 }
 
@@ -370,4 +368,13 @@ const styles = StyleSheet.create({
     height: 54,
     alignSelf: 'flex-end'
   },
+  styleUserName: {
+      marginLeft: 10,
+      marginRight: 10,
+      marginTop: 3,
+      borderColor: 'transparent',
+      fontSize: 14,
+      color: '#ffffff',
+      width: width - 130,
+    }
 });
