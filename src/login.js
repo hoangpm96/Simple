@@ -34,7 +34,7 @@ export default class Login extends Component {
     this.state = {
       userName: "Hoang01",
       pass: "123456",
-      isChecked: false,
+      isChecked: false, 
       animating: false
     };
   }
@@ -48,11 +48,12 @@ export default class Login extends Component {
         .ref("users")
         .orderByChild("username")
         .equalTo(username)
-        .on("value", snapshot => {
+        .once("value", snapshot => {
           if (snapshot.val()) {
             let value = Object.values(snapshot.val());
             let keys = Object.keys(snapshot.val());
             this.Global.currentUserId = keys[0];
+            this.Global.currentUsername = value[0].username;
             let email = value[0].email;
             this.Global.currentUser = snapshot.val()
             //verify password
@@ -72,7 +73,7 @@ export default class Login extends Component {
       this.Global.isFooter = true;
       // console.log(user);
       // console.log(this.Global.currentUserId);
-      this.Global.pressStatus = "love";
+      // this.Global.pressStatus = "love";
       this.Global.firstLogin = true;
       Actions.love();
       })

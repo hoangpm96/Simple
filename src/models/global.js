@@ -16,6 +16,10 @@ class Global {
 
   @observable currentUserId = "";
   @observable currentUser = "";
+  @observable currentUsername = "";
+  // For Chat
+  @observable selectedChatUser = {};
+  @observable selectedConversation = "";
   // For registerInfo.js
   @observable registerAge = 1;
   @observable registerTags = [];

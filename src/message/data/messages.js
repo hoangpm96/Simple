@@ -4,7 +4,7 @@ module.exports = [
       text: "I'm single",
       createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
       user: {
-        _id: 1,
+        _id: 1, // là bên phải, của mình 
         name: 'Developer',
       },
       sent: true,
@@ -19,7 +19,7 @@ module.exports = [
       text: 'Did you have girlfriend?',
       createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
       user: {
-        _id: 2,
+        _id: 2, // của người ta
         name: 'React Native',
       },
     },

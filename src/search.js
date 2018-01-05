@@ -191,7 +191,7 @@ export default class SearchFriend extends Component {
         .ref("users")
         .orderByKey()
         .equalTo(id)
-        .on("value", snapshot => {
+        .once("value", snapshot => {
           if (snapshot.val()) {
             let value = Object.values(snapshot.val());
             let email = value[0].email;
