@@ -57,7 +57,7 @@ export default class DeleteAccount extends Component {
         .ref("users")
         .orderByKey()
         .equalTo(userId)
-        .on("value", snapshot => {
+        .once("value", snapshot => {
           if (snapshot.val()) {
             let value = Object.values(snapshot.val());
             this.setState({
@@ -127,7 +127,7 @@ verrifyEmailPasswordCorrect = async (email, password) => {
       this.setState({
           animating: true
       })
-      //delete user from authentication -> done
+      
       console.log(firebase.auth().currentUser)
       await 
         // User deleted.
@@ -190,7 +190,8 @@ verrifyEmailPasswordCorrect = async (email, password) => {
                 //xóa id user hiện tại từ wishlist của các user đã có 
                 // delete from wishlist
                 //
-      await 
+      //delete user from authentication -> done
+                await 
                 firebase.auth().currentUser.delete().then(() => {
         Actions.login();
       }).catch((error) =>

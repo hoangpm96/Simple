@@ -56,7 +56,7 @@ export default class ChangePassword extends Component {
       .ref("users")
       .orderByKey()
       .equalTo(userId)
-      .on("value", snapshot => {
+      .once("value", snapshot => {
         if (snapshot.val()) {
           let value = Object.values(snapshot.val());
           this.setState({

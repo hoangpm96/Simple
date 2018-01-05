@@ -62,6 +62,9 @@ export default class Login extends Component {
             this.showError("Please enter the correct user name!");
             return;
           }
+        }).catch((error)=>{
+          this.setState({ animating: false });
+        Alert.alert(this.Global.APP_NAME, "Please enter the correct user name!");
         });
     } catch (error) {
       this.showError(error);
