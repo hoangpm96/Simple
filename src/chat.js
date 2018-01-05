@@ -22,13 +22,11 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
+import firebase from "firebase";
 const { width, height } = Dimensions.get("window");
-const data = require('./data/api.json');
-
 @autobind
 @observer
 export default class Chat extends Component {
-
   constructor(props) {
     super(props);
     this.Global = this.props.Global;
@@ -36,13 +34,80 @@ export default class Chat extends Component {
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       refreshing: false,
-      listViewData: data,
+      listViewData: [],
       isSwipe: false
     };
 
     this._renderRow = this._renderRow.bind(this);
   }
 
+  async componentWillMount() {
+    var tempArr = [];
+    try {
+      await firebase
+        .database()
+        .ref("wishList")
+        .child(this.Global.currentUserId)
+        .once("value", function(snapshots) {
+          snapshots.forEach(function(data) {
+            tempArr.push(data.key);
+          });
+        });
+
+      this.loadWishListUser(tempArr);
+    } catch (error) {}
+  }
+
+  loadWishListUser = async userIds => {
+    var tempUsers = [];
+
+    try {
+      await Promise.all(
+        userIds.map(async id => {
+          await firebase
+            .database()
+            .ref("users")
+            .orderByKey()
+            .equalTo(id)
+            .once("value", snapshot => {
+              if (snapshot.val()) {
+              let value = Object.values(snapshot.val());
+              let tempObj = value[0]
+               let keys = Object.keys(snapshot.val());
+              tempObj.id = keys[0];
+               tempUsers.push(tempObj);
+              }
+            });
+        })
+      ).then(data => {
+        let userData = this.createDataList(tempUsers);
+        
+        this.setState({ listViewData: userData });
+      });
+
+      // this.showScaleAnimationDialog();
+    } catch (error) {
+      // this.showError(error);
+    }
+  };
+
+  // rawData là data từ firebase -> Chuyển thành mảng dùng được
+  createDataList = rawData => {
+    // TODO: Thêm các thômg tin cần thiết nếu cần
+    var arr = [];
+    for (let ele of rawData) {
+      ele.name = ele.username;
+      ele.chat = "chat message here";
+      ele.lastActive = "69s ago";
+      arr.push(ele);
+    }
+    return arr;
+  };
+  componentDidMount() {
+    this.setState({
+      listViewData: this.state.listViewData
+    });
+  }
   _onReLoad() {
     this.setState({ refreshing: true });
     this.setState({
@@ -51,12 +116,11 @@ export default class Chat extends Component {
     });
   }
 
-  componentDidMount() {
-    this.setState({
-      listViewData: this.state.listViewData,
-    });
-
-  }
+  // componentDidMount() {
+  //   this.setState({
+  //     listViewData: this.state.listViewData
+  //   });
+  // }
   deleteRow(secId, rowId, rowMap) {
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
@@ -65,51 +129,67 @@ export default class Chat extends Component {
   }
   _renderRow(rowData) {
     return (
-        <TouchableOpacity style={styles.viewContainer} 
-                    onPress={() => {
-                      this.Global.isFooter = false;
-                      this.Global.pressStatus = "chat";
-                      Actions.messager();
-                    }}
-        >
-          <Image
-            style={styles.avatar_image}
-            source={{ uri: rowData.image }}
-          />
-          <View style={styles.viewInformation}>
-              <View style={[styles.informationTextContain,{flexDirection: 'row'}]}>
-              <Text style={{fontSize: 20, color: 'green'}}>*</Text>
-                <Text numberOfLines={1} style={[styles.informationStyle, {fontSize: 16}]}  >  {rowData.name}, {rowData.age}</Text>
-              </View>
-                <Text numberOfLines={1} style={[styles.informationStyle, {marginTop: 2, marginRight: 5}]}  >{rowData.chat}</Text>
-          <Text style={styles.styleTextTime}> 1 min ago</Text>
+      <TouchableOpacity
+        style={styles.viewContainer}
+        onPress={() => {
+          console.log(rowData);
+          
+          this.Global.selectedChatUser = rowData;
+          this.Global.isFooter = false;
+          this.Global.pressStatus = "chat";
+          Actions.messager();
+        }}
+      >
+        <Image style={styles.avatar_image} source={{ uri: rowData.avatarUrl }} />
+        <View style={styles.viewInformation}>
+          <View
+            style={[styles.informationTextContain, { flexDirection: "row" }]}
+          >
+            <Text style={{ fontSize: 20, color: "green" }}>*</Text>
+            <Text
+              numberOfLines={1}
+              style={[styles.informationStyle, { fontSize: 16 }]}
+            >
+              {" "}
+              {rowData.name}, {rowData.age}
+            </Text>
           </View>
-        </TouchableOpacity >
-    )
+          <Text
+            numberOfLines={1}
+            style={[styles.informationStyle, { marginTop: 2, marginRight: 5 }]}
+          >
+            {rowData.chat}
+          </Text>
+          <Text style={styles.styleTextTime}> {rowData.lastActive}</Text>
+        </View>
+      </TouchableOpacity>
+    );
   }
   render() {
-
     return (
       <View style={styles.background}>
         <Animated.View style={styles.headerContainer}>
-        <Text style={styles.headerText}>
-          CHAT
-      </Text>
-  </Animated.View>
-                <SwipeListView contentContainerStyle={styles.loveContainer}
+          <Text style={styles.headerText}>CHAT</Text>
+        </Animated.View>
+        <SwipeListView
+          contentContainerStyle={styles.loveContainer}
           dataSource={this.ds.cloneWithRows(this.state.listViewData)}
           renderRow={this._renderRow}
           renderHiddenRow={(data, secId, rowId, rowMap) => (
-            <TouchableOpacity style={[styles.backRightBtnRight]} onPress={_ => this.deleteRow(secId, rowId, rowMap)}>
-            <Icon name="trash" color='#F15F66' size={32} />
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.backRightBtnRight]}
+              onPress={_ => this.deleteRow(secId, rowId, rowMap)}
+            >
+              <Icon name="trash" color="#F15F66" size={32} />
+            </TouchableOpacity>
           )}
           rightOpenValue={-75}
           disableRightSwipe={true}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
-              onRefresh={this._onReLoad.bind(this)} />
+              onRefresh={this._onReLoad.bind(this)}
+            />
           }
         />
         <TouchableOpacity
@@ -120,7 +200,7 @@ export default class Chat extends Component {
           }}
           style={styles.containterAdd}
         >
-          <Icon name="search" color='#ffffff' size={23} />
+          <Icon name="search" color="#ffffff" size={23} />
         </TouchableOpacity>
       </View>
     );

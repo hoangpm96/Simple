@@ -209,49 +209,35 @@ export default class Example extends React.Component {
   }
 
   render() {
-    return (
-      <View style={styles.background}>
-          <Animated.View style={styles.headerContainer}>
-          <TouchableOpacity
-            onPress={() => {
+    return <View style={styles.background}>
+        <Animated.View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => {
               Actions.chat();
               this.Global.isFooter = true;
               this.Global.pressStatus = "chat";
-            }}
-            style={styles.backbutton}
-          >
-            <Icon name="chevron-left" color='#ffffff' size={22} />
+            }} style={styles.backbutton}>
+            <Icon name="chevron-left" color="#ffffff" size={22} />
           </TouchableOpacity>
-            <View style={styles.containerUserName}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: 'green', fontSize: 30, marginTop: 10 }}>*</Text>
-                <Text style={{ color: '#ffffff', fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>
-                  Huong Giang Ido, 19
+          <View style={styles.containerUserName}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={{ color: "green", fontSize: 30, marginTop: 10 }}>
+                *
               </Text>
-              </View>
-              <Text style={{ fontSize: 13, color: '#ffffff', marginLeft: 10 }}>Lass access</Text>
+              <Text style={{ color: "#ffffff", fontSize: 20, fontWeight: "bold", marginLeft: 10 }}>
+                {this.Global.selectedChatUser.username} , {this.Global.selectedChatUser.age}
+              </Text>
             </View>
+            <Text
+              style={{ fontSize: 13, color: "#ffffff", marginLeft: 10 }}
+            >
+              Lass access
+            </Text>
+          </View>
         </Animated.View>
 
-      <GiftedChat
-        messages={this.state.messages}
-        onSend={this.onSend}
-        loadEarlier={this.state.loadEarlier}
-        onLoadEarlier={this.onLoadEarlier}
-        isLoadingEarlier={this.state.isLoadingEarlier}
-
-        user={{
-          _id: 1, // sent messages should have same user._id
-        }}
-
-        renderActions={this.renderCustomActions}
-        renderBubble={this.renderBubble}
-        renderSystemMessage={this.renderSystemMessage}
-        renderCustomView={this.renderCustomView}
-        renderFooter={this.renderFooter}
-      />
-    </View>
-    );
+        <GiftedChat messages={this.state.messages} onSend={this.onSend} loadEarlier={this.state.loadEarlier} onLoadEarlier={this.onLoadEarlier} isLoadingEarlier={this.state.isLoadingEarlier} user={{ _id: 1 } // sent messages should have same user._id
+          } renderActions={this.renderCustomActions} renderBubble={this.renderBubble} renderSystemMessage={this.renderSystemMessage} renderCustomView={this.renderCustomView} renderFooter={this.renderFooter} />
+      </View>;
   }
 }
 
