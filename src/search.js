@@ -157,8 +157,7 @@ export default class SearchFriend extends Component {
           this.setState(prevState => ({
             userIds: tempArr
           }));
-
-
+          
           //TODO: Check gender
           
           //TODO: Check với ignore list Id
@@ -203,8 +202,7 @@ export default class SearchFriend extends Component {
             });
           }
         });
-      // tăng +1 để load user khác 
-      this.setState({ currentIndex: this.state.currentIndex + 1 });
+      
       this.showScaleAnimationDialog();
     } catch (error) {
       this.showError(error);
@@ -245,14 +243,15 @@ export default class SearchFriend extends Component {
     var { userIds, currentIndex } = this.state;
     const otherUserId = userIds[currentIndex];
     
-    if (currentIndex >= userIds.length) {
-      this.showError(this.Global.errorMessage.noMatch);
-      return;
-    }
-
+   
     // debugger;
     // add to ignore list -> don't this people show next time
     if (ignore) {
+
+        if (currentIndex >= userIds.length) {
+          this.showError(this.Global.errorMessage.noMatch);
+          return;
+        }
       await firebase
         .database()
         .ref("ignores")
@@ -263,14 +262,23 @@ export default class SearchFriend extends Component {
       this.autoLoadNew();
     } else {
       // add to wish list
+       if (currentIndex >= userIds.length) {
+         this.showError(this.Global.errorMessage.noMatch);
+         return;
+       }
       await firebase
         .database()
         .ref("wishList")
         .child(this.Global.currentUserId)
         .child(otherUserId)
         .set(true);
+
+
+        
+
         this.autoLoadNew();
     }
+    
   };
 
   autoLoadNew = () => {
@@ -278,6 +286,8 @@ export default class SearchFriend extends Component {
      const otherUserId = userIds[currentIndex];
     if (currentIndex < userIds.length) {
       this.loadUserFrom(otherUserId);
+      // tăng +1 để load user khác 
+      this.setState({ currentIndex: this.state.currentIndex + 1 });
     } else {
       this.showError(this.Global.errorMessage.noMatch);
     }
