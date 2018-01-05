@@ -100,21 +100,19 @@ window.Blob = Blob
 
 export default class EditProfile extends Component {
     componentWillMount() {
-        this.setState({
-            animating: true
-        })
+
         this.getInforUser(this.Global.currentUserId);
         this.createSelect();
     }
     createSelect() {
         for (i = MIN_HEIGHT; i <= MAX_HEIGHT; i++ ){
-            heights.push(i);
+            heights.push(i.toString());
         }
         for (i = MIN_AGE; i <= MAX_AGE; i++ ){
-            ages.push(i);
+            ages.push(i.toString());
         }
         for (i = MIN_WEIGHT; i <= MAX_WEIGHT; i++ ){
-            weights.push(i);
+            weights.push(i.toString());
         }
         for (var city of addressData) {
             citys.push(city.name)
@@ -135,6 +133,9 @@ export default class EditProfile extends Component {
     // getHobbies = async (userID)  
     getInforUser = async (userId) => {
         try {
+            this.setState({
+                animating: true
+            })
             await firebase
             .database()
             .ref("users")
@@ -147,15 +148,21 @@ export default class EditProfile extends Component {
                 this.setState({
                     userName: value[0].username,
                     Name: value[0].name,
-                    selectedAge: value[0].age,
-                    selectedHeight: value[0].height,
-                    selectedWeight: value[0].weight,
+                    selectedAge: (value[0].age).toString(),
+                    selectedHeight: (value[0].height).toString(),
+                    selectedWeight: (value[0].weight).toString(),
                     selectedCity: value[0].city,
                     selectedDistrict: value[0].district,
                     Email: value[0].email,
                     Quote: value[0].quote,
                     Avatar: value[0].avatarUrl,
                 })
+                this.state.selectedHeight === null ? this.setState({
+                    selectedHeight: 'Select Height'
+                }) : null
+                this.state.selectedWeight === null ? this.setState({
+                    selectedWeight: 'Select Weight'
+                }) : null
                 debugger
                 let array = []
                 for (var tag in value[0].tags) {
@@ -168,8 +175,11 @@ export default class EditProfile extends Component {
                 // let email = value[0].email;
                 //verify password
                 // this.login(email, password);
+                this.setState({
+                    animating: false
+                })
               } else {
-                this.showError("User had been delete.");
+                Alert.alert(this.Global.APP_NAME, "User had been delete.");
                 return;
               }
               debugger
@@ -186,6 +196,11 @@ export default class EditProfile extends Component {
         var imgUrl = this.state.avatarSource ? await uploadImage(this.state.avatarSource, this.Global.currentUserId, 'images/'): null;
         try {
             // this.state.avatarSource ? 
+            this.setState(
+                {
+                    animating: true
+                }
+            )
             await firebase.database().ref('users').child(this.Global.currentUserId).update({
                 'avatarUrl': imgUrl ? imgUrl : this.state.Avatar,
                 'age': this.state.selectedAge,
@@ -206,6 +221,11 @@ export default class EditProfile extends Component {
                 .database()
                 .ref("users").child(this.Global.currentUserId).child('tags').child(tag).set(true);
               }
+              this.setState(
+                {
+                    animating: false
+                }
+            )
             this.Global.isFooter = true;
             Actions.profile();
         }
@@ -600,11 +620,7 @@ export default class EditProfile extends Component {
                         // this.getInforUser(this.Global.currentUserId);
                         // console.log(this.Global.currentUserId);
                         // debugger
-                        this.setState(
-                            {
-                                animating: true
-                            }
-                        )
+
                         this.uploadInfoUser();
                     }}
                 >

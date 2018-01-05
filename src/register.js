@@ -55,7 +55,14 @@ export default class Register extends Component {
           created_at: creationTime,
           username: username,
           gender: this.Global.registerIsMale ? "male" : "female",
-          age: this.Global.registerAge
+          age: this.Global.registerAge,
+          avatarUrl: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/images%2F1515073661299.jpg?alt=media&token=3d228562-1490-4059-9767-14c690a1f6d7",
+          height: "Select Height",
+          weight: "Select Weight",
+          quote: "Dating is simpler",
+          name: username,
+          city: "Select City",
+          district: "Select District"
         });
     
 
@@ -63,8 +70,11 @@ export default class Register extends Component {
         await firebase
         .database()
         .ref("tags").child(tag).child(userResult.key).set(true);
+        await firebase
+                .database()
+                .ref("users").child(userResult.key).child('tags').child(tag).set(true);
       }
-
+      this.Global.currentUserId = userResult.key;
       this.setState({ animating: false });
       this.Global.isFooter = true;
       Actions.search();
