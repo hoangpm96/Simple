@@ -10,12 +10,18 @@ import {
     TouchableOpacity,
     TextInput,
     ImageBackground,
+    ActivityIndicator,
     Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { observer } from "mobx-react/native";
 import { autobind } from "core-decorators";
+
+import firebase from "firebase";
+import { async } from "@firebase/util";
 const { width, height } = Dimensions.get("window");
+import Global from "./models/global";
 
 @autobind
 @observer
@@ -26,38 +32,109 @@ export default class Forgot extends Component {
         logo = require('./img/logo.png');
         this.Global = this.props.Global;
         this.state = {
-
+            Email: "",
+            displayErrror: false,
+            errorText: null,
+            animating: false
         };
     }
+
+    verifyResetPassword = async (email) => {
+        try {
+            this.setState({
+                animating: true
+            })
+            await firebase
+            .database()
+            .ref("users")
+            .orderByChild("email")
+            .equalTo(email)
+            .once("value", snapshot => {
+              if (snapshot.val() !== null) {
+                // ton tai email thi send
+                firebase.auth().sendPasswordResetEmail(email).then(() => {
+                    // Email sent.
+                    this.setState({
+                        displayErrror: false
+                    })
+                    Alert.alert(
+                        this.Global.APP_NAME,
+                        "Email had been sent",
+                      );
+                      this.setState({
+                        animating: false
+                    })
+                      Actions.login();
+                  }).catch((error) => {
+                    // An error happened.
+
+                    this.setState({
+                        displayErrror: true,
+                        animating: false,
+                        errorText: error
+                    })
+                  });
+              } else {
+                this.setState({
+                    animating: false
+                })
+                Alert.alert(this.Global.APP_NAME, "Email doesn't exist!");
+                return;
+              }
+            });
+        }
+        catch (error) {
+            this.setState({
+                animating: false
+            })
+            Alert.alert(
+                this.Global.APP_NAME,
+                error,
+              );
+          }
+
+
+    } 
+
     render() {
         return (
             <ImageBackground source={background} style={styles.waperContainer} >
+                    <KeyboardAwareScrollView
+          resetScrollToCoords={{ x: 0, y: 0 }}
+          contentContainerStyle={styles.container}
+          scrollEnabled={false}
+        >
                     <Image source={logo} style={styles.logoStyle} />
                     <Text style={styles.textName}>FORGOT PASSWORD</Text>
                     <View style={styles.containerUserName}>
                         <Icon name="envelope" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
                         <TextInput placeholder={'Enter your email'} style={styles.styleUserName}
-                            onChangeText={username => {
-                                this.setState({ userName: username});
+                            onChangeText={email => {
+                                this.setState({ Email: email});
                             }}
                             placeholderTextColor={'#DDDDDD'}
-                            value={this.state.userName}
+                            value={this.state.Email}
                         />
                     </View>
-                    <Text style={styles.styleError}>
-                        User name was not registered
+                    {
+                        this.state.displayErrror ? 
+                        <Text style={styles.styleError}>
+                        {this.state.errorText}
                     </Text>
+                    : null
+                    }
                     <TouchableOpacity
                         onPress={() => {
-                            this.Global.isFooter = false;
-                            Alert.alert(
-                                'Success',
-                                'Your new password was sent',
-                                [
-                                    { text: 'LOGIN', onPress: () => Actions.login() },
-                                ],
-                                { cancelable: false }
-                            )
+                            if(this.state.Email === "")
+                            {
+                                Alert.alert(
+                                    this.Global.APP_NAME,
+                                    "Please enter your email.",
+                                  );
+                            }
+                            else {
+                            this.verifyResetPassword(this.state.Email)
+                            }
                         }}
                     >
                         <View style={styles.waperLogin}>
@@ -74,11 +151,31 @@ export default class Forgot extends Component {
                             <Text style={styles.textRegister}>LOGIN</Text>
                         </View>
                     </TouchableOpacity>
+                    <ActivityIndicator
+              animating={this.state.animating}
+              color="#fff"
+              size="large"
+              style={styles.activityIndicator}
+            />
+                      {
+            this.state.animating ?
+              <View style={styles.waiting}>
+
+              </View>
+              : null
+          }
+           </KeyboardAwareScrollView>
             </ImageBackground>
         );
     }
 }
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: width
+      },
     waperContainer: {
         flexDirection: 'column',
         alignContent: 'space-around',
@@ -170,7 +267,23 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#ffff',
         backgroundColor: 'transparent',
-    }
+    },
+    activityIndicator: {
+        position: 'absolute',
+        top: height/2,
+    left: width/2-20,
+    
+      },
+      waiting: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: width,
+        height: height,
+        backgroundColor: "rgba(0,0,0,0.5)"
+      }
 
 
 })

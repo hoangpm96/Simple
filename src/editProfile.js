@@ -338,7 +338,7 @@ export default class EditProfile extends Component {
             scrollEnabled={false}
           >
                 <View style={styles.containerInfo}>
-                    <Image style={styles.avatar} source={this.state.Avatar ? {uri: this.state.Avatar}: (this.state.avatarSource ? this.state.avatarSource : require("./img/avatar-non.png")) } />
+                    <Image style={styles.avatar} source={ this.state.avatarSource ? this.state.avatarSource : ( this.state.Avatar ? {uri: this.state.Avatar} : require("./img/avatar-non.png")) } />
                     <TouchableOpacity style={styles.viewAvatar}
                         onPress={this.selectPhotoTapped.bind(this)}
                     >
@@ -381,23 +381,6 @@ export default class EditProfile extends Component {
                 <ScrollView style={styles.containerEdit}>
                     <View style={styles.containerEmail}>
                         <Text style={[styles.text, { marginTop: 2, width: 80 }]}>Email: </Text>
-                        {/* <TextInput
-                            placeholder="Email..."
-                            placeholderTextColor="#fff"
-                            selectionColor="#fff"
-                            style={styles.inputEmail}
-                            keyboardType='default'
-                            autoCapitalize='words'
-                            textAlignVertical='center'
-                            keyboardAppearance='light'
-                            maxLength={60}
-                            maxHeight={width - 90}
-                            textAlign='left'
-                            onChangeText={Email => {
-                                this.setState({ Email: Email });
-                            }}
-                            value={this.state.Email}
-                        /> */}
                         <Text style={styles.inputEmail}>{this.state.Email}</Text>
                     </View>
                     <View style={styles.viewQuote}>
