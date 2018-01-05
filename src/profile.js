@@ -15,11 +15,13 @@ import {
   Switch,
   Button,
   TouchableHighlight,
+  ActivityIndicator,
   Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Modal from "react-native-modalbox";
 import firebase from "firebase";
+import { async } from "@firebase/util";
 const { width, height } = Dimensions.get("window");
 
 export default class Profile extends Component {
@@ -27,29 +29,63 @@ export default class Profile extends Component {
     super(props);
     this.Global = this.props.Global;
     this.state = {
-      userName: "HoangPhan",
       Name: "Minh Hoang",
-      Age: "21",
-      Height: "180",
-      Weight: "65",
-      Address: "Quang Ngai",
-      isPush: false
+      lover: 0,
+      loved: 0,
+      Avatar: "",
+      animating: false
     };
   }
+  componentWillMount() {
+    this.getInforUser(this.Global.currentUserId);
+  }
 
+  getInforUser = async (userId) => {
+    try {
+        this.setState({
+            animating: true
+        })
+        await firebase
+        .database()
+        .ref("users")
+        .orderByKey()
+        .equalTo(userId)
+        .on("value", snapshot => {
+          if (snapshot.val()) {
+            let value = Object.values(snapshot.val());
+            debugger
+            this.setState({
+                Name: value[0].name,
+                Avatar: value[0].avatarUrl,
+                lover: value[0].lover,
+                loved: value[0].loved
+            })
+            this.setState({
+                animating: false
+            })
+          } else {
+            Alert.alert(this.Global.APP_NAME, "User had been delete.");
+            return;
+          }
+        });
+    }
+    catch(error) {
+        this.setState({
+            animating: false
+        })
+    }
+}
   render() {
+
     return (
       <View style={styles.background}>
         <View style={styles.containerInfo}>
-          <Image
-            source={require("./img/hoangphan.jpg")}
-            style={styles.avatar}
-          />
-          <Text style={styles.textName}>Hoang Phan</Text>
+            <Image style={styles.avatar} source={this.state.Avatar ? {uri: this.state.Avatar}: require("./img/avatar-non.png") } />
+          <Text style={styles.textName}>{this.state.Name}</Text>
           <View style={styles.containerlover}>
-            <Text style={[styles.lover, { textAlign: 'right', marginRight: 5 }]}>13 lover</Text>
+            <Text style={[styles.lover, { textAlign: 'right', marginRight: 5 }]}>{this.state.lover} lover</Text>
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>|</Text>
-            <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5 }]}>13 loved</Text>
+            <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5 }]}>{this.state.loved} loved</Text>
           </View>
 
         </View>
@@ -131,6 +167,19 @@ export default class Profile extends Component {
         >
           <Icon name="edit" color='#F15F66' size={25} />
         </TouchableOpacity>
+        <ActivityIndicator
+              animating={this.state.animating}
+              color="#fff"
+              size="large"
+              style={styles.activityIndicator}
+            />
+                                  {
+            this.state.animating ?
+              <View style={styles.waiting}>
+
+              </View>
+              : null
+          }
       </View>
     );
   }
@@ -242,5 +291,21 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
+  },
+  activityIndicator: {
+    position: 'absolute',
+    top: height/2,
+    left: width/2-20,
+
+  },
+  waiting: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    width: width,
+    height: height,
+    backgroundColor: "rgba(0,0,0,0.5)"
   }
 })

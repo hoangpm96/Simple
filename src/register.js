@@ -62,7 +62,9 @@ export default class Register extends Component {
           quote: "Dating is simpler",
           name: username,
           city: "Select City",
-          district: "Select District"
+          district: "Select District",
+          lover: 0,
+          loved: 0
         });
     
 

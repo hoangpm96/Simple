@@ -155,6 +155,8 @@ export default class EditProfile extends Component {
                     Email: value[0].email,
                     Quote: value[0].quote,
                     Avatar: value[0].avatarUrl,
+                    lover: value[0].lover,
+                    loved: value[0].loved
                 })
                 this.state.selectedHeight === null ? this.setState({
                     selectedHeight: 'Select Height'
@@ -257,13 +259,14 @@ export default class EditProfile extends Component {
             Address: "",
             Email: "",
             Quote: "A woman gives and forgives, a man gets and forgets",
-            isPush: false,
             selected: 1,
             selectedAge: '21',
             selectedWeight: '45',
             selectedHeight: '150',
             selectedCity: "",
             selectedDistrict: "",
+            lover: 0,
+            loved: 0,
             tags: [],
             text: "",
             Avatar: null,
@@ -368,9 +371,9 @@ export default class EditProfile extends Component {
                         value={this.state.Name}
                     />
                     <View style={styles.containerlover}>
-                        <Text style={[styles.lover, { textAlign: 'right', marginRight: 5, marginTop: 5 }]}>13 lover</Text>
+                        <Text style={[styles.lover, { textAlign: 'right', marginRight: 5, marginTop: 5 }]}>{this.state.lover} lover</Text>
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff', marginTop: 5 }}>|</Text>
-                        <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5, marginTop: 5 }]}>13 loved</Text>
+                        <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5, marginTop: 5 }]}>{this.state.loved} loved</Text>
                     </View>
                     <TouchableOpacity
                         style={styles.backButton}
