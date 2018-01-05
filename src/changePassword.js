@@ -37,9 +37,9 @@ export default class ChangePassword extends Component {
       loved: 0,
       Avatar: "",
       Email: "",
-      oldPass: "123456",
-      pass: "1234567",
-      confirmPass: "1234567",
+      oldPass: "",
+      pass: "",
+      confirmPass: "",
       animating: false
     };
   }
