@@ -130,7 +130,6 @@ export default class EditProfile extends Component {
         districts.push(city.districts[district]);
     }
     }
-    // getHobbies = async (userID)  
     getInforUser = async (userId) => {
         try {
             this.setState({
@@ -168,13 +167,7 @@ export default class EditProfile extends Component {
                 for (var tag in value[0].tags) {
                         array.push(tag),
                     this.setState({tags:  array});
-                    console.log(this.state.tags)
                 }
-                // let keys = Object.keys(snapshot.val());
-                // this.Global.currentUserId = keys[0];
-                // let email = value[0].email;
-                //verify password
-                // this.login(email, password);
                 this.setState({
                     animating: false
                 })
@@ -192,6 +185,7 @@ export default class EditProfile extends Component {
             })
         }
     }
+
     uploadInfoUser = async () => {
         var imgUrl = this.state.avatarSource ? await uploadImage(this.state.avatarSource, this.Global.currentUserId, 'images/'): null;
         try {
@@ -212,11 +206,24 @@ export default class EditProfile extends Component {
                 'email': this.state.Email,
                 'quote': this.state.Quote,
             })
+            //remove tags from firebase ref users
             await firebase
                 .database()
                 .ref("users").child(this.Global.currentUserId).child('tags').remove();
-
+            
             for ( let tag of this.state.tags  ) {
+                //remove tags from firebase ref tags
+                await firebase
+                .database()
+                .ref("tags")
+                .child(tag)
+                .child(this.Global.currentUserId)
+                .remove()
+                // add new tags in tags firebase
+                await firebase
+                .database()
+                .ref("tags").child(tag).child(this.Global.currentUserId).set(true);
+                        // end add new tags
                 await firebase
                 .database()
                 .ref("users").child(this.Global.currentUserId).child('tags').child(tag).set(true);
