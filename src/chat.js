@@ -166,6 +166,15 @@ export default class Chat extends Component {
         conversationId: conver.key
       });
   
+    await firebase
+      .database()
+      .ref("users")
+      .child(this.Global.selectedChatUser.id)
+      .child("conversations")
+      .child(this.Global.currentUserId)
+      .set({
+        conversationId: conver.key
+      });
       this.Global.selectedConversation = conver.key
       Actions.messager();
   }
