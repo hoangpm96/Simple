@@ -53,7 +53,6 @@ export default class Profile extends Component {
         .on("value", snapshot => {
           if (snapshot.val()) {
             let value = Object.values(snapshot.val());
-            debugger
             this.setState({
                 Name: value[0].name,
                 Avatar: value[0].avatarUrl,

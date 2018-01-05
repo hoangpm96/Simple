@@ -15,12 +15,15 @@ import {
   Switch,
   Button,
   TouchableHighlight,
+  ActivityIndicator,
   Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Modal from "react-native-modalbox";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
+import firebase from "firebase";
 const { width, height } = Dimensions.get("window");
 @autobind
 @observer
@@ -29,40 +32,124 @@ export default class ChangePassword extends Component {
     super(props);
     this.Global = this.props.Global;
     this.state = {
-      userName: "Hoang Phan",
       Name: "Minh Hoang",
-      Age: "21",
-      Height: "180",
-      Weight: "65",
-      Address: "Quang Ngai",
-      Email: "hoangpm.qn96@gmail.com",
-      isPush: false
+      lover: 0,
+      loved: 0,
+      Avatar: "",
+      Email: "",
+      oldPass: "123456",
+      pass: "1234567",
+      confirmPass: "1234567",
+      animating: false
     };
   }
+  componentWillMount() {
+    this.getInforUser(this.Global.currentUserId);
+  }
+  getInforUser = async (userId) => {
+    try {
+      this.setState({
+          animating: true
+      })
+      await firebase
+      .database()
+      .ref("users")
+      .orderByKey()
+      .equalTo(userId)
+      .on("value", snapshot => {
+        if (snapshot.val()) {
+          let value = Object.values(snapshot.val());
+          this.setState({
+              Name: value[0].name,
+              Avatar: value[0].avatarUrl,
+              lover: value[0].lover,
+              loved: value[0].loved,
+              Email: value[0].email,
+          })
+          this.setState({
+              animating: false
+          })
+        } else {
+          Alert.alert(this.Global.APP_NAME, "User had been delete.");
+          return;
+        }
+      });
+  }
+  catch(error) {
+    console.log(error)
+      this.setState({
+          animating: false
+      })
+  }
+}
+  verifyCurrentPassword(currentPassword, newPassword) {
+    this.setState({
+      animating: true
+  })
+    try {
+      firebase.auth().currentUser
+      .reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(this.state.Email, currentPassword))
+      .then( () => {
+        firebase.auth().currentUser.updatePassword(newPassword).then(() => {
+          // Update successful.
+          this.setState({
+            animating: false
+        })
+          this.Global.isFooter = true;
+          Actions.pop()
+          this.Global.pressStatus = "profile";
+  
+        }).catch((error) => {
+          this.setState({
+            animating: false
+        })
+          const { code, message } = error;
+        Alert.alert(this.Global.APP_NAME, message);
+      });
+      })
+      .catch((error) =>
+      {
+        this.setState({
+          animating: false
+      })
+        const { code, message } = error;
+        Alert.alert(this.Global.APP_NAME, message);
+        
+      });
+    }
+    catch (error){
+      Alert.alert(this.Global.APP_NAME, error);
+      this.setState({
+        animating: false
+    })
+    }
+  }
+  showError = errMessage => {
+    this.setState({ animating: false });
+    Alert.alert(
+      this.Global.APP_NAME,
+      errMessage,
+      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      { cancelable: false }
+    );
+  };
   render() {
     return (
-      <View style={styles.background}>
+      <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={styles.background}
+      scrollEnabled={false}
+    >
+      
         <View style={styles.containerInfo}>
-          <Image
-            source={require("./img/hoangphan.jpg")}
-            style={styles.avatar}
-          />
-          <Text style={styles.textName}>Hoang Phan</Text>
+        <Image style={styles.avatar} source={this.state.Avatar ? {uri: this.state.Avatar}: require("./img/avatar-non.png") } />
+          <Text style={styles.textName}>{this.state.Name}</Text>
           <View style={styles.containerlover}>
-            <Text style={[styles.lover, { textAlign: 'right', marginRight: 5 }]}>13 lover</Text>
+            <Text style={[styles.lover, { textAlign: 'right', marginRight: 5 }]}>{this.state.lover} lover</Text>
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>|</Text>
-            <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5 }]}>13 loved</Text>
+            <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5 }]}>{this.state.loved} loved</Text>
           </View>
-          <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => {
-                            this.Global.isFooter = true;
-                            Actions.pop();
-                            this.Global.pressStatus = "profile";
-                        }}
-                    >
-                        <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
-                    </TouchableOpacity>
+
         </View>
 
 
@@ -70,13 +157,7 @@ export default class ChangePassword extends Component {
           marginTop: height < 812 ? (height < 736 ? (height < 667 ? 35 : 40) : 55) : 75,
         }]}>
           <Icon name="envelope" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-          <TextInput placeholder={'Your email'} style={styles.styleUserName}
-            onChangeText={Email => {
-              this.setState({ Email: Email });
-            }}
-            placeholderTextColor={'#DDDDDD'}
-            value={this.state.Email}
-          />
+          <Text style={styles.styleUserName} >{this.state.Email}</Text>
         </View>
         <View style={styles.containerForm}>
           <Icon name="unlock-alt" color='#DDDDDD' size={24} style={{ marginLeft: 19 }} />
@@ -88,6 +169,7 @@ export default class ChangePassword extends Component {
               this.setState({ oldPass: oldPass });
             }}
             value={this.state.oldPass}
+            autoFocus={true}
           />
         </View>
         <View style={styles.containerForm}>
@@ -117,14 +199,46 @@ export default class ChangePassword extends Component {
         <TouchableOpacity
           style={styles.waperLogin}
           onPress={() => {
-            this.Global.isFooter = true;
-            Actions.pop()
-            this.Global.pressStatus = "profile";
+            if (this.state.oldPass === "" || this.state.pass === "" || this.state.confirmPass ==="")
+            {
+              Alert.alert(this.Global.APP_NAME, "Please fill all input")
+            }
+            else {
+              if (this.state.pass === this.state.confirmPass){
+                this.verifyCurrentPassword(this.state.oldPass, this.state.pass)
+              }
+              else {
+                Alert.alert(this.Global.APP_NAME, "Password is not confirm.")
+              }
+            }
           }}
         >
           <Text style={styles.textLogin}>CHANGE PASSWORD</Text>
         </TouchableOpacity>
-      </View>
+        <ActivityIndicator
+              animating={this.state.animating}
+              color="#fff"
+              size="large"
+              style={styles.activityIndicator}
+            />
+                                  {
+            this.state.animating ?
+              <View style={styles.waiting}>
+
+              </View>
+              : null
+          }
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => {
+                            this.Global.isFooter = true;
+                            Actions.pop();
+                            this.Global.pressStatus = "profile";
+                        }}
+                    >
+                        <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
+                    </TouchableOpacity>
+      </KeyboardAwareScrollView>
     );
   }
 }
@@ -228,6 +342,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     top: height < 812 ? 30 : 50,
-    left: 10
+    left: 10,
+    backgroundColor: 'transparent'
 },
+activityIndicator: {
+  position: 'absolute',
+  top: height/2,
+  left: width/2-20,
+
+},
+waiting: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  bottom: 0,
+  right: 0,
+  width: width,
+  height: height,
+  backgroundColor: "rgba(0,0,0,0.5)"
+}
 })

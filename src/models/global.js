@@ -15,7 +15,7 @@ class Global {
   }
 
   @observable currentUserId = "";
-
+  @observable currentUser = "";
   // For registerInfo.js
   @observable registerAge = 1;
   @observable registerTags = [];

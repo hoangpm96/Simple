@@ -130,6 +130,7 @@ export default class Register extends Component {
                 }}
                 placeholderTextColor={"#DDDDDD"}
                 value={this.state.email}
+                autoFocus={true}
               />
             </View>
             <View style={styles.containerUserName}>

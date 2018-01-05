@@ -54,6 +54,7 @@ export default class Login extends Component {
             let keys = Object.keys(snapshot.val());
             this.Global.currentUserId = keys[0];
             let email = value[0].email;
+            this.Global.currentUser = snapshot.val()
             //verify password
             this.login(email, password);
           } else {

@@ -117,7 +117,6 @@ export default class EditProfile extends Component {
         for (var city of addressData) {
             citys.push(city.name)
         }
-        debugger
         console.log(citys)
         this.setState({
             animating: false
@@ -143,7 +142,6 @@ export default class EditProfile extends Component {
             .on("value", snapshot => {
               if (snapshot.val()) {
                 let value = Object.values(snapshot.val());
-                debugger
                 this.setState({
                     userName: value[0].username,
                     Name: value[0].name,
@@ -164,7 +162,6 @@ export default class EditProfile extends Component {
                 this.state.selectedWeight === null ? this.setState({
                     selectedWeight: 'Select Weight'
                 }) : null
-                debugger
                 let array = []
                 for (var tag in value[0].tags) {
                         array.push(tag),
@@ -177,7 +174,6 @@ export default class EditProfile extends Component {
                 Alert.alert(this.Global.APP_NAME, "User had been delete.");
                 return;
               }
-              debugger
               console.log(snapshot.val());
             });
         }
@@ -205,7 +201,6 @@ export default class EditProfile extends Component {
                 'weight': this.state.selectedWeight,
                 'city': this.state.selectedCity,
                 'district': this.state.selectedDistrict,
-                'email': this.state.Email,
                 'quote': this.state.Quote,
             })
             //remove tags from firebase ref users
@@ -343,12 +338,8 @@ export default class EditProfile extends Component {
             scrollEnabled={false}
           >
                 <View style={styles.containerInfo}>
-                    {/* <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} /> */}
                     <Image style={styles.avatar} source={this.state.Avatar ? {uri: this.state.Avatar}: (this.state.avatarSource ? this.state.avatarSource : require("./img/avatar-non.png")) } />
-                    {/* {this.state.image ? this.renderImage(this.state.image) : <Image style={styles.avatar} source={require("./img/hoangphan.jpg")} />} */}
                     <TouchableOpacity style={styles.viewAvatar}
-                        // Edit Avatar
-                        // onPress={() => { Alert.alert('1') }}
                         onPress={this.selectPhotoTapped.bind(this)}
                     >
                         <Icon name="camera" color='#F15F66' size={50} style={{ alignSelf: 'center' }} />
@@ -390,7 +381,7 @@ export default class EditProfile extends Component {
                 <ScrollView style={styles.containerEdit}>
                     <View style={styles.containerEmail}>
                         <Text style={[styles.text, { marginTop: 2, width: 80 }]}>Email: </Text>
-                        <TextInput
+                        {/* <TextInput
                             placeholder="Email..."
                             placeholderTextColor="#fff"
                             selectionColor="#fff"
@@ -406,7 +397,8 @@ export default class EditProfile extends Component {
                                 this.setState({ Email: Email });
                             }}
                             value={this.state.Email}
-                        />
+                        /> */}
+                        <Text style={styles.inputEmail}>{this.state.Email}</Text>
                     </View>
                     <View style={styles.viewQuote}>
                         <TextInput
@@ -629,7 +621,6 @@ export default class EditProfile extends Component {
                     onPress={() => {
                         // this.getInforUser(this.Global.currentUserId);
                         // console.log(this.Global.currentUserId);
-                        // debugger
 
                         this.uploadInfoUser();
                     }}
@@ -713,10 +704,11 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 16,
         marginTop: 2,
-        width: width - 100,
+        width: width - 130,
         alignSelf: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: '#ffff'
+        borderBottomColor: '#ffff',
+        marginRight: 30
     },
     viewQuote: {
         marginTop: 15,
