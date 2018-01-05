@@ -40,63 +40,12 @@ import Global from "./models/global";
 import { _ } from "react-native-mobx/node_modules/mobx";
 import { async } from "@firebase/util";
 
+import citys from './data/citys'
+import dictricts from './data/dictricts'
 const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
 const data = require("./data/api.json");
-const citys = [
-  "Ha Noi",
-  "Quang Ngai",
-  "Quang Nam",
-  "Hai Phong",
-  "Can Tho",
-  "Da Nang",
-  "Lao Cai",
-  "Lang Son",
-  "Kien Giang",
-  "Tien Giang",
-  "Ho Chi Minh City",
-  "Long An",
-  "Dong Nai",
-  "Vung Tau",
-  "Hue",
-  "Phu Yen",
-  "Gia Lai",
-  "Daklak",
-  "Lam Dong",
-  "Quang Binh",
-  "Quang Tri",
-  "Binh Dinh",
-  "Binh Thuan",
-  "Tay Ninh",
-  "Binh Duong"
-];
-const dictricts = [
-  "Dictrict 1",
-  "Dictrict 2",
-  "Dictrict 3",
-  "Dictrict 4",
-  "Dictrict 5",
-  "Dictrict 6",
-  "Dictrict 7",
-  "Dictrict 8",
-  "Dictrict 9",
-  "Dictrict 10",
-  "Dictrict 11",
-  "Dictrict 12",
-  "Thu Duc Dictrict",
-  "Tan Binh Dictrict",
-  "Tan Phu Dictrict",
-  "Phu Nhuan Dictrict",
-  "Binh Thanh Dictrict",
-  "Binh Chanh Dictrict",
-  "Nha Be Dictrict",
-  "Can Gio Dictrict",
-  "Cu Chi Dictrict",
-  "37",
-  "38",
-  "39",
-  "40"
-];
+
 const inputProps = {
   keyboardType: "default",
   placeholder: "hobby",
@@ -180,6 +129,7 @@ export default class SearchFriend extends Component {
     this.setState({ animating: true });
     var tempArr = this.state.userIds;
     try {
+      // lấy danh sách tất cả các người dùng khác có tags đang tìm
       await Promise.all(
         this.state.tags.map(async tag => {
           await firebase
@@ -194,15 +144,33 @@ export default class SearchFriend extends Component {
         })
       )
         .then(data => {
+
+          // remove id của currentUser 
+
+          const index = tempArr.indexOf(this.Global.currentUserId);
+          if ( index > -1 ) {
+            tempArr.splice(index,1);
+          }
+
+          // debugger;
+          // cập nhật lại tag hiện tại 
           this.setState(prevState => ({
             userIds: tempArr
           }));
+          
+          //TODO: Check gender
+          
+          //TODO: Check với ignore list Id
 
+          //TODO: Check tuổi 
+
+          //TODO: Check địa chỉ  
           var { userIds, currentIndex } = this.state;
 
           if (userIds.length > 0 && currentIndex < userIds.length) {
+            // chỉ hiển thị lần đầu, lần sau nhấn ignore || like
             this.loadUserFrom(userIds[currentIndex]);
-            this.setState({ currentIndex: this.state.currentIndex + 1 });
+            
           } else {
             this.showError(this.Global.errorMessage.noMatch);
           }
@@ -234,6 +202,7 @@ export default class SearchFriend extends Component {
             });
           }
         });
+      
       this.showScaleAnimationDialog();
     } catch (error) {
       this.showError(error);
@@ -267,24 +236,36 @@ export default class SearchFriend extends Component {
     }
   };
 
+
+  // Action của ignore || likes => Đều phải load user mới 
   loadNextUser = async ignore => {
+    // debugger;
     var { userIds, currentIndex } = this.state;
     const otherUserId = userIds[currentIndex];
-    debugger;
+    
+   
+    // debugger;
     // add to ignore list -> don't this people show next time
     if (ignore) {
+
+        if (currentIndex >= userIds.length) {
+          this.showError(this.Global.errorMessage.noMatch);
+          return;
+        }
       await firebase
         .database()
         .ref("ignores")
         .child(this.Global.currentUserId)
         .child(otherUserId)
         .set(true);
-        this.setState({
-        currentIndex: this.state.currentIndex + 1
-      });
+   
       this.autoLoadNew();
     } else {
       // add to wish list
+       if (currentIndex >= userIds.length) {
+         this.showError(this.Global.errorMessage.noMatch);
+         return;
+       }
       await firebase
         .database()
         .ref("wishList")
@@ -292,17 +273,21 @@ export default class SearchFriend extends Component {
         .child(otherUserId)
         .set(true);
 
-        this.setState({ currentIndex: this.state.currentIndex + 1 });
+
+        
+
         this.autoLoadNew();
     }
+    
   };
 
   autoLoadNew = () => {
+    var { userIds, currentIndex } = this.state;
+     const otherUserId = userIds[currentIndex];
     if (currentIndex < userIds.length) {
       this.loadUserFrom(otherUserId);
-      this.setState({
-        currentIndex: this.state.currentIndex + 1
-      });
+      // tăng +1 để load user khác 
+      this.setState({ currentIndex: this.state.currentIndex + 1 });
     } else {
       this.showError(this.Global.errorMessage.noMatch);
     }
