@@ -29,7 +29,7 @@ export default class Example extends React.Component {
 
     this.state = {
       messages: [],
-      loadEarlier: true,
+      loadEarlier: false,
       typingText: null,
       isLoadingEarlier: false,
       conversationId: ""
@@ -77,7 +77,7 @@ export default class Example extends React.Component {
         messageAarr.push(value);
 
         let newMessages = self.processMessage(messageAarr);
-
+        // debugger;
         // debugger;
         self.setState(previousState => {
           return { messages: GiftedChat.append(previousState.messages, newMessages) };
@@ -128,8 +128,15 @@ export default class Example extends React.Component {
       message._id = ele.id;
       message.createdAt = ele.createdAt;
       // Không phải tin của user hiện tại
-      let userId = ele.senderId !== this.Global.currentUserId ? 1 : 2;
-
+      const userId = ele.senderId == this.Global.currentUserId ? 1 : 2;
+      // const userId = 1
+      // let userId = 1;
+      // if ( ele.senderId === this.Global.currentUserId )  {
+      //   userId = 1;
+      // }else {
+      //   userId = 2;
+      // }
+      
       message.user = {
         _id: userId,
         name: ele.username
@@ -155,7 +162,7 @@ export default class Example extends React.Component {
         .push({
           text: messages[0].text,
           createdAt: messages[0].createdAt.toString(),
-          senderId: this.Global.selectedChatUser.id,
+          senderId: this.Global.currentUserId,
           username: this.Global.currentUsername
         });
       // console.log(result);
