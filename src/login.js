@@ -48,7 +48,7 @@ export default class Login extends Component {
         .ref("users")
         .orderByChild("username")
         .equalTo(username)
-        .on("value", snapshot => {
+        .once("value", snapshot => {
           if (snapshot.val()) {
             let value = Object.values(snapshot.val());
             let keys = Object.keys(snapshot.val());
@@ -71,7 +71,7 @@ export default class Login extends Component {
       this.Global.isFooter = true;
       // console.log(user);
       // console.log(this.Global.currentUserId);
-      this.Global.pressStatus = "love";
+      // this.Global.pressStatus = "love";
       this.Global.firstLogin = true;
       Actions.love();
       })

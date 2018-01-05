@@ -51,7 +51,7 @@ export default class Love extends Component {
     this._renderRow = this._renderRow.bind(this);
   }
   showScaleAnimationDialog() {
-    this.scaleAnimationDialog.show();
+    // this.scaleAnimationDialog.show();
   }
   _onReLoad() {
     this.setState({ refreshing: true });
@@ -154,7 +154,7 @@ export default class Love extends Component {
       <TouchableOpacity
         onPress={() => {
           this.Global.isFooter = true;
-          this.Global.pressStatus = "love";
+          // this.Global.pressStatus = "love";
           Actions.loverProfile();
         }}
         style={styles.viewContainer}

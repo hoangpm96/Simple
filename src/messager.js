@@ -16,20 +16,24 @@ import {GiftedChat, Actions1, Bubble, SystemMessage} from 'react-native-gifted-c
 import CustomActions from './message/CustomActions';
 import CustomView from './/message/CustomView';
 const { width, height } = Dimensions.get("window");
-
+import firebase from "firebase";
+import { async } from '@firebase/util';
 export default class Example extends React.Component {
   constructor(props) {
     super(props);
+    
+    
     this.state = {
       messages: [],
       loadEarlier: true,
       typingText: null,
       isLoadingEarlier: false,
+      conversationId: ""
     };
     
     this.Global = this.props.Global;
     this._isMounted = false;
-    this.onSend = this.onSend.bind(this);
+
     this.onReceive = this.onReceive.bind(this);
     this.renderCustomActions = this.renderCustomActions.bind(this);
     this.renderBubble = this.renderBubble.bind(this);
@@ -40,7 +44,7 @@ export default class Example extends React.Component {
     this._isAlright = null;
   }
 
-  componentWillMount() {
+   componentWillMount() {  
     this._isMounted = true;
     this.setState(() => {
       return {
@@ -52,6 +56,32 @@ export default class Example extends React.Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
+  // async componentDidMount() {
+  //      try {
+  //     // tạo conversation 
+  //     let conver =  await firebase
+  //         .database()
+  //         .ref("conversations")
+  //         .push(
+  //           {
+  //             members: {
+  //               [this.Global.currentUserId] : true,
+  //               [this.Global.selectedChatUser.id]: true 
+  //             }
+  //         });
+
+  //       await firebase
+  //         .database()
+  //         .ref("users").child(this.Global.currentUserId)
+  //         .child("conversations").child(this.Global.selectedChatUser.id)
+  //         .set({
+  //           conversationId: conver.key
+  //         });
+  //       this.setState( { conversationId: conver.key } )
+  //   }catch(error) {
+
+  //   }
+  // }
 
   onLoadEarlier() {
     this.setState((previousState) => {
@@ -73,15 +103,38 @@ export default class Example extends React.Component {
     }, 1000); // simulating network
   }
 
-  onSend(messages = []) {
+  onSend = async (messages = []) => {
+  
+    // tạo conversation nếu là lần đầu ( cho có tin nhắn )
+
+    // update lại converstaion trong node users
+
+    try {
+      
+      await firebase
+          .database()
+          .ref("conversations").child(this.state.conversationId)
+          .child("messages")
+          .push({
+            text: messages[0].text,
+            createdAt: messages[0].createdAt,
+            senderId: this.Global.selectedChatUser.id
+          });
+      // console.log(result);
+            
     this.setState((previousState) => {
       return {
         messages: GiftedChat.append(previousState.messages, messages),
       };
     });
+    }catch(error) {
+      console.log(error);
+    }
+    
+   
 
     // for demo purpose
-    this.answerDemo(messages);
+    // this.answerDemo(messages);
   }
 
   answerDemo(messages) {
@@ -123,7 +176,7 @@ export default class Example extends React.Component {
     this.setState((previousState) => {
       return {
         messages: GiftedChat.append(previousState.messages, {
-          _id: Math.round(Math.random() * 1000000),
+          _id: Math.round(Math.random() * 10000),
           text: text,
           createdAt: new Date(),
           user: {

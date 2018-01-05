@@ -29,7 +29,7 @@ class Global {
   //
 
   @observable myCart = [];
-  @observable pressStatus = "";
+  // @observable pressStatus = "";  
 
   @observable
   activityIndicator = {
