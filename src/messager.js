@@ -44,8 +44,31 @@ export default class Example extends React.Component {
     this._isAlright = null;
   }
 
-   componentWillMount() {  
+   async componentWillMount() {  
+
+     
+     let self = this;
+      await firebase
+    .database()
+      .ref("users/" + this.Global.currentUserId +"/conversations")
+       .child(this.Global.selectedChatUser.id)
+       .once("value", snapshot => {
+         
+         const userData = snapshot.val();
+         if (userData) {
+          //  console.log("exists!");
+          self.setState({ conversationId: snapshot.key })
+         }else {
+           self.createConversation();
+         }
+       });
+     
+
+
+          
+
     this._isMounted = true;
+   
     this.setState(() => {
       return {
         messages: require('./message/data/messages.js'),
@@ -56,32 +79,32 @@ export default class Example extends React.Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
-  // async componentDidMount() {
-  //      try {
-  //     // tạo conversation 
-  //     let conver =  await firebase
-  //         .database()
-  //         .ref("conversations")
-  //         .push(
-  //           {
-  //             members: {
-  //               [this.Global.currentUserId] : true,
-  //               [this.Global.selectedChatUser.id]: true 
-  //             }
-  //         });
+  async componentDidMount() {
+       // Check ( có conversation với user này chưa ) ? -> update conversationId : tạo mới 
+      
+  }
+ // tạo conversation 
+  createConversation = async () => {
+      let conver =  await firebase
+          .database()
+          .ref("conversations")
+          .push(
+            {
+              members: {
+                [this.Global.currentUserId] : true,
+                [this.Global.selectedChatUser.id]: true 
+              }
+          });
 
-  //       await firebase
-  //         .database()
-  //         .ref("users").child(this.Global.currentUserId)
-  //         .child("conversations").child(this.Global.selectedChatUser.id)
-  //         .set({
-  //           conversationId: conver.key
-  //         });
-  //       this.setState( { conversationId: conver.key } )
-  //   }catch(error) {
-
-  //   }
-  // }
+        await firebase
+          .database()
+          .ref("users").child(this.Global.currentUserId)
+          .child("conversations").child(this.Global.selectedChatUser.id)
+          .set({
+            conversationId: conver.key
+          });
+        this.setState( { conversationId: conver.key } )
+  }
 
   onLoadEarlier() {
     this.setState((previousState) => {
