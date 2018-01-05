@@ -15,9 +15,13 @@ import {
   Switch,
   Button,
   TouchableHighlight,
+  ActivityIndicator,
   Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import firebase from "firebase";
+import { async } from "@firebase/util";
 import Modal from "react-native-modalbox";
 const { width, height } = Dimensions.get("window");
 
@@ -28,29 +32,198 @@ export default class DeleteAccount extends Component {
     super(props);
     this.Global = this.props.Global;
     this.state = {
-      userName: "Hoang Phan",
       Name: "Minh Hoang",
-      Age: "21",
-      Height: "180",
-      Weight: "65",
-      Address: "Quang Ngai",
-      Email: "",
-      isPush: false
+      lover: 0,
+      loved: 0,
+      Avatar: "",
+      Email: "Hoang03@gmail.com",
+      pass: "123456",
+      EmailData: "",
+      tags: [],
+      animating: false
     };
+  }
+  componentWillMount() {
+    this.getInforUser(this.Global.currentUserId);
+  }
+
+  getInforUser = async (userId) => {
+    try {
+        this.setState({
+            animating: true
+        })
+        await firebase
+        .database()
+        .ref("users")
+        .orderByKey()
+        .equalTo(userId)
+        .on("value", snapshot => {
+          if (snapshot.val()) {
+            let value = Object.values(snapshot.val());
+            this.setState({
+                Name: value[0].name,
+                Avatar: value[0].avatarUrl,
+                lover: value[0].lover,
+                loved: value[0].loved,
+                EmailData: value[0].email
+            })
+            let array = []
+            for (var tag in value[0].tags) {
+                    array.push(tag),
+                this.setState({tags:  array});
+            }
+            this.setState({
+                animating: false
+            })
+          } else {
+            Alert.alert(this.Global.APP_NAME, "User had been delete.");
+            return;
+          }
+        });
+    }
+    catch(error) {
+        this.setState({
+            animating: false
+        })
+    }
+}
+verrifyEmailPasswordCorrect = async (email, password) => {
+  try {
+    //verify correct email
+    if (email === this.state.EmailData )
+    {
+      this.setState({
+        animating: true
+    })
+    //verify correct password
+    await firebase.auth().currentUser
+    .reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(this.state.Email, password))
+    .then( () => {
+      //deleteAccount
+      this.deleteAccount(this.state.Email,this.state.pass);
+
+    })
+    .catch((error) =>
+    {
+      this.setState({
+        animating: false
+    })
+      const { code, message } = error;
+      Alert.alert(this.Global.APP_NAME, message);
+      
+    });
+    }
+    else {
+      Alert.alert(this.Global.APP_NAME, "Email is incorrect");
+    }
+
+  }
+  catch(error) {
+    Alert.alert(this.Global.APP_NAME, error);
+}
+}
+  deleteAccount = async (email, password) => {
+    try {
+      this.setState({
+          animating: true
+      })
+      //delete user from authentication -> done
+      console.log(firebase.auth().currentUser)
+      await 
+        // User deleted.
+        firebase
+          .database()
+          .ref("users")
+          .child(this.Global.currentUserId)
+          .remove()
+      //end delete from ref User
+      debugger
+      for (let tag of this.state.tags) {
+        //remove tags from firebase ref tags
+        firebase
+          .database()
+          .ref("tags")
+          .child(tag)
+          .child(this.Global.currentUserId)
+          .remove()
+          .catch((error) =>{
+            const { code, message } = error;
+            Alert.alert(this.Global.APP_NAME, message);
+            debugger
+            
+          });
+      }
+                // end delete from ref tags
+                firebase
+                .database()
+                .ref("wishlist")
+                .child(this.Global.currentUserId)
+                .remove() 
+                .catch((error) => {
+            const { code, message } = error;
+            Alert.alert(this.Global.APP_NAME, message);
+            debugger
+            
+          });      
+                //end xóa wishlist với user hiện tại 
+                debugger
+                firebase
+                .database()
+                .ref("wishlist")
+                .once("value", function(snapshots) {
+                  snapshots.forEach(function(data) {
+                    let tempArr = [];
+                    debugger
+                    tempArr.push(data.val());
+                    console.log(data.val())
+                    debugger
+                  });
+                })
+                .catch((error) => {
+                const { code, message } = error;
+                Alert.alert(this.Global.APP_NAME, message);
+                debugger
+                
+              });   
+                debugger
+                //end lấy tất cả danh sách các user có trong wish list 
+                //xóa id user hiện tại từ wishlist của các user đã có 
+                // delete from wishlist
+                //
+      await 
+                firebase.auth().currentUser.delete().then(() => {
+        Actions.login();
+      }).catch((error) =>
+      {
+        this.setState({
+          animating: false
+      })
+        const { code, message } = error;
+        Alert.alert(this.Global.APP_NAME, message);
+        
+      });
+      
+  }
+  catch(error) {
+      this.setState({
+          animating: false
+      })
+  }
   }
   render() {
     return (
-      <View style={styles.background}>
+      <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={styles.background}
+      scrollEnabled={false}
+    >
         <View style={styles.containerInfo}>
-          <Image
-            source={require("./img/hoangphan.jpg")}
-            style={styles.avatar}
-          />
-          <Text style={styles.textName}>Hoang Phan</Text>
+        <Image style={styles.avatar} source={this.state.Avatar ? {uri: this.state.Avatar}: require("./img/avatar-non.png") } />
+          <Text style={styles.textName}>{this.state.Name}</Text>
           <View style={styles.containerlover}>
-            <Text style={[styles.lover, { textAlign: 'right', marginRight: 5 }]}>13 lover</Text>
+            <Text style={[styles.lover, { textAlign: 'right', marginRight: 5 }]}>{this.state.lover} lover</Text>
             <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff' }}>|</Text>
-            <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5 }]}>13 loved</Text>
+            <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5 }]}>{this.state.loved} loved</Text>
           </View>
           <TouchableOpacity
             style={styles.backButton}
@@ -110,7 +283,9 @@ export default class DeleteAccount extends Component {
               'Do you want to delete this Account?',
               [,
                 { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
-                { text: 'OK', onPress: () => Actions.login() },
+                { text: 'OK', onPress: () => {
+                  this.verrifyEmailPasswordCorrect(this.state.Email, this.state.pass);
+                } },
               ],
               { cancelable: false }
             )
@@ -119,8 +294,20 @@ export default class DeleteAccount extends Component {
         >
           <Text style={styles.textLogin}>DELETE ACCOUNT</Text>
         </TouchableOpacity>
+        <ActivityIndicator
+              animating={this.state.animating}
+              color="#fff"
+              size="large"
+              style={styles.activityIndicator}
+            />
+                      {
+            this.state.animating ?
+              <View style={styles.waiting}>
 
-      </View>
+              </View>
+              : null
+          }
+        </KeyboardAwareScrollView>
     );
   }
 }
@@ -241,5 +428,21 @@ const styles = StyleSheet.create({
     color: '#ffffff', 
     marginTop: height < 667 ? 12 : 25,
     marginBottom: height < 667 ? 10 : 20,
+  },
+  activityIndicator: {
+    position: 'absolute',
+    top: height/2,
+    left: width/2-20,
+
+  },
+  waiting: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    width: width,
+    height: height,
+    backgroundColor: "rgba(0,0,0,0.5)"
   }
 })

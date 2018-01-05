@@ -56,7 +56,7 @@ export default class Register extends Component {
           username: username,
           gender: this.Global.registerIsMale ? "male" : "female",
           age: this.Global.registerAge,
-          avatarUrl: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/images%2F1515073661299.jpg?alt=media&token=3d228562-1490-4059-9767-14c690a1f6d7",
+          avatarUrl: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/default-avatar%2FSimple-60-3x.png?alt=media&token=829e788d-4c22-4502-b833-d86f132ab352",
           height: "Select Height",
           weight: "Select Weight",
           quote: "Dating is simpler",
