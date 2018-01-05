@@ -99,15 +99,8 @@ export default class Love extends Component {
             })
         })
       ).then(data => {
-        
-
-         console.log(tempUsers);
          let userData = this.createDataList(tempUsers);
-         debugger;
          this.setState({ listViewData: userData });
-        
-        
-        
       });
 
       // this.showScaleAnimationDialog();
@@ -119,6 +112,8 @@ export default class Love extends Component {
   // rawData là data từ firebase -> Chuyển thành mảng dùng được 
   createDataList = (rawData) => {
 
+    // TODO: Thêm các thômg tin cần thiết nếu cần 
+    
     // "image": 
     // "name": 
     // "user-name": 
@@ -164,7 +159,7 @@ export default class Love extends Component {
         }}
         style={styles.viewContainer}
       >
-        <Image style={styles.avatar_image} source={{ uri: rowData.image }} />
+        <Image style={styles.avatar_image} source={{ uri: rowData.avatarUrl }} />
         <View style={styles.viewInformation}>
           <Text numberOfLines={1} style={styles.informationStyle}>
             * {rowData.name}, {rowData.age}
