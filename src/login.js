@@ -48,7 +48,7 @@ export default class Login extends Component {
         .ref("users")
         .orderByChild("username")
         .equalTo(username)
-        .on("value", snapshot => {
+        .once("value", snapshot => {
           if (snapshot.val()) {
             let value = Object.values(snapshot.val());
             let keys = Object.keys(snapshot.val());

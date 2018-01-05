@@ -15,7 +15,11 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { observer } from "mobx-react/native";
 import { autobind } from "core-decorators";
+
+import firebase from "firebase";
+import { async } from "@firebase/util";
 const { width, height } = Dimensions.get("window");
+import Global from "./models/global";
 
 @autobind
 @observer
@@ -26,9 +30,63 @@ export default class Forgot extends Component {
         logo = require('./img/logo.png');
         this.Global = this.props.Global;
         this.state = {
-
+            Email: "",
+            displayErrror: false,
+            errorText: null
         };
     }
+
+    verifyResetPassword = async (email) => {
+        try {
+            debugger;
+            await firebase
+            .database()
+            .ref("users")
+            .orderByChild("email")
+            .equalTo(email)
+            .once("value", snapshot => {
+                debugger
+                console.log(snapshot.val())
+              if (snapshot.val()) {
+                // ton tai email thi send
+                debugger
+                console.log(snapshot.val())
+                firebase.auth().sendPasswordResetEmail(email).then(() => {
+                    // Email sent.
+                    this.setState({
+                        displayErrror: false
+                    })
+                    debugger
+                    Alert.alert(
+                        this.Global.APP_NAME,
+                        "Email had been sent",
+                      );
+                  }).catch((error) => {
+                    // An error happened.
+                    debugger
+                    this.setState({
+                        displayErrror: true,
+                        errorText: error
+                    })
+                  });
+              } else {
+                Alert.alert(this,Global.APP_NAME, "Email is not exist!");
+                return;
+              }
+            });
+            debugger
+        }
+        catch (error) {
+            debugger
+            Alert.alert(
+                this.Global.APP_NAME,
+                error,
+              );
+          }
+
+
+    } 
+
     render() {
         return (
             <ImageBackground source={background} style={styles.waperContainer} >
@@ -37,27 +95,32 @@ export default class Forgot extends Component {
                     <View style={styles.containerUserName}>
                         <Icon name="envelope" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
                         <TextInput placeholder={'Enter your email'} style={styles.styleUserName}
-                            onChangeText={username => {
-                                this.setState({ userName: username});
+                            onChangeText={email => {
+                                this.setState({ Email: email});
                             }}
                             placeholderTextColor={'#DDDDDD'}
-                            value={this.state.userName}
+                            value={this.state.Email}
                         />
                     </View>
-                    <Text style={styles.styleError}>
-                        User name was not registered
+                    {
+                        this.state.displayErrror ? 
+                        <Text style={styles.styleError}>
+                        {this.state.errorText}
                     </Text>
+                    : null
+                    }
                     <TouchableOpacity
                         onPress={() => {
-                            this.Global.isFooter = false;
-                            Alert.alert(
-                                'Success',
-                                'Your new password was sent',
-                                [
-                                    { text: 'LOGIN', onPress: () => Actions.login() },
-                                ],
-                                { cancelable: false }
-                            )
+                            if(this.state.Email === "")
+                            {
+                                Alert.alert(
+                                    this.Global.APP_NAME,
+                                    "Please enter your email.",
+                                  );
+                            }
+                            else {
+                            this.verifyResetPassword(this.state.Email)
+                            }
                         }}
                     >
                         <View style={styles.waperLogin}>
