@@ -59,11 +59,11 @@ export default class AboutUs extends Component {
             marginTop: height < 812 ? (height < 736 ? (height < 667 ? 10 : 15 ) : 15 ) : 15,
           }]}>
             <Text style={styles.titleText}>Subject:</Text>
-            <Text style={styles.text}>Human Computer Interaction</Text>
+            <Text style={styles.text}>Mobile Programming</Text>
           </View>
           <View style={styles.objectText}>
             <Text style={styles.titleText}>Instructor:</Text>
-            <Text style={styles.text}>Nguyễn Công Hoan</Text>
+            <Text style={styles.text}>Huỳnh Tuấn Anh</Text>
           </View>
           {/* <View> */}
             <Text style={[styles.titleText, {marginTop: 5, width: width - 40}]}>Students: </Text>
