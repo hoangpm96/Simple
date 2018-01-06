@@ -83,7 +83,8 @@ export default class SearchFriend extends Component {
       animating: false,
       userProfiles: [],
       currentIndex: 0,
-      userIds: []
+      userIds: [],
+      avatarUrl: ""
     };
   }
   onChangeTags = tags => {
@@ -198,7 +199,8 @@ export default class SearchFriend extends Component {
             this.setState({
               name: value[0].name,
               age: value[0].age,
-              Quote: value[0].email // TODO: Add user's quote
+              Quote: value[0].email, // TODO: Add user's quote
+              avatarUrl: value[0].avatarUrl
             });
           }
         });
@@ -453,14 +455,14 @@ export default class SearchFriend extends Component {
                 />
               </Animated.View>
             </Expand>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.toggle}
               onPress={() => this.setState({ open: !this.state.open })}
             >
               <Text style={this.state.open ? styles.arrow : styles.arrow2}>
                 {this.state.open ? "SEARCH AROUND ▲" : "SEARCH WITH ADDRESS ▼"}
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </ScrollView>
         <TouchableOpacity onPress={this.search}>
@@ -493,7 +495,8 @@ export default class SearchFriend extends Component {
               <Text style={styles.textQuote}> {this.state.Quote}</Text>
             </View>
             <Image
-              source={require("./img/HHKTeam.jpg")}
+              // source={require("./img/HHKTeam.jpg")}
+              source={{ uri: this.state.avatarUrl }}
               style={styles.avatar}
             />
             <View style={styles.containerButton01}>
