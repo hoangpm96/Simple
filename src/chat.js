@@ -104,7 +104,7 @@ export default class Chat extends Component {
     for (let ele of rawData) {
       ele.name = ele.username;
       ele.chat = "chat message here";
-      ele.lastActive = "69s ago";
+      ele.lastActive = "";
       arr.push(ele);
     }
     return arr;
