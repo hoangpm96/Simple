@@ -77,7 +77,7 @@ export default class Login extends Component {
       // console.log(user);
       // console.log(this.Global.currentUserId);
       // this.Global.pressStatus = "love";
-      this.Global.firstLogin = true;
+      this.Global.firstLogin = false;
       Actions.love();
       })
       .catch((error) => {
