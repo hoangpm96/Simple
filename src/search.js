@@ -199,7 +199,7 @@ export default class SearchFriend extends Component {
             this.setState({
               name: value[0].name,
               age: value[0].age,
-              Quote: value[0].email, // TODO: Add user's quote
+              Quote: value[0].quote, // TODO: Add user's quote
               avatarUrl: value[0].avatarUrl
             });
           }
@@ -473,7 +473,7 @@ export default class SearchFriend extends Component {
         <PopupDialog
           dialogTitle={
             <DialogTitle
-              title="10/20"
+              title="Result"
               titleStyle={{ backgroundColor: "#CEB7C3" }}
               titleTextStyle={{
                 color: "#ffff",

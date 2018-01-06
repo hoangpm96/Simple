@@ -36,8 +36,8 @@ export default class DeleteAccount extends Component {
       lover: 0,
       loved: 0,
       Avatar: "",
-      Email: "Hoang03@gmail.com",
-      pass: "123456",
+      Email: "",
+      pass: "",
       EmailData: "",
       tags: [],
       animating: false
