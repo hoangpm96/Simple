@@ -99,7 +99,7 @@ export default class App extends Component {
 
     FCM.getFCMToken().then(token => {
       console.log(token);
-      debugger;
+      // debugger;
       // store fcm token in your server
     });
 

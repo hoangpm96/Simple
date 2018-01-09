@@ -26,6 +26,7 @@ import SimplePicker from 'react-native-simple-picker';
 import TagInput from 'react-native-tag-input';
 import Modal from "react-native-modalbox";
 import firebase from "firebase";
+import { ValueEventRegistration } from "@firebase/database/dist/esm/src/core/view/EventRegistration";
 const { width, height } = Dimensions.get("window");
 const inputProps = {
     keyboardType: 'default',
@@ -92,8 +93,6 @@ export default class LoverProfile extends Component {
                     District: value[0].district,
                     Quote: value[0].quote,
                     Avatar: value[0].avatarUrl,
-                    lover: value[0].lover,
-                    loved: value[0].loved,
                     Gender: value[0].gender,
                 })
                 let array = []
@@ -110,21 +109,52 @@ export default class LoverProfile extends Component {
               }
             });
 //cap nhat lover/loved
-
-            await firebase
+            // debugger
+            var loved_total = 0;
+            firebase
             .database()
             .ref("wishlist")
-            .orderbyKey()
+            .orderByKey()
             .equalTo(userId)
             .once("value", snapshot => {
-                debugger
-                if (snapshot.val()){
-                    let abc = snapshot.val();
-                    debugger
+                // debugger
+                if (snapshot.val()) {
+                    let value = Object.values(snapshot.val());
+                    let keys = value[0];
+                    let n = Object.keys(keys).length;
+                    loved_total = loved_total + n;
+                    this.setState({
+                        lover: n
+                    })
                 }
                 else {
-                    debugger
-                    let abc = 0;
+                    this.setState({
+                        lover: 0
+                    })
+                    // debugger
+                }
+            })
+            firebase
+            .database()
+            .ref("lovedlist")
+            .orderByKey()
+            .equalTo(userId)
+            .once("value", snapshot => {
+                // debugger
+                if (snapshot.val()) {
+                    let value = Object.values(snapshot.val());
+                    let keys = value[0];
+                    let n = Object.keys(keys).length;
+                    loved_total = loved_total + n;
+                    this.setState({
+                        loved: loved_total
+                    })
+                }
+                else {
+                    this.setState({
+                        loved: loved_total
+                    })
+                    // debugger
                 }
             })
         }

@@ -63,8 +63,6 @@ export default class DeleteAccount extends Component {
             this.setState({
                 Name: value[0].name,
                 Avatar: value[0].avatarUrl,
-                lover: value[0].lover,
-                loved: value[0].loved,
                 EmailData: value[0].email
             })
             let array = []
@@ -72,6 +70,53 @@ export default class DeleteAccount extends Component {
                     array.push(tag),
                 this.setState({tags:  array});
             }
+            var loved_total = 0;
+            firebase
+            .database()
+            .ref("wishlist")
+            .orderByKey()
+            .equalTo(userId)
+            .once("value", snapshot => {
+                // debugger
+                if (snapshot.val()) {
+                    let value = Object.values(snapshot.val());
+                    let keys = value[0];
+                    let n = Object.keys(keys).length;
+                    loved_total = loved_total + n;
+                    this.setState({
+                        lover: n
+                    })
+                }
+                else {
+                    this.setState({
+                        lover: 0
+                    })
+                    // debugger
+                }
+            })
+            firebase
+            .database()
+            .ref("lovedlist")
+            .orderByKey()
+            .equalTo(userId)
+            .once("value", snapshot => {
+                // debugger
+                if (snapshot.val()) {
+                    let value = Object.values(snapshot.val());
+                    let keys = value[0];
+                    let n = Object.keys(keys).length;
+                    loved_total = loved_total + n;
+                    this.setState({
+                        loved: loved_total
+                    })
+                }
+                else {
+                    this.setState({
+                        loved: loved_total
+                    })
+                    // debugger
+                }
+            })
             this.setState({
                 animating: false
             })

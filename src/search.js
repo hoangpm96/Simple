@@ -253,7 +253,7 @@ export default class SearchFriend extends Component {
         })
       ).then(data => {
         
-        debugger;
+        // debugger;
          this.setState(prevState => ({ userIds: tempUserIds }));
          var { userIds, currentIndex } = this.state;
 
@@ -314,7 +314,7 @@ export default class SearchFriend extends Component {
         })
       ).then(data => {
         console.log(this.state.userProfiles);
-        debugger;
+        // debugger;
         this.findUser(userIds);
       });
 

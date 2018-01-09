@@ -153,8 +153,6 @@ export default class EditProfile extends Component {
                     Email: value[0].email,
                     Quote: value[0].quote,
                     Avatar: value[0].avatarUrl,
-                    lover: value[0].lover,
-                    loved: value[0].loved
                 })
                 this.state.selectedHeight === null ? this.setState({
                     selectedHeight: 'Select Height'
@@ -167,6 +165,53 @@ export default class EditProfile extends Component {
                         array.push(tag),
                     this.setState({tags:  array});
                 }
+                var loved_total = 0;
+            firebase
+            .database()
+            .ref("wishlist")
+            .orderByKey()
+            .equalTo(userId)
+            .once("value", snapshot => {
+                // debugger
+                if (snapshot.val()) {
+                    let value = Object.values(snapshot.val());
+                    let keys = value[0];
+                    let n = Object.keys(keys).length;
+                    loved_total = loved_total + n;
+                    this.setState({
+                        lover: n
+                    })
+                }
+                else {
+                    this.setState({
+                        lover: 0
+                    })
+                    // debugger
+                }
+            })
+            firebase
+            .database()
+            .ref("lovedlist")
+            .orderByKey()
+            .equalTo(userId)
+            .once("value", snapshot => {
+                // debugger
+                if (snapshot.val()) {
+                    let value = Object.values(snapshot.val());
+                    let keys = value[0];
+                    let n = Object.keys(keys).length;
+                    loved_total = loved_total + n;
+                    this.setState({
+                        loved: loved_total
+                    })
+                }
+                else {
+                    this.setState({
+                        loved: loved_total
+                    })
+                    // debugger
+                }
+            })
                 this.setState({
                     animating: false
                 })
