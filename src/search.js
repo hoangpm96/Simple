@@ -338,7 +338,7 @@ export default class SearchFriend extends Component {
         return;
       }
       // kiem tra A co nam trong loved list cua user
-      await firebase.database().ref("lovedList")
+      await firebase.database().ref("lovedlist")
       .child(this.Global.currentUserId)
       .child(otherUserId)
       .once("value", snapshot => {
@@ -347,7 +347,7 @@ export default class SearchFriend extends Component {
           // xoa A ra khoi lovedlist cua User
           firebase
           .database()
-          .ref("lovedList")
+          .ref("lovedlist")
           .child(this.Global.currentUserId)
           .child(otherUserId)
           .set(null);
@@ -368,7 +368,7 @@ export default class SearchFriend extends Component {
         return;
       }
       // kiem tra A co nam trong loved list cua User hien tai khong
-        firebase.database().ref("lovedList")
+        firebase.database().ref("lovedlist")
         .child(this.Global.currentUserId)
         .child(otherUserId)
         .once("value", snapshot => {
@@ -377,7 +377,7 @@ export default class SearchFriend extends Component {
             // xoa A ra khoi lovedlist cua User
             firebase
             .database()
-            .ref("lovedList")
+            .ref("lovedlist")
             .child(this.Global.currentUserId)
             .child(otherUserId)
             .set(null);
@@ -393,14 +393,14 @@ export default class SearchFriend extends Component {
           else {
             firebase
             .database()
-            .ref("wishList")
+            .ref("wishlist")
             .child(this.Global.currentUserId)
             .child(otherUserId)
             .set(true);
             // add to loved list
             firebase
             .database()
-            .ref("lovedList")
+            .ref("lovedlist")
             .child(otherUserId)
             .child(this.Global.currentUserId)
             .set(true);

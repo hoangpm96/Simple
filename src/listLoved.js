@@ -66,7 +66,7 @@ export default class ListLoved extends Component {
     try {
        await firebase
         .database()
-        .ref("lovedList")
+        .ref("lovedlist")
         .child(this.Global.currentUserId)
         .once("value", function(snapshots) {
           snapshots.forEach(function(data) {
@@ -143,13 +143,48 @@ export default class ListLoved extends Component {
     this.Global.firstLogin = false;
   }
 
-  deleteRow(secId, rowId, rowMap) {
+  deleteRow = async (secId, rowId, rowMap) => {
+            //xoa ra khoi lovedList (ignore)
+            try {
+              debugger
+              await firebase
+              .database()
+              .ref("lovedlist")
+              .child(this.Global.currentUserId)
+              .child(this.state.listViewData[rowId]["key"])
+              .set(null);
+            }
+            catch (error) {
+              const { code, message } = error;
+              Alert.alert(this.Global.APP_NAME, message);
+            }
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
     newData.splice(rowId, 1);
     this.setState({ listViewData: newData });
   }
-  deleteRowAddtoWishList(secId, rowId, rowMap) {
+  deleteRowAddtoWishList = async (secId, rowId, rowMap) => {
+                //xoa ra khoi lovedList (ignore) them vao WishList
+                try {
+                  debugger
+                  await firebase
+                  .database()
+                  .ref("lovedlist")
+                  .child(this.Global.currentUserId)
+                  .child(this.state.listViewData[rowId]["key"])
+                  .set(null);
+                  //them vao wishlist
+                  await firebase
+                  .database()
+                  .ref("wishlist")
+                  .child(this.Global.currentUserId)
+                  .child(this.state.listViewData[rowId]["key"])
+                  .set(true);
+                }
+                catch (error) {
+                  const { code, message } = error;
+                  Alert.alert(this.Global.APP_NAME, message);
+                }
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
     newData.splice(rowId, 1);
