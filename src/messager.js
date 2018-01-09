@@ -32,7 +32,8 @@ export default class Example extends React.Component {
       loadEarlier: false,
       typingText: null,
       isLoadingEarlier: false,
-      conversationId: ""
+      conversationId: "",
+      showUserAvatar: true
     };
 
     this.Global = this.props.Global;
