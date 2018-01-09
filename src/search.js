@@ -41,7 +41,7 @@ import { _ } from "react-native-mobx/node_modules/mobx";
 import { async } from "@firebase/util";
 
 import citys from "./data/citys";
-import dictricts from "./data/dictricts";
+import districts from "./data/districts";
 const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
 const data = require("./data/api.json");
@@ -72,7 +72,7 @@ export default class SearchFriend extends Component {
       age2: 40,
       name: "Huong Giang Ido",
       selectedCity: "Select City",
-      selectedDictrict: "Select Dictrict",
+      selectedDistrict: "Select District",
       Quote: "A woman gives and forgives, a man gets and forgets",
       sliderOneChanging: false,
       sliderOneValue: [5],
@@ -337,13 +337,29 @@ export default class SearchFriend extends Component {
         this.showError(this.Global.errorMessage.noMatch);
         return;
       }
-      await firebase
-        .database()
-        .ref("ignores")
-        .child(this.Global.currentUserId)
-        .child(otherUserId)
-        .set(true);
-
+      // kiem tra A co nam trong loved list cua user
+      await firebase.database().ref("lovedList")
+      .child(this.Global.currentUserId)
+      .child(otherUserId)
+      .once("value", snapshot => {
+        // neu User -> lovedlist -> A
+        if (snapshot.val()) {
+          // xoa A ra khoi lovedlist cua User
+          firebase
+          .database()
+          .ref("lovedList")
+          .child(this.Global.currentUserId)
+          .child(otherUserId)
+          .set(null);
+        }
+        // add to ignore list
+          firebase
+          .database()
+          .ref("ignores")
+          .child(this.Global.currentUserId)
+          .child(otherUserId)
+          .set(true);
+      })
       this.autoLoadNew();
     } else {
       // add to wish list
@@ -351,17 +367,48 @@ export default class SearchFriend extends Component {
         this.showError(this.Global.errorMessage.noMatch);
         return;
       }
-      await firebase
-        .database()
-        .ref("wishList")
+      // kiem tra A co nam trong loved list cua User hien tai khong
+        firebase.database().ref("lovedList")
         .child(this.Global.currentUserId)
         .child(otherUserId)
-        .set(true);
-
+        .once("value", snapshot => {
+          // neu User -> lovedlist -> A
+          if (snapshot.val()) {
+            // xoa A ra khoi lovedlist cua User
+            firebase
+            .database()
+            .ref("lovedList")
+            .child(this.Global.currentUserId)
+            .child(otherUserId)
+            .set(null);
+            // add to wishlist
+            firebase
+            .database()
+            .ref("wishlist")
+            .child(this.Global.currentUserId)
+            .child(otherUserId)
+            .set(true);
+          }
+          // neu User -> khong nam trong lovedlist -> A
+          else {
+            firebase
+            .database()
+            .ref("wishList")
+            .child(this.Global.currentUserId)
+            .child(otherUserId)
+            .set(true);
+            // add to loved list
+            firebase
+            .database()
+            .ref("lovedList")
+            .child(otherUserId)
+            .child(this.Global.currentUserId)
+            .set(true);
+          }
+        })
       this.autoLoadNew();
     }
   };
-
   autoLoadNew = () => {
     var { userIds, currentIndex } = this.state;
     const otherUserId = userIds[currentIndex];
@@ -490,7 +537,7 @@ export default class SearchFriend extends Component {
                   onSubmit={option => {
                     this.setState({
                       selectedCity: option,
-                      selectedDictrict: "Select Dictrict"
+                      selectedDistrict: "Select District"
                     });
                   }}
                 />
@@ -507,13 +554,13 @@ export default class SearchFriend extends Component {
                     size={24}
                     style={{ marginLeft: 20 }}
                   />
-                  <Text style={styles.dictricts}>
-                    {this.state.selectedDictrict}
+                  <Text style={styles.districts}>
+                    {this.state.selectedDistrict}
                   </Text>
                 </TouchableOpacity>
                 <SimplePicker
                   ref={"picker2"}
-                  options={dictricts}
+                  options={districts}
                   itemStyle={{
                     fontSize: 25,
                     color: "#F15F66",
@@ -528,20 +575,20 @@ export default class SearchFriend extends Component {
                   confirmText="Select"
                   onSubmit={option => {
                     this.setState({
-                      selectedDictrict: option
+                      selectedDistrict: option
                     });
                   }}
                 />
               </Animated.View>
             </Expand>
-            {/* <TouchableOpacity
+            <TouchableOpacity
               style={styles.toggle}
               onPress={() => this.setState({ open: !this.state.open })}
             >
               <Text style={this.state.open ? styles.arrow : styles.arrow2}>
                 {this.state.open ? "SEARCH AROUND ▲" : "SEARCH WITH ADDRESS ▼"}
               </Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </View>
         </ScrollView>
         <TouchableOpacity onPress={this.search}>
@@ -771,7 +818,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     backgroundColor: "transparent"
   },
-  dictricts: {
+  districts: {
     fontSize: 14,
     color: "#DDDDDD",
     marginTop: 2,

@@ -30,7 +30,7 @@ const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
 import Global from "./models/global";
 import firebase from "firebase";
-import { validateArgCount } from "@firebase/util";
+import { validateArgCount, async } from "@firebase/util";
 @autobind
 @observer
 export default class Love extends Component {
@@ -146,11 +146,34 @@ export default class Love extends Component {
     this.Global.firstLogin = false;
   }
 
-  deleteRow(secId, rowId, rowMap) {
+  deleteRow = async (secId, rowId, rowMap) => {
+    console.log(this.state.listViewData);
+    debugger
+        //xoa ra khoi wishlist
+        try {
+          debugger
+          await firebase
+          .database()
+          .ref("wishlist")
+          .child(this.Global.currentUserId)
+          .child(this.state.listViewData[rowId]["key"])
+          .set(null);
+          console.log(this.state.listViewData[rowId]["key"]);
+          debugger
+        }
+        catch (error) {
+          const { code, message } = error;
+          Alert.alert(this.Global.APP_NAME, message);
+          console.log(message);
+        debugger
+          
+        }
+        debugger
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
     newData.splice(rowId, 1);
     this.setState({ listViewData: newData });
+
   }
 
   _renderRow(rowData) {

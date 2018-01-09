@@ -66,7 +66,7 @@ export default class ListLoved extends Component {
     try {
        await firebase
         .database()
-        .ref("wishList")
+        .ref("lovedList")
         .child(this.Global.currentUserId)
         .once("value", function(snapshots) {
           snapshots.forEach(function(data) {
