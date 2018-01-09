@@ -39,7 +39,7 @@ export default class Main extends Component {
       <ImageBackground source={background} style={styles.waperContainer} >
           <Image source={logo} style={styles.logoStyle}/>
                 <Text style={styles.textName}>Simple</Text>
-                <Text style={styles.textSlogan}>Gần nhau hơn - abcxyz</Text>
+                <Text style={styles.textSlogan}>Dating is simple</Text>
         <View style={styles.containerButton}>
         <TouchableOpacity
                     onPress={() => {
