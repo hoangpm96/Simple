@@ -25,6 +25,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import SimplePicker from 'react-native-simple-picker';
 import TagInput from 'react-native-tag-input';
 import Modal from "react-native-modalbox";
+import firebase from "firebase";
 const { width, height } = Dimensions.get("window");
 const inputProps = {
     keyboardType: 'default',
@@ -46,18 +47,74 @@ export default class LoverProfile extends Component {
         super(props);
         this.Global = this.props.Global;
         this.state = {
-            Name: "Huong Giang Ido",
-            Age: "21",
-            Height: "165",
-            Weight: "45",
-            Gender: "Male",
-            Address: "Quang Ngai",
-            Quote: "A woman gives and forgives, a man gets and forgets",
-            selectedCity: "Ho Chi Minh City",
-            selectedDictrict: "Dictrict 1",
-            tags: ["dog", "guitar", "dance", "swimming", "readbook"],
+            Name: "",
+            Age: "",
+            Height: "",
+            Weight: "",
+            Address: "",
+            Quote: "",
+            Gender: '',
+            Weight: '',
+            Height: '',
+            City: "",
+            District: "",
+            lover: 0,
+            loved: 0,
+            tags: [],
             text: "",
+            Avatar: null,
+            animating: false
         };
+    }
+    componentWillMount() {
+        this.getInforUser(this.Global.loverId);
+      }
+    
+      getInforUser = async (userId) => {
+        try {
+            this.setState({
+                animating: true
+            })
+            await firebase
+            .database()
+            .ref("users")
+            .orderByKey()
+            .equalTo(userId)
+            .once("value", snapshot => {
+              if (snapshot.val()) {
+                let value = Object.values(snapshot.val());
+                this.setState({
+                    Name: value[0].name,
+                    Age: (value[0].age).toString(),
+                    Height: (value[0].height).toString(),
+                    Weight: (value[0].weight).toString(),
+                    City: value[0].city,
+                    District: value[0].district,
+                    Quote: value[0].quote,
+                    Avatar: value[0].avatarUrl,
+                    lover: value[0].lover,
+                    loved: value[0].loved,
+                    Gender: value[0].gender,
+                })
+                let array = []
+                for (var tag in value[0].tags) {
+                        array.push(tag),
+                    this.setState({tags:  array});
+                }
+                this.setState({
+                    animating: false
+                })
+              } else {
+                Alert.alert(this.Global.APP_NAME, "User had been delete.");
+                return;
+              }
+            });
+        }
+        catch(error) {
+            this.setState({
+                animating: false
+            })
+        }
     }
     onChangeTags = (tags) => {
     }
@@ -69,13 +126,13 @@ export default class LoverProfile extends Component {
             <View style={styles.background}>
                 <View style={styles.containerInfo}>
                     <Image style={styles.avatar} 
-                    source={{ uri: "https://znews-photo-td.zadn.vn/w1024/Uploaded/ohunua2/2017_08_21/linh14.jpg" }}
+                    source={this.state.Avatar ? {uri: this.state.Avatar}: require("./img/avatar-non.png") }
                     />
                     <Text style={styles.textName}>{this.state.Name}</Text>
                     <View style={styles.containerlover}>
-                        <Text style={[styles.lover, { textAlign: 'right', marginRight: 5, marginTop: 5 }]}>13 lover</Text>
+                        <Text style={[styles.lover, { textAlign: 'right', marginRight: 5, marginTop: 5 }]}>{this.state.lover} lover</Text>
                         <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#ffffff', marginTop: 5 }}>|</Text>
-                        <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5, marginTop: 5 }]}>13 loved</Text>
+                        <Text style={[styles.lover, { textAlign: 'left', marginLeft: 5, marginTop: 5 }]}>{this.state.loved} loved</Text>
                     </View>
                     <TouchableOpacity
                         style={styles.backButton}
@@ -97,7 +154,7 @@ export default class LoverProfile extends Component {
                     <View style={styles.viewGenderAge}>
                         <Text style={styles.text}>Gender:</Text>
                             <Text style={styles.changeElement}>
-                                {this.state.Gender}</Text>
+                                {this.state.Gender === 'male' ? "Male" : "Female"}</Text>
                         <Text style={styles.text}>Age: </Text>
                         <Text style={styles.changeElement}>
                                 {this.state.Age}</Text>
@@ -105,10 +162,10 @@ export default class LoverProfile extends Component {
                     <View style={styles.viewGenderAge}>
                         <Text style={styles.text}>Weight:</Text>
                         <Text style={styles.changeElement}>
-                                {this.state.Weight}</Text>
+                                {this.state.Weight === "Select Weight" ? "Null" : this.state.Weight}</Text>
                         <Text style={styles.text}>Height: </Text>
                         <Text style={styles.changeElement}>
-                                {this.state.Height}</Text>
+                                {this.state.Height === "Select Height" ? "Null" : this.state.Height}</Text>
                     </View>
                     <Text style={[styles.text, { marginTop: 10, marginLeft: 10 }]}>Hobbies: </Text>
 
@@ -131,11 +188,11 @@ export default class LoverProfile extends Component {
                     <Text style={[styles.text, { marginLeft: 10, marginTop: 10 }]}>Address:</Text>
                     <View style={styles.containerAddress}>
                         <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedCity}</Text>
+                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.City}</Text>
                     </View>
                     <View style={[styles.containerAddress, { marginTop: 5, marginBottom: 50 }]}>
                         <Icon name="angle-down" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.selectedDictrict}</Text>
+                        <Text style={{ fontSize: 14, color: '#DDDDDD', marginTop: 2, marginLeft: 10 }}>{this.state.District}</Text>
                     </View>
                 </ScrollView>
             </View>

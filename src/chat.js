@@ -253,7 +253,7 @@ export default class Chat extends Component {
         <Animated.View style={styles.headerContainer}>
           <Text style={styles.headerText}>CHAT</Text>
         </Animated.View>
-        <View style={styles.loveContainer}>
+        <View style={styles.searchContainer}>
           <Icon name="search" color="#ffffff" size={22} style={{ marginLeft: 10 }} />
           <TextInput placeholder={"Search by username"} style={styles.styleUserName} onChangeText={username => {
               this.setState({ username });
@@ -376,5 +376,14 @@ const styles = StyleSheet.create({
       fontSize: 14,
       color: '#ffffff',
       width: width - 130,
+    },
+    searchContainer: {
+      height: 40,
+      width: width,
+      backgroundColor: 'rgba(255,255,255,0.2)',
+      alignItems: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
     }
 });

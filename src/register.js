@@ -59,7 +59,7 @@ export default class Register extends Component {
           avatarUrl: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/default-avatar%2FSimple-60-3x.png?alt=media&token=829e788d-4c22-4502-b833-d86f132ab352",
           height: "Select Height",
           weight: "Select Weight",
-          quote: "Dating is simpler",
+          quote: "Dating is simple",
           name: username,
           city: "Select City",
           district: "Select District",

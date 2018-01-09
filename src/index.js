@@ -17,6 +17,7 @@ import Example from "./message/App"
 import Chat from "./chat";
 import AddChat from "./addChat";
 import Messager from "./messager";
+import ListLoved from "./listLoved";
 import Register from "./register"
 import Main from "./main";
 import SearchFriend from "./search";
@@ -129,6 +130,16 @@ export default class App extends Component {
             key="love"
             title=""
             component={Love}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0,
+            }}
+          />
+          <Scene
+            // initial
+            key="listLoved"
+            title=""
+            component={ListLoved}
             hideNavBar={true}
             sceneStyle={{
               paddingTop: 0,

@@ -26,7 +26,8 @@ class Global {
   @observable registerIsMale = false;
   @observable isFooter = false;
 
-  //
+  //view lover profile
+  @observable loverId = "";
 
   @observable myCart = [];
   @observable pressStatus = "";

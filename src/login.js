@@ -32,7 +32,7 @@ export default class Login extends Component {
     background = require("./img/background.png");
     logo = require("./img/logo.png");
     this.state = {
-      userName: "HoangPhan961602",
+      userName: "HoangPhan2",
       pass: "123456",
       isChecked: false, 
       animating: false

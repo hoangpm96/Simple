@@ -33,7 +33,7 @@ import firebase from "firebase";
 import { validateArgCount } from "@firebase/util";
 @autobind
 @observer
-export default class Love extends Component {
+export default class ListLoved extends Component {
   constructor(props) {
     super(props);
     this.Global = this.props.Global;
@@ -94,17 +94,13 @@ export default class Love extends Component {
             .once("value", snapshot => {
               if (snapshot.val()) {
                 let value = Object.values(snapshot.val());
-                value[0].key = snapshot.node_.children_.root_.key;
                 tempUsers.push(value[0]);
-                // debugger
               }
             })
         })
       ).then(data => {
          let userData = this.createDataList(tempUsers);
          this.setState({ listViewData: userData });
-        //  console.log(this.state.listViewData)
-        //  debugger
       });
 
       // this.showScaleAnimationDialog();
@@ -152,14 +148,18 @@ export default class Love extends Component {
     newData.splice(rowId, 1);
     this.setState({ listViewData: newData });
   }
-
+  deleteRowAddtoWishList(secId, rowId, rowMap) {
+    rowMap[`${secId}${rowId}`].closeRow();
+    const newData = [...this.state.listViewData];
+    newData.splice(rowId, 1);
+    this.setState({ listViewData: newData });
+  }
   _renderRow(rowData) {
     return (
       <TouchableOpacity
         onPress={() => {
           this.Global.isFooter = true;
-          this.Global.loverId = rowData.key.toString();
-          this.Global.pressStatus = "love";
+          // this.Global.pressStatus = "love";
           Actions.loverProfile();
         }}
         style={styles.viewContainer}
@@ -179,7 +179,6 @@ export default class Love extends Component {
             * Height: {rowData.height}
           </Text>
         </View>
-        
       </TouchableOpacity>
     );
   }
@@ -188,21 +187,40 @@ export default class Love extends Component {
     return (
       <View style={styles.background}>
         <Animated.View style={styles.headerContainer}>
-          <Text style={styles.headerText}>WISH LIST</Text>
+          <Text style={styles.headerText}>LOVED LIST</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              this.Global.isFooter = true;
+              Actions.pop();
+              this.Global.pressStatus = "love";
+            }}
+          >
+            <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
+          </TouchableOpacity>
         </Animated.View>
         <SwipeListView
           contentContainerStyle={styles.loveContainer}
           dataSource={this.ds.cloneWithRows(this.state.listViewData)}
           renderRow={this._renderRow}
           renderHiddenRow={(data, secId, rowId, rowMap) => (
+            <View style = {{flexDirection: 'row', alignSelf: "flex-end"}}>
             <TouchableOpacity
               style={[styles.backRightBtnRight]}
               onPress={_ => this.deleteRow(secId, rowId, rowMap)}
             >
               <Icon name="trash" color="#F15F66" size={32} />
             </TouchableOpacity>
+            <TouchableOpacity
+            style={[styles.backRightBtnRight2]}
+            onPress={_ => this.deleteRowAddtoWishList(secId, rowId, rowMap)}
+          >
+            <Icon name="check" color="#F15F66" size={32} />
+          </TouchableOpacity>
+            </View>
           )}
-          rightOpenValue={-75}
+          rightOpenValue={-150}
+          // leftOpenValue={75}
           disableRightSwipe={true}
           refreshControl={
             <RefreshControl
@@ -211,78 +229,6 @@ export default class Love extends Component {
             />
           }
         />
-        <TouchableOpacity
-          onPress={() => {
-            this.Global.isFooter = true;
-            this.Global.pressStatus = "love";
-            Actions.listLoved();
-          }}
-          style={styles.containterAdd}
-        >
-          <Text style={styles.textAdd}>+</Text>
-        </TouchableOpacity>
-        <PopupDialog
-          dialogTitle={
-            <DialogTitle
-              title="People you may like!"
-              titleStyle={{ backgroundColor: "#CEB7C3" }}
-              titleTextStyle={{
-                color: "#ffff",
-                fontSize: 18,
-                fontWeight: "bold"
-              }}
-            />
-          }
-          ref={popupDialog => {
-            this.scaleAnimationDialog = popupDialog;
-          }}
-          dialogAnimation={scaleAnimation}
-          width={width < 375 ? width - 50 : width - 40}
-          height={width < 375 ? width + 140 : width + 160}
-          dialogStyle={{ backgroundColor: "rgba(202,148,157,1)" }}
-        >
-          <View style={styles.dialogContentView}>
-            <View style={styles.viewQuote}>
-              <Text style={styles.textQuote}> {this.state.Quote}</Text>
-            </View>
-            <Image
-              source={require("./img/HHKTeam.jpg")}
-              style={styles.avatar}
-            />
-            <View style={styles.containerButton01}>
-              <TouchableOpacity
-                onPress={() => {
-                  this.scaleAnimationDialog.dismiss();
-                  this.Global.firstLogin = false;
-                }}
-                style={[
-                  styles.waperButton,
-                  { backgroundColor: "#FFA8AC", marginRight: 5 }
-                ]}
-              >
-                <Text style={styles.textButton}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  this.Global.isFooter = false;
-                  this.Global.pressStatus = "chat";
-                  Actions.messager();
-                }}
-                style={[
-                  styles.waperButton,
-                  { backgroundColor: "#F15F66", marginLeft: 5 }
-                ]}
-              >
-                <Text style={styles.textButton}>Chat</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.nameAge}>
-              <Text style={{ color: "#ffffff", fontSize: 16 }}>
-                {this.state.name} - {this.state.age2}
-              </Text>
-            </View>
-          </View>
-        </PopupDialog>
       </View>
     );
   }
@@ -401,6 +347,14 @@ const styles = StyleSheet.create({
     height: 72,
     alignSelf: "flex-end"
   },
+  backRightBtnRight2: {
+    backgroundColor: 'green',//"#Ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 72,
+    height: 72,
+    alignSelf: "flex-end"
+  },
   backTextWhite: {
     color: "#F15F66"
   },
@@ -471,5 +425,11 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center"
-  }
+  },
+  backButton: {
+    justifyContent: 'center',
+    position: 'absolute',
+    top: height < 812 ? 30 : 50,
+    left: 10
+  },
 });
