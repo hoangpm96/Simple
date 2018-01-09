@@ -146,7 +146,6 @@ export default class ListLoved extends Component {
   deleteRow = async (secId, rowId, rowMap) => {
             //xoa ra khoi lovedList (ignore)
             try {
-              debugger
               await firebase
               .database()
               .ref("lovedlist")
@@ -166,7 +165,6 @@ export default class ListLoved extends Component {
   deleteRowAddtoWishList = async (secId, rowId, rowMap) => {
                 //xoa ra khoi lovedList (ignore) them vao WishList
                 try {
-                  debugger
                   await firebase
                   .database()
                   .ref("lovedlist")
@@ -180,6 +178,16 @@ export default class ListLoved extends Component {
                   .child(this.Global.currentUserId)
                   .child(this.state.listViewData[rowId]["key"])
                   .set(true);
+
+                  // add table notifycation
+                  await firebase
+                  .database()
+                  .ref("notifications")
+                  .push({
+                    receiver: this.state.listViewData[rowId]["key"],
+                    sender: this.Global.currentUserId,
+                    // token: this.Global.token
+                  });
                 }
                 catch (error) {
                   const { code, message } = error;

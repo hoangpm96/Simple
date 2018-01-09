@@ -51,7 +51,7 @@ export default class Chat extends Component {
     try {
       await firebase
         .database()
-        .ref("wishList")
+        .ref("wishlist")
         .child(this.Global.currentUserId)
         .once("value", function(snapshots) {
           snapshots.forEach(function(data) {

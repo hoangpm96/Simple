@@ -109,6 +109,24 @@ export default class LoverProfile extends Component {
                 return;
               }
             });
+//cap nhat lover/loved
+
+            await firebase
+            .database()
+            .ref("wishlist")
+            .orderbyKey()
+            .equalTo(userId)
+            .once("value", snapshot => {
+                debugger
+                if (snapshot.val()){
+                    let abc = snapshot.val();
+                    debugger
+                }
+                else {
+                    debugger
+                    let abc = 0;
+                }
+            })
         }
         catch(error) {
             this.setState({

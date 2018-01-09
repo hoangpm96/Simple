@@ -388,6 +388,15 @@ export default class SearchFriend extends Component {
             .child(this.Global.currentUserId)
             .child(otherUserId)
             .set(true);
+
+            firebase
+            .database()
+            .ref("notifications")
+            .push({
+              receiver: otherUserId,
+              sender: this.Global.currentUserId,
+              // token: this.Global.token
+            });
           }
           // neu User -> khong nam trong lovedlist -> A
           else {

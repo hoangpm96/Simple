@@ -66,14 +66,13 @@ export default class Love extends Component {
     try {
        await firebase
         .database()
-        .ref("wishList")
+        .ref("wishlist")
         .child(this.Global.currentUserId)
         .once("value", function(snapshots) {
           snapshots.forEach(function(data) {
             tempArr.push(data.key);
           });
         });
-
       this.loadWishListUser(tempArr);
     }catch(error) {
 
@@ -96,7 +95,6 @@ export default class Love extends Component {
                 let value = Object.values(snapshot.val());
                 value[0].key = snapshot.node_.children_.root_.key;
                 tempUsers.push(value[0]);
-                // debugger
               }
             })
         })
@@ -104,7 +102,6 @@ export default class Love extends Component {
          let userData = this.createDataList(tempUsers);
          this.setState({ listViewData: userData });
         //  console.log(this.state.listViewData)
-        //  debugger
       });
 
       // this.showScaleAnimationDialog();
@@ -149,7 +146,6 @@ export default class Love extends Component {
   deleteRow = async (secId, rowId, rowMap) => {
         //xoa ra khoi wishlist
         try {
-          debugger
           await firebase
           .database()
           .ref("wishlist")
