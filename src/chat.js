@@ -263,13 +263,13 @@ export default class Chat extends Component {
         <SwipeListView contentContainerStyle={styles.loveContainer} dataSource={this.ds.cloneWithRows(this.state.listViewData)} renderRow={this._renderRow} renderHiddenRow={(data, secId, rowId, rowMap) => <TouchableOpacity style={[styles.backRightBtnRight]} onPress={_ => this.deleteRow(secId, rowId, rowMap)}>
               <Icon name="trash" color="#F15F66" size={32} />
             </TouchableOpacity>} rightOpenValue={-75} disableRightSwipe={true} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onReLoad.bind(this)} />} />
-        <TouchableOpacity onPress={() => {
+        {/* <TouchableOpacity onPress={() => {
             this.Global.isFooter = false;
             this.Global.pressStatus = "search";
             Actions.addchat();
           }} style={styles.containterAdd}>
           <Icon name="search" color="#ffffff" size={23} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>;
   }
 }
