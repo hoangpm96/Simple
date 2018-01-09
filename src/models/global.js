@@ -20,6 +20,7 @@ class Global {
   @observable currentUserGender = "";
   @observable currentUserDistrict = "";
   @observable currentUserCity = "";
+  @observable currentUserAvatar = "";
   // For Chat
   @observable selectedChatUser = {};
   @observable selectedConversation = "";

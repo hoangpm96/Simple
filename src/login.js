@@ -32,7 +32,7 @@ export default class Login extends Component {
     background = require("./img/background.png");
     logo = require("./img/logo.png");
     this.state = {
-      userName: "HoangPhan2",
+      userName: "",
       pass: "123456",
       isChecked: false, 
       animating: false
@@ -57,6 +57,8 @@ export default class Login extends Component {
             this.Global.currentUserGender = value[0].gender;
             this.Global.currentUserDistrict = value[0].district;
             this.Global.currentUserCity = value[0].city;
+            this.Global.currentUserAvatar = value[0].avatarUrl;
+            
             let email = value[0].email;
             this.Global.currentUser = snapshot.val()
             //verify password

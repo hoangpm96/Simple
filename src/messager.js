@@ -129,9 +129,12 @@ export default class Example extends React.Component {
       message.createdAt = ele.createdAt;
       // Không phải tin của user hiện tại
       const userId = ele.senderId == this.Global.currentUserId ? 1 : 2;
+      const avatarUrl = ele.senderId == this.Global.currentUserId ? this.Global.currentUserAvatar : this.Global.selectedChatUser.avatarUrl;
       message.user = {
         _id: userId,
-        name: ele.username
+        name: ele.username,
+        avatar: avatarUrl
+
       };
       message.createdAt = new Date(ele.createdAt);
       arr.push(message);
