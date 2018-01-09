@@ -75,7 +75,7 @@ export default class App extends Component {
         >
 
           <Scene
-            initial
+            // initial
             key="main"
             title=""
             component={Main}
@@ -105,7 +105,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="login"
             title=""
             component={Login}

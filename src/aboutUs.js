@@ -13,7 +13,8 @@ import {
   Switch,
   Button,
   TouchableHighlight,
-  Alert
+  Alert,
+  ScrollView
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Modal from "react-native-modalbox";
@@ -53,27 +54,28 @@ export default class AboutUs extends Component {
           style={styles.avatar}
         />
         <Text style={styles.textName}>{this.state.teamName}</Text>
-
+        
         <Text style={styles.textHeader1}>ABOUT US</Text>
+        <ScrollView style={styles.containerEdit}>
           <View style={[styles.objectText, {
             marginTop: height < 812 ? (height < 736 ? (height < 667 ? 10 : 15 ) : 15 ) : 15,
           }]}>
             <Text style={styles.titleText}>Subject:</Text>
-            <Text style={styles.text}>The Open Source Project</Text>
+            <Text style={styles.text}>* The Open Source Project</Text>
           </View>
           <View style={styles.objectText}>
             <Text style={styles.titleText}>Instructor:</Text>
-            <Text style={styles.text}>Trần Anh Dũng</Text>
-            <Text style={styles.text}>Phan Trung Hiếu</Text>
-            <Text style={styles.text}>Hầu Nguyễn Thành Nam</Text>
-            <Text style={styles.text}>Vũ Thanh Nguyên</Text>
-            <Text style={styles.text}>Phạm Thi Vương</Text>
+            <Text style={styles.text}>* Trần Anh Dũng</Text>
+            <Text style={styles.text}>* Phan Trung Hiếu</Text>
+            <Text style={styles.text}>* Hầu Nguyễn Thành Nam</Text>
+            <Text style={styles.text}>* Vũ Thanh Nguyên</Text>
+            <Text style={styles.text}>* Phạm Thi Vương</Text>
           </View>
           {/* <View> */}
-            <Text style={[styles.titleText, {marginTop: 5, width: width - 40}]}>Students: </Text>
-            <Text style={[styles.text, {marginTop: 5, width: 250}]}>* Nguyễn Thị Hiền - 14520272</Text>
-            <Text style={[styles.text, {marginTop: 5, width: 250}]}>* Phan Minh Hoàng - 14520317</Text>
-            <Text style={[styles.text, {marginTop: 5, width: 250}]}>* Nguyễn Văn Khoa - 14520429</Text>
+            <Text style={[styles.titleText, {marginTop: 5, width: width - 40, marginLeft: 45}]}>Students: </Text>
+            <Text style={[styles.text, {marginTop: 5, width: 250, marginLeft: 45}]}>* Nguyễn Thị Hiền - 14520272</Text>
+            <Text style={[styles.text, {marginTop: 5, width: 250, marginLeft: 45}]}>* Phan Minh Hoàng - 14520317</Text>
+            <Text style={[styles.text, {marginTop: 5, width: 250, marginLeft: 45}]}>* Nguyễn Văn Khoa - 14520429</Text>
           {/* </View> */}
         <Text style={styles.textConnect}>
           Connect with us
@@ -98,6 +100,8 @@ export default class AboutUs extends Component {
             <Icon name="google" color='#ffffff' size={height < 667 ? 30 : 40} style={{ marginLeft: 7, backgroundColor: 'transparent' }} />
           </TouchableOpacity>
         </View>
+        </ScrollView>
+
       </View>
     );
   }
@@ -130,10 +134,14 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     backgroundColor: 'transparent',
     marginTop: height < 812 ? (height < 736 ? (height < 667 ? 20 : 35 ) : 50 ) : 70,
+    alignSelf: 'center'
   },
   waperConnect: {
     marginTop: 10,
     flexDirection: 'row',
+    marginBottom: 40,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   textHeader1: {
     marginTop: height < 812 ? (height < 736 ? (height < 667 ? 15 : 25 ) : 35 ) : 60,
@@ -158,9 +166,14 @@ const styles = StyleSheet.create({
     textAlign: 'left'
   },
   objectText: { 
-    flexDirection: 'row', 
+    flexDirection: 'column', 
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    marginTop: 5
-  }
+    marginTop: 5,
+    marginLeft: 45
+  },
+  containerEdit: {
+    width: width,
+
+},
 })
