@@ -22,6 +22,12 @@ import { observer } from "mobx-react/native";
 import firebase from "firebase";
 import Global from "./models/global";
 import { async } from "@firebase/util";
+import FCM, {
+  FCMEvent,
+  RemoteNotificationResult,
+  WillPresentNotificationResult,
+  NotificationType
+} from "react-native-fcm";
 
 @autobind
 @observer
@@ -61,6 +67,15 @@ export default class Login extends Component {
             
             let email = value[0].email;
             this.Global.currentUser = snapshot.val()
+             FCM.getFCMToken().then(token => {
+               this.Global.token = token;
+                firebase.database()
+                      .ref("users")
+                      .child(this.Global.currentUserId )
+                      .child("token").set(token)
+              //  debugger;
+               // store fcm token in your server
+             });
             //verify password
             this.login(email, password);
           } else {
@@ -83,6 +98,7 @@ export default class Login extends Component {
       // console.log(this.Global.currentUserId);
       // this.Global.pressStatus = "love";
       this.Global.firstLogin = false;
+     
       Actions.love();
       })
       .catch((error) => {
