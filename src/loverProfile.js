@@ -140,6 +140,7 @@ export default class LoverProfile extends Component {
                             this.Global.isFooter = true;
                             Actions.pop();
                             this.Global.pressStatus = "love";
+                            this.Global.loverId = "";
                         }}
                     >
                         <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />

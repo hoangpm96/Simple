@@ -94,6 +94,7 @@ export default class ListLoved extends Component {
             .once("value", snapshot => {
               if (snapshot.val()) {
                 let value = Object.values(snapshot.val());
+                value[0].key = snapshot.node_.children_.root_.key;
                 tempUsers.push(value[0]);
               }
             })
@@ -159,7 +160,8 @@ export default class ListLoved extends Component {
       <TouchableOpacity
         onPress={() => {
           this.Global.isFooter = true;
-          // this.Global.pressStatus = "love";
+          this.Global.pressStatus = "love";
+          this.Global.loverId = rowData.key.toString();
           Actions.loverProfile();
         }}
         style={styles.viewContainer}
