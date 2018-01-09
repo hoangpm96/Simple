@@ -40,11 +40,11 @@ import Global from "./models/global";
 import { _ } from "react-native-mobx/node_modules/mobx";
 import { async } from "@firebase/util";
 
-import citys from "./data/citys";
-import districts from "./data/districts";
 const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
-const data = require("./data/api.json");
+const addressData = require('./data/address.json');
+const citys = [];
+const districts = [];
 
 const inputProps = {
   keyboardType: "default",
@@ -86,6 +86,24 @@ export default class SearchFriend extends Component {
       userIds: [],
       avatarUrl: ""
     };
+  }
+  componentWillMount() {
+    this.createSelect();
+}
+  createSelect() {
+    for (var city of addressData) {
+        citys.push(city.name)
+    }
+    // this.setState({
+    //     animating: false
+    // })
+}
+    getDistrict(cityName) {
+    const city = addressData.find(m => m.name == cityName );
+    districts = [];
+    for (district in city.districts){
+        districts.push(city.districts[district]);
+    }
   }
   onChangeTags = tags => {
     this.setState({ tags });
@@ -548,6 +566,7 @@ export default class SearchFriend extends Component {
                       selectedCity: option,
                       selectedDistrict: "Select District"
                     });
+                    this.getDistrict(option)
                   }}
                 />
 

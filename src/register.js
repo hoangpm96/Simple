@@ -63,8 +63,6 @@ export default class Register extends Component {
           name: username,
           city: "Select City",
           district: "Select District",
-          lover: 0,
-          loved: 0
         });
     
 
