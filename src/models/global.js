@@ -17,6 +17,9 @@ class Global {
   @observable currentUserId = "";
   @observable currentUser = "";
   @observable currentUsername = "";
+  @observable currentUserGender = "";
+  @observable currentUserDistrict = "";
+  @observable currentUserCity = "";
   // For Chat
   @observable selectedChatUser = {};
   @observable selectedConversation = "";

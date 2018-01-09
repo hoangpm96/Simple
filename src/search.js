@@ -129,8 +129,36 @@ export default class SearchFriend extends Component {
   search = async () => {
     this.setState({ animating: true });
     var tempArr = this.state.userIds;
-    
+    var ignoreList = [];
+    var wishList = [];
     try {
+
+       // Lấy danh sách wish list hiện tại 
+       await firebase
+        .database()
+        .ref("wishList")
+        .child(this.Global.currentUserId)
+            .once("value", function(snapshots) {
+              snapshots.forEach(function(data) {
+                wishList.push(data.key);
+              });
+            });
+
+      // Lấy danh sách ignore list hiện tại 
+      await firebase
+            .database()
+            .ref("ignores")
+            .child(this.Global.currentUserId)
+            .once("value", function(snapshots) {
+              snapshots.forEach(function(data) {
+                
+                ignoreList.push(data.key);
+              });
+            });
+          
+
+
+
       // lấy danh sách tất cả các người dùng khác có tags đang tìm
       await Promise.all(
         this.state.tags.map(async tag => {
@@ -147,11 +175,23 @@ export default class SearchFriend extends Component {
       )
         .then(data => {
           // remove id của currentUser
-
           const index = tempArr.indexOf(this.Global.currentUserId);
           if (index > -1) {
             tempArr.splice(index, 1);
           }
+
+          // remove id cua ignoreList
+          tempArr = tempArr.filter(e => {
+            return ignoreList.indexOf(e) < 0;
+          });
+
+          // remove id cua wishList
+           tempArr = tempArr.filter(e => {
+             return wishList.indexOf(e) < 0;
+           });
+          ;
+
+          
           
           // debugger;
           // cập nhật lại tag hiện tại
@@ -159,23 +199,13 @@ export default class SearchFriend extends Component {
             userIds: tempArr
           }));
 
-          //TODO: Check gender
-
-          //TODO: Check với ignore list Id
-
-          //TODO: Check tuổi
-
-          //TODO: Check địa chỉ
-          let filterByUser = this.checkGender(this.state.userIds);
-          debugger;
-          var { userIds, currentIndex } = this.state;
-
-          if (userIds.length > 0 && currentIndex < userIds.length) {
-            // chỉ hiển thị lần đầu, lần sau nhấn ignore || like
-            this.loadUserFrom(userIds[currentIndex]);
-          } else {
-            this.showError(this.Global.errorMessage.noMatch);
-          }
+          // Check gender
+          //Check tuổi
+          //Check địa chỉ
+          this.checkUserMatch(this.state.userIds);
+          
+          
+          
         })
 
         .catch(function(e) {
@@ -186,14 +216,16 @@ export default class SearchFriend extends Component {
     }
   };
 
-  checkGender = async userIdArr => {
+  // filter on user's properties
+  checkUserMatch = async userIdArr => {
     let minAge = this.state.age;
     let maxAge = this.state.age2;
     let currentGender = this.Global.currentUserGender;
-    
+    let currentCity = this.Global.currentUserCity;
+    let currentDistrict = this.Global.currentUserDistrict;
     var tempUserIds = [];
     try {
-       Promise.all(
+       await Promise.all(
         userIdArr.map(async userId => {
           await firebase
             .database()
@@ -202,19 +234,39 @@ export default class SearchFriend extends Component {
             .once("value", function(snapshot) {
                 let userData = snapshot.val();
                 
-                if (Number(userData.age) <= maxAge && Number(userData.age) >= minAge) {
-                  if (userData.gender !== currentGender) {
-                    tempUserIds.push(snapshot.key);
-                  }
+                if (Number(userData.age) > maxAge || Number(userData.age) < minAge) {
+                    return;
                 }
-                
+               if (userData.gender === currentGender) {
+                   return;
+               }
+               if ( userData.city !== currentCity )  {
+                 return 
+               }
+               if (userData.district !== currentDistrict) {
+                 return;
+               }
+              tempUserIds.push(snapshot.key);
+
+              
             });
         })
       ).then(data => {
-        return tempUserIds;
-      });
-      
+        
+        debugger;
+         this.setState(prevState => ({ userIds: tempUserIds }));
+         var { userIds, currentIndex } = this.state;
 
+         if (userIds.length > 0 && currentIndex < userIds.length) {
+           // chỉ hiển thị lần đầu, lần sau nhấn ignore || like
+           this.loadUserFrom(userIds[currentIndex]);
+         } else {
+           this.showError(this.Global.errorMessage.noMatch);
+         }
+                
+      })
+
+      
 
     } catch (error) {}
   };

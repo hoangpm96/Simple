@@ -55,6 +55,8 @@ export default class Login extends Component {
             this.Global.currentUserId = keys[0];
             this.Global.currentUsername = value[0].username;
             this.Global.currentUserGender = value[0].gender;
+            this.Global.currentUserDistrict = value[0].district;
+            this.Global.currentUserCity = value[0].city;
             let email = value[0].email;
             this.Global.currentUser = snapshot.val()
             //verify password
