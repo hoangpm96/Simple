@@ -302,7 +302,7 @@ export default class SearchFriend extends Component {
             let email = value[0].email;
             this.setState({
               name: value[0].name,
-              age: value[0].age,
+              age2: value[0].age,
               Quote: value[0].quote, // TODO: Add user's quote
               avatarUrl: value[0].avatarUrl
             });

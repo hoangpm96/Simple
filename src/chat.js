@@ -102,7 +102,7 @@ export default class Chat extends Component {
     // TODO: Thêm các thômg tin cần thiết nếu cần
     var arr = [];
     for (let ele of rawData) {
-      ele.name = ele.username;
+      ele.username = ele.name;
       ele.chat = "chat message here";
       ele.lastActive = "";
       arr.push(ele);
@@ -189,7 +189,7 @@ export default class Chat extends Component {
           this.setState({ listViewData: this.state.saveResult });          
         }else {
           var arr = this.state.listViewData.filter(m =>
-            m.username.toLowerCase().includes(name.toLowerCase())
+            m.name.toLowerCase().includes(name.toLowerCase())
           );
           // debugger;
           this.setState({ listViewData: arr });
@@ -255,7 +255,7 @@ export default class Chat extends Component {
         </Animated.View>
         <View style={styles.searchContainer}>
           <Icon name="search" color="#ffffff" size={22} style={{ marginLeft: 10 }} />
-          <TextInput placeholder={"Search by username"} style={styles.styleUserName} onChangeText={username => {
+          <TextInput placeholder={"Search by name"} style={styles.styleUserName} onChangeText={username => {
               this.setState({ username });
               this.onSearchTextChange(username);
             }} placeholderTextColor={"#ffffff"} value={this.state.username} />

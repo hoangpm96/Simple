@@ -126,7 +126,7 @@ export default class Love extends Component {
       var arr = [];
       for (let ele of rawData) {
           ele.weight = 100;
-          ele.name = ele.username
+          ele.name = ele.name
           ele.height = 100;
           ele.hobbies = "random";
           ele.chat = "chat";
