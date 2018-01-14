@@ -49,6 +49,7 @@ export default class Love extends Component {
     };
 
     this._renderRow = this._renderRow.bind(this);
+    
   }
   showScaleAnimationDialog() {
     // this.scaleAnimationDialog.show();

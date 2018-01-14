@@ -51,7 +51,7 @@ export default class Register extends Component {
         .database()
         .ref("users")
         .push({
-          email: email,
+          email: email.toLowerCase(),
           created_at: creationTime,
           username: username,
           gender: this.Global.registerIsMale ? "male" : "female",
@@ -139,7 +139,7 @@ export default class Register extends Component {
                 style={{ marginLeft: 20 }}
               />
               <TextInput
-                placeholder={"User Name"}
+                placeholder={"Name"}
                 style={styles.styleUserName}
                 onChangeText={username => {
                   this.setState({ userName: username });

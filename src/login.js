@@ -38,13 +38,13 @@ export default class Login extends Component {
     background = require("./img/background.png");
     logo = require("./img/logo.png");
     this.state = {
-      userName: "",
+      email: "",
       pass: "",
       isChecked: false, 
       animating: false
     };
   }
-  findEmail = async (username, password) => {
+  updateUserInfo = async (email) => {
     // test
     //
     this.setState({ animating: true });
@@ -52,8 +52,8 @@ export default class Login extends Component {
       await firebase
         .database()
         .ref("users")
-        .orderByChild("username")
-        .equalTo(username)
+        .orderByChild("email")
+        .equalTo(email)
         .once("value", snapshot => {
           if (snapshot.val()) {
             let value = Object.values(snapshot.val());
@@ -76,31 +76,35 @@ export default class Login extends Component {
               //  debugger;
                // store fcm token in your server
              });
-            //verify password
-            this.login(email, password);
+          
+            
+            Actions.love();
           } else {
-            this.showError("Please enter the correct user name!");
+            this.showError("Please enter the correct email!");
             return;
           }
         }).catch((error)=>{
           this.setState({ animating: false });
-        Alert.alert(this.Global.APP_NAME, "Please enter the correct user name!");
+        Alert.alert(this.Global.APP_NAME, "Please enter the correct email!");
         });
     } catch (error) {
       this.showError(error);
     }
   };
   login = async (email, password) => {
+    email = email.toLowerCase();
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password).then((user) => {
       this.Global.isFooter = true;
-      // console.log(user);
-      // console.log(this.Global.currentUserId);
-      // this.Global.pressStatus = "love";
       this.Global.firstLogin = false;
-     
-      Actions.love();
+
+      this.updateUserInfo(email.toLowerCase());
+      
       })
+
+
+      
+
       .catch((error) => {
         this.setState({ animating: false });
         // this.showError(error);
@@ -142,10 +146,10 @@ export default class Login extends Component {
                 style={{ marginLeft: 20 }}
               />
               <TextInput
-                placeholder={"User Name"}
+                placeholder={"Email"}
                 style={styles.styleUserName}
-                onChangeText={username => {
-                  this.setState({ userName: username });
+                onChangeText={email => {
+                  this.setState({ email: email });
                 }}
                 placeholderTextColor={"#DDDDDD"}
                 value={this.state.userName}
@@ -198,7 +202,7 @@ export default class Login extends Component {
             {/* Button Login */}
             <TouchableOpacity
               onPress={() => {
-                if (this.state.userName === "" || this.state.pass === "") {
+                if (this.state.email === "" || this.state.pass === "") {
                   Alert.alert(
                     this.Global.APP_NAME,
                     "User Name or Password blank",
@@ -207,7 +211,8 @@ export default class Login extends Component {
                   );
                 }
                 else {
-                  this.findEmail(this.state.userName, this.state.pass);
+                  this.login(this.state.email,this.state.pass)
+                  // this.findEmail(this.state.userName, this.state.pass);
                 }
               }}
             >

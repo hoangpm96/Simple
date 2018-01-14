@@ -211,7 +211,7 @@ export default class SearchFriend extends Component {
 
           
           
-          // debugger;
+          debugger;
           // cập nhật lại tag hiện tại
           this.setState(prevState => ({
             userIds: tempArr
@@ -258,12 +258,12 @@ export default class SearchFriend extends Component {
                if (userData.gender === currentGender) {
                    return;
                }
-               if ( userData.city !== currentCity )  {
-                 return 
-               }
-               if (userData.district !== currentDistrict) {
-                 return;
-               }
+              //  if ( userData.city !== currentCity )  {
+              //    return 
+              //  }
+              //  if (userData.district !== currentDistrict) {
+              //    return;
+              //  }
               tempUserIds.push(snapshot.key);
 
               
