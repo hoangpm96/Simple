@@ -28,9 +28,8 @@ import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
+const data = require('./data/users.json');
 import Global from "./models/global";
-import firebase from "firebase";
-import { validateArgCount, async } from "@firebase/util";
 @autobind
 @observer
 export default class Love extends Component {
@@ -40,19 +39,17 @@ export default class Love extends Component {
     this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      age2: 21,
-      name: "Huong Giang Ido",
-      Quote: "A woman gives and forgives, a man gets and forgets",
       refreshing: false,
       listViewData: [],
-      isSwipe: false
+      isSwipe: false,
+      // random_id: 0
     };
 
     this._renderRow = this._renderRow.bind(this);
     
   }
   showScaleAnimationDialog() {
-    // this.scaleAnimationDialog.show();
+    this.scaleAnimationDialog.show();
   }
   _onReLoad() {
     this.setState({ refreshing: true });
@@ -62,81 +59,28 @@ export default class Love extends Component {
     });
   }
 
-  async componentWillMount() {
-    var tempArr = [];
-    try {
-       await firebase
-        .database()
-        .ref("wishlist")
-        .child(this.Global.currentUserId)
-        .once("value", function(snapshots) {
-          snapshots.forEach(function(data) {
-            tempArr.push(data.key);
-          });
-        });
-      this.loadWishListUser(tempArr);
-    }catch(error) {
-
-    }
+  componentWillMount() {
+    let userData = this.createDataList(data);
+    this.setState({ listViewData: userData,
+      // random_id: Math.floor((Math.random() * this.state.listViewData.length) + 1)
+    });
   }
-
-  loadWishListUser = async (userIds) => {
-    var tempUsers = [];
-    
-    try {
-      await Promise.all(
-        userIds.map(async id => {
-          await firebase
-            .database()
-            .ref("users")
-            .orderByKey()
-            .equalTo(id)
-            .once("value", snapshot => {
-              if (snapshot.val()) {
-                let value = Object.values(snapshot.val());
-                value[0].key = snapshot.node_.children_.root_.key;
-                tempUsers.push(value[0]);
-              }
-            })
-        })
-      ).then(data => {
-         let userData = this.createDataList(tempUsers);
-         this.setState({ listViewData: userData });
-        //  console.log(this.state.listViewData)
-      });
-
-      // this.showScaleAnimationDialog();
-    } catch (error) {
-      // this.showError(error);
-    }
-  };
-
-  // rawData là data từ firebase -> Chuyển thành mảng dùng được 
   createDataList = (rawData) => {
-
-    // TODO: Thêm các thômg tin cần thiết nếu cần 
-    
-    // "image": 
-    // "name": 
-    // "user-name": 
-    // "age": 
-    // "weight": 
-    // "height": 
-    // "hobbies": 
-    // "chat": "
       var arr = [];
       for (let ele of rawData) {
-          ele.weight = 100;
-          ele.name = ele.name
-          ele.height = 100;
-          ele.hobbies = "random";
-          ele.chat = "chat";
+        var hobbies = ""
+        for (let hobby in ele.tags){
+          hobbies = hobbies + ", " +hobby.toString()
+        }
+        hobbies = hobbies.substr(2, hobbies.length - 2);
+        ele.hobbies = hobbies;
           arr.push(ele);
       }
       return arr;
   }
 
   componentDidMount() {
+    this.Global.firstLogin = true;
     this.setState({
       listViewData: this.state.listViewData
     });
@@ -145,20 +89,6 @@ export default class Love extends Component {
   }
 
   deleteRow = async (secId, rowId, rowMap) => {
-        //xoa ra khoi wishlist
-        try {
-          await firebase
-          .database()
-          .ref("wishlist")
-          .child(this.Global.currentUserId)
-          .child(this.state.listViewData[rowId]["key"])
-          .set(null);
-        }
-        catch (error) {
-          const { code, message } = error;
-          Alert.alert(this.Global.APP_NAME, message);
-          console.log(message);
-        }
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
     newData.splice(rowId, 1);
@@ -183,7 +113,7 @@ export default class Love extends Component {
             * {rowData.name}, {rowData.age}
           </Text>
           <Text numberOfLines={1} style={styles.informationStyle}>
-            * {rowData.age}
+            * Gender: {rowData.gender}
           </Text>
           <Text numberOfLines={1} style={styles.informationStyleHobby}>
             * Hobbies: {rowData.hobbies}
@@ -199,11 +129,15 @@ export default class Love extends Component {
   render() {
     const animatedValue = this.state.animatedValue;
     return (
+
       <View style={styles.background}>
-        <Animated.View style={styles.headerContainer}>
+        {
+          this.state.listViewData.length > 0  ? 
+          <View style = {{flex: 1}}>
+          <Animated.View style={styles.headerContainer}>
           <Text style={styles.headerText}>WISH LIST</Text>
         </Animated.View>
-        <SwipeListView
+          <SwipeListView
           contentContainerStyle={styles.loveContainer}
           dataSource={this.ds.cloneWithRows(this.state.listViewData)}
           renderRow={this._renderRow}
@@ -224,16 +158,7 @@ export default class Love extends Component {
             />
           }
         />
-        <TouchableOpacity
-          onPress={() => {
-            this.Global.isFooter = true;
-            this.Global.pressStatus = "love";
-            Actions.listLoved();
-          }}
-          style={styles.containterAdd}
-        >
-          <Text style={styles.textAdd}>+</Text>
-        </TouchableOpacity>
+
         <PopupDialog
           dialogTitle={
             <DialogTitle
@@ -256,10 +181,10 @@ export default class Love extends Component {
         >
           <View style={styles.dialogContentView}>
             <View style={styles.viewQuote}>
-              <Text style={styles.textQuote}> {this.state.Quote}</Text>
+              <Text style={styles.textQuote}> {this.state.listViewData[this.state.random_id].quote}</Text>
             </View>
             <Image
-              source={require("./img/HHKTeam.jpg")}
+              source={{uri: this.state.listViewData[this.state.random_id].avatarUrl}}
               style={styles.avatar}
             />
             <View style={styles.containerButton01}>
@@ -291,11 +216,31 @@ export default class Love extends Component {
             </View>
             <View style={styles.nameAge}>
               <Text style={{ color: "#ffffff", fontSize: 16 }}>
-                {this.state.name} - {this.state.age2}
+                {this.state.this.state.listViewData[this.state.random_id].name} - {this.state.this.state.listViewData[this.state.random_id].age}
               </Text>
             </View>
           </View>
         </PopupDialog>
+          </View>
+
+        : 
+        <View>
+        <Animated.View style={styles.headerContainer}>
+        <Text style={styles.headerText}>WISH LIST</Text>
+      </Animated.View>
+        <Text style={styles.wishlist_blank}>Make more friends</Text>
+        </View>
+        }
+        <TouchableOpacity
+          onPress={() => {
+            this.Global.isFooter = true;
+            this.Global.pressStatus = "love";
+            Actions.listLoved();
+          }}
+          style={styles.containterAdd}
+        >
+          <Text style={styles.textAdd}>+</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -484,5 +429,12 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center"
+  },
+  wishlist_blank: {
+    marginTop: height/2 - 70, 
+    color: 'white', 
+    alignSelf: 'center', 
+    fontSize: 16,
+    fontWeight: 'bold'
   }
 });

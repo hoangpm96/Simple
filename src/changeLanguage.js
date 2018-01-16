@@ -25,7 +25,6 @@ import { observer } from "mobx-react/native";
 import TagInput from 'react-native-tag-input';
 import Expand from 'react-native-simple-expand';
 const { width, height } = Dimensions.get("window");
-const data = require('./data/api.json');
 const inputProps = {
     keyboardType: 'default',
     placeholder: 'hobby',
