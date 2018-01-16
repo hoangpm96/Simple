@@ -19,8 +19,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 const { width, height } = Dimensions.get("window");
-import firebase from "firebase";
-import { forEach } from "@firebase/util";
+// import firebase from "firebase";
+// import { forEach } from "@firebase/util";
 @autobind
 @observer
 export default class Register extends Component {
@@ -30,73 +30,20 @@ export default class Register extends Component {
     logo = require("./img/logo.png");
     this.Global = this.props.Global;
     this.state = {
-      userName: "",
+      name: "",
       email: "",
       pass: "",
-      isChecked: false,
-      animating: false
     };
   }
-
-  signup = async (email, password, username) => {
-    this.setState({ animating : true });
- 
-    try {
-      let result = await firebase.auth().createUserWithEmailAndPassword(email, password);
-      console.log(result);
-      let { creationTime } = result.metadata;
-      
-      // create users
-      let userResult = await firebase
-        .database()
-        .ref("users")
-        .push({
-          email: email.toLowerCase(),
-          created_at: creationTime,
-          username: username,
-          gender: this.Global.registerIsMale ? "male" : "female",
-          age: this.Global.registerAge,
-          avatarUrl: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/default-avatar%2FSimple-60-3x.png?alt=media&token=829e788d-4c22-4502-b833-d86f132ab352",
-          height: "Select Height",
-          weight: "Select Weight",
-          quote: "Dating is simple",
-          name: username,
-          city: "Select City",
-          district: "Select District",
-        });
-    
-
-     for ( let tag of this.Global.registerTags  ) {
-        await firebase
-        .database()
-        .ref("tags").child(tag).child(userResult.key).set(true);
-        await firebase
-                .database()
-                .ref("users").child(userResult.key).child('tags').child(tag).set(true);
-      }
-      this.Global.currentUserId = userResult.key;
-      this.setState({ animating: false });
-      this.Global.isFooter = true;
-      Actions.search();
-      this.Global.pressStatus = "search";
-     
-      // Navigate to the Home page, the user is auto logged in
-    } catch (error) {
-      
-
-      this.setState({ animating: false });
-      Alert.alert(
-        this.Global.APP_NAME,
-        error.toString(),
-        [
-          { text: "OK", onPress: () => console.log("OK Pressed") }
-        ],
-        { cancelable: false }
-      );
-      
+  check_email = (email) => {
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;  
+    if (email.match(mailformat)) {
+      return true;
     }
-  };
-
+    else {
+      return false;
+    } 
+  }
   render() {
     return (
 
@@ -141,11 +88,11 @@ export default class Register extends Component {
               <TextInput
                 placeholder={"Name"}
                 style={styles.styleUserName}
-                onChangeText={username => {
-                  this.setState({ userName: username });
+                onChangeText={uname => {
+                  this.setState({ name: uname });
                 }}
                 placeholderTextColor={"#DDDDDD"}
-                value={this.state.userName}
+                value={this.state.name}
               />
             </View>
             <View style={styles.containerPassword}>
@@ -166,14 +113,6 @@ export default class Register extends Component {
                 value={this.state.pass}
               />
             </View>
-            {/* TODO: Update UI  */}
-            <ActivityIndicator
-               animating = {this.state.animating}
-               color = '#fff'
-               size = "large"
-               style = {styles.activityIndicator}
-               />
-
             <View style={styles.containerLink}>
               <TouchableOpacity
                 onPress={() => {
@@ -197,9 +136,40 @@ export default class Register extends Component {
             {/* Button Login */}
             <TouchableOpacity
               onPress={() => {
-
-                this.signup(this.state.email,this.state.pass,this.state.userName);
-                
+                if (this.state.email === "" || this.state.pass === "" || this.state.name === "") {
+                  Alert.alert(
+                    this.Global.APP_NAME,
+                    "Email, Name, Password blank",
+                    [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+                    { cancelable: false }
+                  );
+                }
+                else {
+                  if(this.check_email(this.state.email)) {
+                    if(this.state.pass.length < 6) {
+                      Alert.alert(
+                        this.Global.APP_NAME,
+                        "The password must be 6 characters in length!",
+                        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+                        { cancelable: false }
+                      );
+                    }
+                    else {
+                      this.Global.isFooter = true;
+                      this.Global.firstLogin = false;
+                      Actions.love();
+                    }
+                  }
+                  else
+                  {
+                    Alert.alert(
+                      this.Global.APP_NAME,
+                      "You have entered an invalid email address!",
+                      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+                      { cancelable: false }
+                    );
+                  }
+                }
               }}
             >
               <View style={styles.waperLogin}>
@@ -208,13 +178,6 @@ export default class Register extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        {
-          this.state.animating ? 
-          <View style = {styles.waiting}>
-
-          </View>
-          : null
-        }
         </KeyboardAwareScrollView>
       </ImageBackground>
     );
@@ -276,7 +239,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(202,148,157,1)',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    // marginBottom: 3,
     flexDirection: 'row'
   },
   stylePassword: {
@@ -292,7 +254,6 @@ const styles = StyleSheet.create({
     height: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    // backgroundColor: 'red'
   },
   textForgot: {
     backgroundColor: 'transparent',
@@ -328,21 +289,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 40
   },
-    activityIndicator: {
-      position: 'absolute',
-      top: 0,
-      left: width/2 - 30,
-    },
-    waiting: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      bottom: 0,
-      right: 0,
-      width: width,
-      height: height,
-      backgroundColor: "rgba(0,0,0,0.5)"
-    }
-
-
 })
