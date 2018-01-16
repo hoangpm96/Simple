@@ -26,7 +26,6 @@ export default class Main extends Component {
     super(props);
     background=require('./img/background.png');
     logo=require('./img/logo.png');
-    // Global.isFooter=false;
     this.Global = this.props.Global;
     this.state = {
       userName: "",
