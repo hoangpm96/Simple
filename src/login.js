@@ -19,15 +19,7 @@ const { width, height } = Dimensions.get("window");
 import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
-import firebase from "firebase";
 import Global from "./models/global";
-import { async } from "@firebase/util";
-import FCM, {
-  FCMEvent,
-  RemoteNotificationResult,
-  WillPresentNotificationResult,
-  NotificationType
-} from "react-native-fcm";
 
 @autobind
 @observer
@@ -40,92 +32,18 @@ export default class Login extends Component {
     this.state = {
       email: "",
       pass: "",
-      isChecked: false, 
-      animating: false
     };
   }
-  updateUserInfo = async (email) => {
-    // test
-    //
-    this.setState({ animating: true });
-    try {
-      await firebase
-        .database()
-        .ref("users")
-        .orderByChild("email")
-        .equalTo(email)
-        .once("value", snapshot => {
-          if (snapshot.val()) {
-            let value = Object.values(snapshot.val());
-            let keys = Object.keys(snapshot.val());
-            this.Global.currentUserId = keys[0];
-            this.Global.currentUsername = value[0].username;
-            this.Global.currentUserGender = value[0].gender;
-            this.Global.currentUserDistrict = value[0].district;
-            this.Global.currentUserCity = value[0].city;
-            this.Global.currentUserAvatar = value[0].avatarUrl;
-            
-            let email = value[0].email;
-            this.Global.currentUser = snapshot.val()
-             FCM.getFCMToken().then(token => {
-               this.Global.token = token;
-                firebase.database()
-                      .ref("users")
-                      .child(this.Global.currentUserId )
-                      .child("token").set(token)
-              //  debugger;
-               // store fcm token in your server
-             });
-          
-            
-            Actions.love();
-          } else {
-            this.showError("Please enter the correct email!");
-            return;
-          }
-        }).catch((error)=>{
-          this.setState({ animating: false });
-        Alert.alert(this.Global.APP_NAME, "Please enter the correct email!");
-        });
-    } catch (error) {
-      this.showError(error);
+  check_email = (email) => {
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;  
+    if (email.match(mailformat)) {
+      return true;
     }
-  };
-  login = async (email, password) => {
-    email = email.toLowerCase();
-    try {
-      await firebase.auth().signInWithEmailAndPassword(email, password).then((user) => {
-      this.Global.isFooter = true;
-      this.Global.firstLogin = false;
+    else {
+      return false;
+    } 
+  }
 
-      this.updateUserInfo(email.toLowerCase());
-      
-      })
-
-
-      
-
-      .catch((error) => {
-        this.setState({ animating: false });
-        // this.showError(error);
-        const { code, message } = error;
-        Alert.alert(this.Global.APP_NAME, message);
-        return;
-      });;
-    } catch (error) {
-      this.showError(error);
-    }
-  };
-
-  showError = errMessage => {
-    this.setState({ animating: false });
-    Alert.alert(
-      this.Global.APP_NAME,
-      errMessage,
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-      { cancelable: false }
-    );
-  };
   render() {
     return (
 
@@ -173,13 +91,6 @@ export default class Login extends Component {
                 value={this.state.pass}
               />
             </View>
-            {/* TODO: Update UI  */}
-            <ActivityIndicator
-              animating={this.state.animating}
-              color="#fff"
-              size="large"
-              style={styles.activityIndicator}
-            />
             <View style={styles.containerLink}>
               <TouchableOpacity
                 onPress={() => {
@@ -211,8 +122,20 @@ export default class Login extends Component {
                   );
                 }
                 else {
-                  this.login(this.state.email,this.state.pass)
-                  // this.findEmail(this.state.userName, this.state.pass);
+                  if(this.check_email(this.state.email)) {
+                    this.Global.isFooter = true;
+                    this.Global.firstLogin = false;
+                    Actions.love();
+                  }
+                  else
+                  {
+                    Alert.alert(
+                      this.Global.APP_NAME,
+                      "You have entered an invalid email address!",
+                      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+                      { cancelable: false }
+                    );
+                  }
                 }
               }}
             >
@@ -236,13 +159,6 @@ export default class Login extends Component {
               />
             </View>
           </View>
-          {
-            this.state.animating ?
-              <View style={styles.waiting}>
-
-              </View>
-              : null
-          }
         </KeyboardAwareScrollView>
 
       </ImageBackground>
@@ -360,20 +276,4 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     height: 40
   },
-  activityIndicator: {
-    position: 'absolute',
-    top: 0,
-    left: width/2-40
-
-  },
-  waiting: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    width: width,
-    height: height,
-    backgroundColor: "rgba(0,0,0,0.5)"
-  }
 });
