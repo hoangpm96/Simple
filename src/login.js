@@ -58,7 +58,7 @@ export default class Login extends Component {
           <View style={styles.containerForm}>
             <View style={styles.containerUserName}>
               <Icon
-                name="user-o"
+                name="envelope"
                 color="#DDDDDD"
                 size={24}
                 style={{ marginLeft: 20 }}
@@ -116,7 +116,7 @@ export default class Login extends Component {
                 if (this.state.email === "" || this.state.pass === "") {
                   Alert.alert(
                     this.Global.APP_NAME,
-                    "User Name or Password blank",
+                    "Email or Password blank",
                     [{ text: "OK", onPress: () => console.log("OK Pressed") }],
                     { cancelable: false }
                   );
@@ -148,7 +148,7 @@ export default class Login extends Component {
               <Icon
                 name="facebook-square"
                 color="#ffffff"
-                size={height < 667 ? 30 : 40}
+                size={height < 736 ? (height < 667 ? 32 : 35) : 40}
                 style={{ marginRight: 7, backgroundColor: "transparent" }}
               />
               <Icon
