@@ -193,12 +193,23 @@ export default class RegisterInfo extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              this.Global.isFooter = false;
-                
+              if(this.state.tags.length <=0){
+                Alert.alert(
+                  this.Global.APP_NAME,
+                  "Please enter a hobby!",
+                  [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+                  { cancelable: false }
+                );
+              }
+              else 
+              {
+                this.Global.isFooter = false;
+
                 this.Global.registerAge = this.state.age;
                 this.Global.registerTags = this.state.tags;
                 this.Global.registerIsMale = this.state.isMale;
                 Actions.register();
+              }
             }}
           >
             <View style={[styles.waperLogin, { marginLeft: 5 }]}>

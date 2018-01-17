@@ -172,8 +172,6 @@ export default class Forgot extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         width: width
       },
     waperContainer: {
@@ -183,7 +181,8 @@ const styles = StyleSheet.create({
     },
 
     logoStyle: {
-        marginTop: height < 812 ? (height < 736 ? ( height < 667 ? 50 : 60) : 70) : 80,
+        marginTop: height < 812 ? (height < 736 ? ( height < 667 ? 50 : 80) : 70) : 80,
+
         width: height < 736 ? (height < 667 ? 180 : 205) : 230,
         height: height < 736 ? (height < 667 ? 180 : 205) : 230,
         alignSelf: 'center',
@@ -198,7 +197,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     containerUserName: {
-        marginTop: height < 812 ? (height < 736 ? ( height < 667 ? 40 : 80) : 90) : 100,
+        marginTop: height < 812 ? (height < 736 ? ( height < 667 ? 40 : 60) : 90) : 100,
+
         width: width < 414 ? width - 40 : width - 50,
         height: height < 667 ? 40 : 45,
         borderRadius: height < 667 ? 20 : 22.5,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
 
     },
     waperLogin: {
-        marginTop: height < 812 ? (height < 736 ? ( height < 667 ? 30 : 40) : 55) : 70,
+        marginTop: height < 812 ? (height < 736 ? ( height < 667 ? 30 : 60) : 55) : 70,
         width: width < 414 ? width - 40 : width - 50,
         height: height < 667 ? 40 : 45,
         backgroundColor: '#F15F66',

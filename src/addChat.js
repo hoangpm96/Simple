@@ -21,7 +21,6 @@ import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 const { width, height } = Dimensions.get("window");
-const data = require('./data/api.json');
 
 @autobind
 @observer
