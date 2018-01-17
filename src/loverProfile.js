@@ -28,6 +28,7 @@ import Modal from "react-native-modalbox";
 import firebase from "firebase";
 import { ValueEventRegistration } from "@firebase/database/dist/esm/src/core/view/EventRegistration";
 const { width, height } = Dimensions.get("window");
+const data = require('./data/users.json');
 const inputProps = {
     keyboardType: 'default',
     placeholder: ' ',
@@ -52,15 +53,12 @@ export default class LoverProfile extends Component {
             Age: "",
             Height: "",
             Weight: "",
-            Address: "",
             Quote: "",
             Gender: '',
-            Weight: '',
-            Height: '',
             City: "",
             District: "",
-            lover: 0,
-            loved: 0,
+            lover: 4,
+            loved: 12,
             tags: [],
             text: "",
             Avatar: null,
@@ -68,102 +66,26 @@ export default class LoverProfile extends Component {
         };
     }
     componentWillMount() {
-        this.getInforUser(this.Global.loverId);
+// code get info from data.json
+        let loverInfo = data[this.Global.loverId];
+        var hobbies = [];
+        for (let hobby in loverInfo.tags){
+          hobbies.push(hobby);
+        }
+        this.setState({
+            Avatar: loverInfo.avatarUrl,
+            Name: loverInfo.name.toString(),
+            Age: loverInfo.age.toString(),
+            Height: loverInfo.height.toString(),
+            Weight: loverInfo.weight.toString(),
+            Quote: loverInfo.quote.toString(),
+            Gender: loverInfo.gender.toString(),
+            City: loverInfo.city.toString(),
+            District: loverInfo.district.toString(),
+            tags: hobbies,
+        })
       }
-    
-      getInforUser = async (userId) => {
-        try {
-            this.setState({
-                animating: true
-            })
-            await firebase
-            .database()
-            .ref("users")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-              if (snapshot.val()) {
-                let value = Object.values(snapshot.val());
-                this.setState({
-                    Name: value[0].name,
-                    Age: (value[0].age).toString(),
-                    Height: (value[0].height).toString(),
-                    Weight: (value[0].weight).toString(),
-                    City: value[0].city,
-                    District: value[0].district,
-                    Quote: value[0].quote,
-                    Avatar: value[0].avatarUrl,
-                    Gender: value[0].gender,
-                })
-                let array = []
-                for (var tag in value[0].tags) {
-                        array.push(tag),
-                    this.setState({tags:  array});
-                }
-                this.setState({
-                    animating: false
-                })
-              } else {
-                Alert.alert(this.Global.APP_NAME, "User had been delete.");
-                return;
-              }
-            });
-//cap nhat lover/loved
-            // debugger
-            var loved_total = 0;
-            firebase
-            .database()
-            .ref("wishlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        lover: n
-                    })
-                }
-                else {
-                    this.setState({
-                        lover: 0
-                    })
-                    // debugger
-                }
-            })
-            firebase
-            .database()
-            .ref("lovedlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        loved: loved_total
-                    })
-                }
-                else {
-                    this.setState({
-                        loved: loved_total
-                    })
-                    // debugger
-                }
-            })
-        }
-        catch(error) {
-            this.setState({
-                animating: false
-            })
-        }
-    }
+
     onChangeTags = (tags) => {
     }
     onChangeText = (text) => {

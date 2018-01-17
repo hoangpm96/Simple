@@ -2,9 +2,9 @@
     {
           "age" : "22",
           "avatarUrl" : "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/images%2F1515839924835.jpg?alt=media&token=5ccdde3b-463d-456a-9c88-488fe2c44399",
-          "city" : "Select City",
+          "city" : "Đà Nẵng",
           "created_at" : "Sat, 13 Jan 2018 10:24:03 GMT",
-          "district" : "Select District",
+          "district" : "Quận Liên Chiểu",
           "email" : "khoa@gmail.com",
           "gender" : "Male",
           "height" : "170 cm",
@@ -16,7 +16,7 @@
             "walkingdead" : true
           },
           "username" : "Khoi Nguyen",
-          "weight" : "Select Weight"
+          "weight" : "63 kg"
         },
         {
           "age" : "21",

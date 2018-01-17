@@ -42,7 +42,7 @@ export default class Love extends Component {
       refreshing: false,
       listViewData: [],
       isSwipe: false,
-      // random_id: 0
+      random_id: 0
     };
 
     this._renderRow = this._renderRow.bind(this);
@@ -61,8 +61,9 @@ export default class Love extends Component {
 
   componentWillMount() {
     let userData = this.createDataList(data);
-    this.setState({ listViewData: userData,
-      // random_id: Math.floor((Math.random() * this.state.listViewData.length) + 1)
+    this.setState({ 
+      listViewData: userData,
+      random_id: Math.floor((Math.random() * userData.length))
     });
   }
   createDataList = (rawData) => {
@@ -96,12 +97,12 @@ export default class Love extends Component {
 
   }
 
-  _renderRow(rowData) {
+  _renderRow(rowData, secId, rowId, rowMap) {
     return (
       <TouchableOpacity
         onPress={() => {
           this.Global.isFooter = true;
-          this.Global.loverId = rowData.key.toString();
+          this.Global.loverId = rowId;
           this.Global.pressStatus = "love";
           Actions.loverProfile();
         }}
@@ -186,6 +187,7 @@ export default class Love extends Component {
             <Image
               source={{uri: this.state.listViewData[this.state.random_id].avatarUrl}}
               style={styles.avatar}
+              debbuger 
             />
             <View style={styles.containerButton01}>
               <TouchableOpacity
@@ -216,7 +218,7 @@ export default class Love extends Component {
             </View>
             <View style={styles.nameAge}>
               <Text style={{ color: "#ffffff", fontSize: 16 }}>
-                {this.state.this.state.listViewData[this.state.random_id].name} - {this.state.this.state.listViewData[this.state.random_id].age}
+                {this.state.listViewData[this.state.random_id].name} - {this.state.listViewData[this.state.random_id].age}
               </Text>
             </View>
           </View>
@@ -228,7 +230,7 @@ export default class Love extends Component {
         <Animated.View style={styles.headerContainer}>
         <Text style={styles.headerText}>WISH LIST</Text>
       </Animated.View>
-        <Text style={styles.wishlist_blank}>Make more friends</Text>
+        <Text style={styles.wishlist_blank}>Make more friends... </Text>
         </View>
         }
         <TouchableOpacity
