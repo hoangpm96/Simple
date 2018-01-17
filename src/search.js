@@ -236,8 +236,8 @@ export default class SearchFriend extends Component {
 
   // filter on user's properties
   checkUserMatch = async userIdArr => {
-    let minAge = 18;
-    let maxAge = 40;
+    let minAge =  parseInt(this.state.multiSliderValue[0]);
+    let maxAge = parseInt(this.state.multiSliderValue[1]);
     let currentGender = this.Global.currentUserGender;
     let currentCity = this.Global.currentUserCity;
     let currentDistrict = this.Global.currentUserDistrict;
