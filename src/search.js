@@ -453,7 +453,7 @@ export default class SearchFriend extends Component {
     Alert.alert(
       this.Global.APP_NAME,
       errMessage,
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      [{ text: "OK", onPress: () => this.scaleAnimationDialog.dismiss() }],
       { cancelable: false }
     );
   };
