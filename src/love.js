@@ -81,7 +81,6 @@ export default class Love extends Component {
   }
 
   componentDidMount() {
-    this.Global.firstLogin = true;
     this.setState({
       listViewData: this.state.listViewData
     });
@@ -160,7 +159,30 @@ export default class Love extends Component {
           }
         />
 
-        <PopupDialog
+
+          </View>
+
+        : 
+        <View>
+        <Animated.View style={styles.headerContainer}>
+        <Text style={styles.headerText}>WISH LIST</Text>
+      </Animated.View>
+        <Text style={styles.wishlist_blank}>Make more friends... </Text>
+        </View>
+        }
+        <TouchableOpacity
+          onPress={() => {
+            this.Global.isFooter = true;
+            this.Global.pressStatus = "love";
+            Actions.listLoved();
+          }}
+          style={styles.containterAdd}
+        >
+          <Text style={styles.textAdd}>+</Text>
+        </TouchableOpacity>
+        {
+          this.state.listViewData.length > 0  ? 
+          <PopupDialog
           dialogTitle={
             <DialogTitle
               title="People you may like!"
@@ -205,6 +227,7 @@ export default class Love extends Component {
               <TouchableOpacity
                 onPress={() => {
                   this.Global.isFooter = false;
+                  this.Global.firstLogin = false;
                   this.Global.pressStatus = "chat";
                   Actions.messager();
                 }}
@@ -223,26 +246,10 @@ export default class Love extends Component {
             </View>
           </View>
         </PopupDialog>
-          </View>
+          : null
 
-        : 
-        <View>
-        <Animated.View style={styles.headerContainer}>
-        <Text style={styles.headerText}>WISH LIST</Text>
-      </Animated.View>
-        <Text style={styles.wishlist_blank}>Make more friends... </Text>
-        </View>
-        }
-        <TouchableOpacity
-          onPress={() => {
-            this.Global.isFooter = true;
-            this.Global.pressStatus = "love";
-            Actions.listLoved();
-          }}
-          style={styles.containterAdd}
-        >
-          <Text style={styles.textAdd}>+</Text>
-        </TouchableOpacity>
+          }
+
       </View>
     );
   }

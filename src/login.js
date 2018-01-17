@@ -124,7 +124,7 @@ export default class Login extends Component {
                 else {
                   if(this.check_email(this.state.email)) {
                     this.Global.isFooter = true;
-                    this.Global.firstLogin = false;
+                    this.Global.firstLogin = true;
                     Actions.love();
                   }
                   else
