@@ -18,41 +18,31 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { SwipeListView } from "react-native-swipe-list-view";
-import PopupDialog, {
-  DialogTitle,
-  DialogButton,
-  ScaleAnimation
-} from "react-native-popup-dialog";
 import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
-const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
+const data = require('./data/users.json');
 import Global from "./models/global";
-import firebase from "firebase";
-import { validateArgCount } from "@firebase/util";
 @autobind
 @observer
-export default class ListLoved extends Component {
+export default class Love extends Component {
   constructor(props) {
     super(props);
     this.Global = this.props.Global;
-    this.showScaleAnimationDialog = this.showScaleAnimationDialog.bind(this);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
-      age2: 21,
-      name: "Huong Giang Ido",
-      Quote: "A woman gives and forgives, a man gets and forgets",
       refreshing: false,
       listViewData: [],
-      isSwipe: false
+      isSwipe: false,
+      random_id: 0
     };
+    this.Global.isFooter = true;
 
     this._renderRow = this._renderRow.bind(this);
+    
   }
-  showScaleAnimationDialog() {
-    // this.scaleAnimationDialog.show();
-  }
+
   _onReLoad() {
     this.setState({ refreshing: true });
     this.setState({
@@ -61,75 +51,22 @@ export default class ListLoved extends Component {
     });
   }
 
-  async componentWillMount() {
-    var tempArr = [];
-    try {
-       await firebase
-        .database()
-        .ref("lovedlist")
-        .child(this.Global.currentUserId)
-        .once("value", function(snapshots) {
-          snapshots.forEach(function(data) {
-            tempArr.push(data.key);
-          });
-        });
-
-      this.loadWishListUser(tempArr);
-    }catch(error) {
-
-    }
+  componentWillMount() {
+    let userData = this.createDataList(data);
+    this.setState({ 
+      listViewData: userData,
+      random_id: Math.floor((Math.random() * userData.length))
+    });
   }
-
-  loadWishListUser = async (userIds) => {
-    var tempUsers = [];
-    
-    try {
-      await Promise.all(
-        userIds.map(async id => {
-          await firebase
-            .database()
-            .ref("users")
-            .orderByKey()
-            .equalTo(id)
-            .once("value", snapshot => {
-              if (snapshot.val()) {
-                let value = Object.values(snapshot.val());
-                value[0].key = snapshot.node_.children_.root_.key;
-                tempUsers.push(value[0]);
-              }
-            })
-        })
-      ).then(data => {
-         let userData = this.createDataList(tempUsers);
-         this.setState({ listViewData: userData });
-      });
-
-      // this.showScaleAnimationDialog();
-    } catch (error) {
-      // this.showError(error);
-    }
-  };
-
-  // rawData là data từ firebase -> Chuyển thành mảng dùng được 
   createDataList = (rawData) => {
-
-    // TODO: Thêm các thômg tin cần thiết nếu cần 
-    
-    // "image": 
-    // "name": 
-    // "user-name": 
-    // "age": 
-    // "weight": 
-    // "height": 
-    // "hobbies": 
-    // "chat": "
       var arr = [];
       for (let ele of rawData) {
-          ele.weight = 100;
-          ele.name = ele.name
-          ele.height = 100;
-          ele.hobbies = "random";
-          ele.chat = "chat";
+        var hobbies = ""
+        for (let hobby in ele.tags){
+          hobbies = hobbies + ", " +hobby.toString()
+        }
+        hobbies = hobbies.substr(2, hobbies.length - 2);
+        ele.hobbies = hobbies;
           arr.push(ele);
       }
       return arr;
@@ -139,72 +76,23 @@ export default class ListLoved extends Component {
     this.setState({
       listViewData: this.state.listViewData
     });
-    this.Global.firstLogin === true ? this.scaleAnimationDialog.show() : null;
-    this.Global.firstLogin = false;
   }
 
   deleteRow = async (secId, rowId, rowMap) => {
-            //xoa ra khoi lovedList (ignore)
-            try {
-              await firebase
-              .database()
-              .ref("lovedlist")
-              .child(this.Global.currentUserId)
-              .child(this.state.listViewData[rowId]["key"])
-              .set(null);
-            }
-            catch (error) {
-              const { code, message } = error;
-              Alert.alert(this.Global.APP_NAME, message);
-            }
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
     newData.splice(rowId, 1);
     this.setState({ listViewData: newData });
-  }
-  deleteRowAddtoWishList = async (secId, rowId, rowMap) => {
-                //xoa ra khoi lovedList (ignore) them vao WishList
-                try {
-                  await firebase
-                  .database()
-                  .ref("lovedlist")
-                  .child(this.Global.currentUserId)
-                  .child(this.state.listViewData[rowId]["key"])
-                  .set(null);
-                  //them vao wishlist
-                  await firebase
-                  .database()
-                  .ref("wishlist")
-                  .child(this.Global.currentUserId)
-                  .child(this.state.listViewData[rowId]["key"])
-                  .set(true);
 
-                  // add table notifycation
-                  await firebase
-                  .database()
-                  .ref("notifications")
-                  .push({
-                    receiver: this.state.listViewData[rowId]["key"],
-                    sender: this.Global.currentUserId,
-                    // token: this.Global.token
-                  });
-                }
-                catch (error) {
-                  const { code, message } = error;
-                  Alert.alert(this.Global.APP_NAME, message);
-                }
-    rowMap[`${secId}${rowId}`].closeRow();
-    const newData = [...this.state.listViewData];
-    newData.splice(rowId, 1);
-    this.setState({ listViewData: newData });
   }
-  _renderRow(rowData) {
+
+  _renderRow(rowData, secId, rowId, rowMap) {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.Global.isFooter = true;
+          this.Global.isFooter = false;
+          this.Global.loverId = rowId;
           this.Global.pressStatus = "love";
-          this.Global.loverId = rowData.key.toString();
           Actions.loverProfile();
         }}
         style={styles.viewContainer}
@@ -215,7 +103,7 @@ export default class ListLoved extends Component {
             * {rowData.name}, {rowData.age}
           </Text>
           <Text numberOfLines={1} style={styles.informationStyle}>
-            * {rowData.age}
+            * Gender: {rowData.gender}
           </Text>
           <Text numberOfLines={1} style={styles.informationStyleHobby}>
             * Hobbies: {rowData.hobbies}
@@ -224,48 +112,44 @@ export default class ListLoved extends Component {
             * Height: {rowData.height}
           </Text>
         </View>
+        
       </TouchableOpacity>
     );
   }
   render() {
     const animatedValue = this.state.animatedValue;
     return (
+
       <View style={styles.background}>
+        {
+          this.state.listViewData.length > 0  ? 
+          <View style = {{flex: 1}}>
         <Animated.View style={styles.headerContainer}>
-          <Text style={styles.headerText}>LOVED LIST</Text>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => {
-              this.Global.isFooter = true;
-              Actions.pop();
-              this.Global.pressStatus = "love";
-            }}
-          >
-            <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
-          </TouchableOpacity>
-        </Animated.View>
-        <SwipeListView
+        <Text style={styles.headerText}>LOVED LIST</Text>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => {
+            this.Global.isFooter = true;
+            Actions.pop();
+            this.Global.pressStatus = "love";
+          }}
+        >
+          <Icon name="chevron-left" color='#ffffff' size={22} style={{ marginLeft: 15, marginBottom: 5 }} />
+        </TouchableOpacity>
+      </Animated.View>
+          <SwipeListView
           contentContainerStyle={styles.loveContainer}
           dataSource={this.ds.cloneWithRows(this.state.listViewData)}
           renderRow={this._renderRow}
           renderHiddenRow={(data, secId, rowId, rowMap) => (
-            <View style = {{flexDirection: 'row', alignSelf: "flex-end"}}>
             <TouchableOpacity
               style={[styles.backRightBtnRight]}
               onPress={_ => this.deleteRow(secId, rowId, rowMap)}
             >
               <Icon name="trash" color="#F15F66" size={32} />
             </TouchableOpacity>
-            <TouchableOpacity
-            style={[styles.backRightBtnRight2]}
-            onPress={_ => this.deleteRowAddtoWishList(secId, rowId, rowMap)}
-          >
-            <Icon name="check" color="#F15F66" size={32} />
-          </TouchableOpacity>
-            </View>
           )}
-          rightOpenValue={-150}
-          // leftOpenValue={75}
+          rightOpenValue={-75}
           disableRightSwipe={true}
           refreshControl={
             <RefreshControl
@@ -274,6 +158,16 @@ export default class ListLoved extends Component {
             />
           }
         />
+          </View>
+
+        : 
+        <View>
+        <Animated.View style={styles.headerContainer}>
+        <Text style={styles.headerText}>LOVED LIST</Text>
+      </Animated.View>
+        <Text style={styles.wishlist_blank}>Wating for adding friend... </Text>
+        </View>
+        }
       </View>
     );
   }
@@ -357,43 +251,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     alignSelf: "center"
   },
-  textAdd: {
-    color: "#ffffff",
-    fontSize: 24,
-    fontWeight: "bold",
-    backgroundColor: "transparent",
-    alignSelf: "center"
-  },
-  containterAdd: {
-    position: "absolute",
-    left:
-      height < 812
-        ? height < 736
-          ? height < 667 ? (width - 39) / 2 : (width - 42) / 2
-          : (width - 44) / 2
-        : (width - 48) / 2,
-    bottom: height < 812 ? 15 : 25,
-    width: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42) : 44) : 48,
-    height: height < 812 ? (height < 736 ? (height < 667 ? 39 : 42) : 44) : 48,
-    borderRadius:
-      height < 812 ? (height < 736 ? (height < 667 ? 19.5 : 21) : 22) : 24,
-    backgroundColor: "#F15F66",
-    borderWidth: 1,
-    borderColor: "rgba(226,39,44,0.2)",
-    alignContent: "center",
-    justifyContent: "center",
-    alignItems: "center"
-  },
   backRightBtnRight: {
     backgroundColor: "#Ffffff",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 72,
-    height: 72,
-    alignSelf: "flex-end"
-  },
-  backRightBtnRight2: {
-    backgroundColor: 'green',//"#Ffffff",
     alignItems: "center",
     justifyContent: "center",
     width: 72,
@@ -470,6 +329,13 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     justifyContent: "center"
+  },
+  wishlist_blank: {
+    marginTop: height/2 - 70, 
+    color: 'white', 
+    alignSelf: 'center', 
+    fontSize: 16,
+    fontWeight: 'bold'
   },
   backButton: {
     justifyContent: 'center',

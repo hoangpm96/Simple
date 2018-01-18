@@ -44,6 +44,7 @@ export default class Love extends Component {
       isSwipe: false,
       random_id: 0
     };
+    this.Global.isFooter = true;
 
     this._renderRow = this._renderRow.bind(this);
     
@@ -100,7 +101,7 @@ export default class Love extends Component {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.Global.isFooter = true;
+          this.Global.isFooter = false;
           this.Global.loverId = rowId;
           this.Global.pressStatus = "love";
           Actions.loverProfile();

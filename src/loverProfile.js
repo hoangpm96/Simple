@@ -67,6 +67,10 @@ export default class LoverProfile extends Component {
     }
     componentWillMount() {
 // code get info from data.json
+        if (this.Global.loverId === "") {
+            this.Global.loverId = 1;
+            this.Global.isFooter = false;
+        }
         let loverInfo = data[this.Global.loverId];
         var hobbies = [];
         for (let hobby in loverInfo.tags){
@@ -107,9 +111,13 @@ export default class LoverProfile extends Component {
                     <TouchableOpacity
                         style={styles.backButton}
                         onPress={() => {
-                            this.Global.isFooter = true;
-                            Actions.pop();
+                            if(this.Global.pressStatus === 'love')
+                            {
                             this.Global.pressStatus = "love";
+                            this.Global.isFooter = true;
+
+                            }
+                            Actions.pop();
                             this.Global.loverId = "";
                         }}
                     >

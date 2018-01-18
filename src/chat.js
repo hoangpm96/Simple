@@ -1,5 +1,3 @@
-
-
 import React, { Component } from "react";
 import { Actions, Router, Scene } from "react-native-mobx";
 import {
