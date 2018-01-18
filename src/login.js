@@ -95,7 +95,7 @@ export default class Login extends Component {
               <TouchableOpacity
                 onPress={() => {
                   // this.Global.isFooter = false;
-                  Actions.registerInfo();
+                  Actions.registerStep();
                 }}
               >
                 <Text style={styles.textForgot}>Register</Text>

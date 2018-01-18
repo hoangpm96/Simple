@@ -53,7 +53,7 @@ export default class Main extends Component {
           <TouchableOpacity
                     onPress={() => {
                       this.Global.isFooter = false;
-                      Actions.registerInfo();
+                      Actions.registerStep();
                   }}
           >
             <View style={styles.waperRegister}>

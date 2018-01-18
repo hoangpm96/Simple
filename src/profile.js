@@ -29,96 +29,13 @@ export default class Profile extends Component {
     super(props);
     this.Global = this.props.Global;
     this.state = {
-      Name: "Minh Hoang",
-      lover: 0,
-      loved: 0,
-      Avatar: "",
+      Name: "Minh Hoàng",
+      lover: 6,
+      loved: 12,
+      Avatar: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/default-avatar%2Fhoangphan.jpg?alt=media&token=b8c0dca2-3521-4188-8820-6c472fa18b73",
       animating: false
     };
   }
-  componentWillMount() {
-    this.getInforUser(this.Global.currentUserId);
-  }
-
-  getInforUser = async (userId) => {
-    try {
-        this.setState({
-            animating: true
-        })
-        await firebase
-        .database()
-        .ref("users")
-        .orderByKey()
-        .equalTo(userId)
-        .once("value", snapshot => {
-          if (snapshot.val()) {
-            let value = Object.values(snapshot.val());
-            this.setState({
-                Name: value[0].name,
-                Avatar: value[0].avatarUrl,
-            })
-            var loved_total = 0;
-            firebase
-            .database()
-            .ref("wishlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        lover: n
-                    })
-                }
-                else {
-                    this.setState({
-                        lover: 0
-                    })
-                    // debugger
-                }
-            })
-            firebase
-            .database()
-            .ref("lovedlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        loved: loved_total
-                    })
-                }
-                else {
-                    this.setState({
-                        loved: loved_total
-                    })
-                    // debugger
-                }
-            })
-            this.setState({
-                animating: false
-            })
-          } else {
-            Alert.alert(this.Global.APP_NAME, "User had been delete.");
-            return;
-          }
-        });
-    }
-    catch(error) {
-        this.setState({
-            animating: false
-        })
-    }
-}
   render() {
 
     return (

@@ -145,7 +145,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="listLoved"
             title=""
             component={ListLoved}
@@ -185,7 +185,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            initial
+            // initial
             key="search"
             title={""}
             component={SearchFriend}

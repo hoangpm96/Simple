@@ -142,15 +142,26 @@ export default class Love extends Component {
           dataSource={this.ds.cloneWithRows(this.state.listViewData)}
           renderRow={this._renderRow}
           renderHiddenRow={(data, secId, rowId, rowMap) => (
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between'}}>
+                                    <TouchableOpacity
+                        style={[styles.backLeftBtnLeft]}
+                        onPress={_ => this.deleteRow(secId, rowId, rowMap)}
+                      >
+                        <Icon name="heart" color="#F15F66" size={32} />
+                      </TouchableOpacity>
             <TouchableOpacity
               style={[styles.backRightBtnRight]}
               onPress={_ => this.deleteRow(secId, rowId, rowMap)}
             >
               <Icon name="trash" color="#F15F66" size={32} />
             </TouchableOpacity>
+
+            </View>
+
           )}
           rightOpenValue={-75}
-          disableRightSwipe={true}
+          leftOpenValue={75}
+          disableRightSwipe={false}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
@@ -258,6 +269,14 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     alignSelf: "flex-end"
+  },
+  backLeftBtnLeft: {
+    backgroundColor: "#Ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 72,
+    height: 72,
+    alignSelf: "flex-start"
   },
   backTextWhite: {
     color: "#F15F66"

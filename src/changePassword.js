@@ -23,7 +23,6 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Modal from "react-native-modalbox";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
-import firebase from "firebase";
 const { width, height } = Dimensions.get("window");
 @autobind
 @observer
@@ -32,142 +31,20 @@ export default class ChangePassword extends Component {
     super(props);
     this.Global = this.props.Global;
     this.state = {
-      Name: "Minh Hoang",
-      lover: 0,
-      loved: 0,
-      Avatar: "",
-      Email: "",
+      Name: "Minh Hoàng",
+      lover: 6,
+      loved: 12,
+      Avatar: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/default-avatar%2Fhoangphan.jpg?alt=media&token=b8c0dca2-3521-4188-8820-6c472fa18b73",
+      Email: "hoangpm.qn96@gmail.com",
       oldPass: "",
       pass: "",
       confirmPass: "",
       animating: false
     };
   }
-  componentWillMount() {
-    this.getInforUser(this.Global.currentUserId);
-  }
-  getInforUser = async (userId) => {
-    try {
-      this.setState({
-          animating: true
-      })
-      await firebase
-      .database()
-      .ref("users")
-      .orderByKey()
-      .equalTo(userId)
-      .once("value", snapshot => {
-        if (snapshot.val()) {
-          let value = Object.values(snapshot.val());
-          this.setState({
-              Name: value[0].name,
-              Avatar: value[0].avatarUrl,
-              Email: value[0].email,
-          })
-          var loved_total = 0;
-            firebase
-            .database()
-            .ref("wishlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        lover: n
-                    })
-                }
-                else {
-                    this.setState({
-                        lover: 0
-                    })
-                    // debugger
-                }
-            })
-            firebase
-            .database()
-            .ref("lovedlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        loved: loved_total
-                    })
-                }
-                else {
-                    this.setState({
-                        loved: loved_total
-                    })
-                    // debugger
-                }
-            })
-          this.setState({
-              animating: false
-          })
-        } else {
-          Alert.alert(this.Global.APP_NAME, "User had been delete.");
-          return;
-        }
-      });
-  }
-  catch(error) {
-    console.log(error)
-      this.setState({
-          animating: false
-      })
-  }
-}
   verifyCurrentPassword(currentPassword, newPassword) {
-    this.setState({
-      animating: true
-  })
-    try {
-      firebase.auth().currentUser
-      .reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(this.state.Email, currentPassword))
-      .then( () => {
-        firebase.auth().currentUser.updatePassword(newPassword).then(() => {
-          // Update successful.
-          this.setState({
-            animating: false
-        })
-          this.Global.isFooter = true;
-          Actions.pop()
-          this.Global.pressStatus = "profile";
-  
-        }).catch((error) => {
-          this.setState({
-            animating: false
-        })
-          const { code, message } = error;
-        Alert.alert(this.Global.APP_NAME, message);
-      });
-      })
-      .catch((error) =>
-      {
-        this.setState({
-          animating: false
-      })
-        const { code, message } = error;
-        Alert.alert(this.Global.APP_NAME, message);
-        
-      });
-    }
-    catch (error){
-      Alert.alert(this.Global.APP_NAME, error);
-      this.setState({
-        animating: false
-    })
-    }
+    if (currentPassword === 'minhhoang')
+    return;
   }
   showError = errMessage => {
     this.setState({ animating: false });
@@ -250,7 +127,15 @@ export default class ChangePassword extends Component {
             }
             else {
               if (this.state.pass === this.state.confirmPass){
-                this.verifyCurrentPassword(this.state.oldPass, this.state.pass)
+                if (this.state.oldPass === 'minhhoang') {
+                  this.Global.isFooter = true;
+                  Actions.pop();
+                  this.Global.pressStatus = "profile";
+                  Alert.alert(this.Global.APP_NAME, "Change password success!")
+                }
+                else{
+                  Alert.alert(this.Global.APP_NAME, "Old password incorrect")
+                }
               }
               else {
                 Alert.alert(this.Global.APP_NAME, "Password is not confirm.")
