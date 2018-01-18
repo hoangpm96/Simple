@@ -19,6 +19,7 @@ import AddChat from "./addChat";
 import Messager from "./messager";
 import ListLoved from "./listLoved";
 import Register from "./register"
+import RegisterStep from "./registerStep"
 import Main from "./main";
 import SearchFriend from "./search";
 import Profile from "./profile";
@@ -83,6 +84,16 @@ export default class App extends Component {
               paddingTop: 0
             }}
           />
+            <Scene
+            initial
+            key="registerStep"
+            title=""
+            component={RegisterStep}
+            hideNavBar={true}
+            sceneStyle={{
+              paddingTop: 0
+            }}
+          />
           <Scene
             // initial
             key="registerInfo"
@@ -124,7 +135,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            initial
+            // initial
             key="love"
             title=""
             component={Love}
