@@ -85,7 +85,7 @@ export default class App extends Component {
             }}
           />
             <Scene
-            initial
+            // initial
             key="registerStep"
             title=""
             component={RegisterStep}
@@ -185,7 +185,7 @@ export default class App extends Component {
             }}
           />
           <Scene
-            // initial
+            initial
             key="search"
             title={""}
             component={SearchFriend}

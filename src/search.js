@@ -43,6 +43,7 @@ import { async } from "@firebase/util";
 const scaleAnimation = new ScaleAnimation();
 const { width, height } = Dimensions.get("window");
 const addressData = require('./data/address.json');
+const data = require('./data/users.json');
 const citys = [];
 const districts = [];
 
@@ -70,10 +71,10 @@ export default class SearchFriend extends Component {
       text: "",
       age: 18,
       age2: 40,
-      name: "Huong Giang Ido",
+      name: "",
       selectedCity: "Select City",
       selectedDistrict: "Select District",
-      Quote: "A woman gives and forgives, a man gets and forgets",
+      Quote: "",
       sliderOneChanging: false,
       sliderOneValue: [5],
       multiSliderValue: [18, 23],
@@ -81,22 +82,19 @@ export default class SearchFriend extends Component {
       height: [150, 180],
       animatedValue: new Animated.Value(0),
       animating: false,
-      userProfiles: [],
-      currentIndex: 0,
-      userIds: [],
-      avatarUrl: ""
+      avatarUrl: "",
+      searchData: [],
+      currentIndex: 0
     };
   }
   componentWillMount() {
     this.createSelect();
+    this.Global.isFooter = true;
 }
   createSelect() {
     for (var city of addressData) {
         citys.push(city.name)
     }
-    // this.setState({
-    //     animating: false
-    // })
 }
     getDistrict(cityName) {
     const city = addressData.find(m => m.name == cityName );
@@ -145,315 +143,74 @@ export default class SearchFriend extends Component {
   }
 
   search = async () => {
-    this.setState({ animating: true });
-    var tempArr = this.state.userIds;
-    var ignoreList = [];
-    var wishList = [];
-    try {
-
-       // Lấy danh sách wish list hiện tại 
-       await firebase
-        .database()
-        .ref("wishList")
-        .child(this.Global.currentUserId)
-            .once("value", function(snapshots) {
-              snapshots.forEach(function(data) {
-                wishList.push(data.key);
-              });
-            });
-
-      // Lấy danh sách ignore list hiện tại 
-      await firebase
-            .database()
-            .ref("ignores")
-            .child(this.Global.currentUserId)
-            .once("value", function(snapshots) {
-              snapshots.forEach(function(data) {
-                
-                ignoreList.push(data.key);
-              });
-            });
-          
-
-
-
-      // lấy danh sách tất cả các người dùng khác có tags đang tìm
-      await Promise.all(
-        this.state.tags.map(async tag => {
-          await firebase
-            .database()
-            .ref("tags")
-            .child(tag)
-            .once("value", function(snapshots) {
-              snapshots.forEach(function(data) {
-                tempArr.push(data.key);
-              });
-            });
-        })
-      )
-        .then(data => {
-          // remove id của currentUser
-          const index = tempArr.indexOf(this.Global.currentUserId);
-          if (index > -1) {
-            tempArr.splice(index, 1);
-          }
-
-          // remove id cua ignoreList
-          tempArr = tempArr.filter(e => {
-            return ignoreList.indexOf(e) < 0;
-          });
-
-          // remove id cua wishList
-           tempArr = tempArr.filter(e => {
-             return wishList.indexOf(e) < 0;
-           });
-          ;
-
-          
-          
-          debugger;
-          // cập nhật lại tag hiện tại
-          this.setState(prevState => ({
-            userIds: tempArr
-          }));
-
-          // Check gender
-          //Check tuổi
-          //Check địa chỉ
-          this.checkUserMatch(this.state.userIds);
-          
-          
-          
-        })
-
-        .catch(function(e) {
-          this.showError(e);
-        });
-    } catch (error) {
-      this.showError(error);
+    if(this.state.tags.length <=0){
+      Alert.alert(
+        this.Global.APP_NAME,
+        "Please enter a hobby!",
+        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+        { cancelable: false }
+      );
     }
+    else 
+    {
+// load du lieu tu dau, load voi index =0
+let userData = this.createDataList(data);
+this.setState({ 
+  searchData: userData,
+});
+// load voi index = 0 
+if (this.state.searchData.length){
+  this.loadUserFrom(0);
+}}
   };
 
-  // filter on user's properties
-  checkUserMatch = async userIdArr => {
-    let minAge = 18;
-    let maxAge = 40;
-    let currentGender = this.Global.currentUserGender;
-    let currentCity = this.Global.currentUserCity;
-    let currentDistrict = this.Global.currentUserDistrict;
-    var tempUserIds = [];
-    try {
-       await Promise.all(
-        userIdArr.map(async userId => {
-          await firebase
-            .database()
-            .ref("users")
-            .child(userId)
-            .once("value", function(snapshot) {
-                let userData = snapshot.val();
-                
-                if (Number(userData.age) > maxAge || Number(userData.age) < minAge) {
-                    return;
-                }
-               if (userData.gender === currentGender) {
-                   return;
-               }
-              //  if ( userData.city !== currentCity )  {
-              //    return 
-              //  }
-              //  if (userData.district !== currentDistrict) {
-              //    return;
-              //  }
-              tempUserIds.push(snapshot.key);
-
-              
-            });
-        })
-      ).then(data => {
-        
-        // debugger;
-         this.setState(prevState => ({ userIds: tempUserIds }));
-         var { userIds, currentIndex } = this.state;
-
-         if (userIds.length > 0 && currentIndex < userIds.length) {
-           // chỉ hiển thị lần đầu, lần sau nhấn ignore || like
-           this.loadUserFrom(userIds[currentIndex]);
-         } else {
-           this.showError(this.Global.errorMessage.noMatch);
-         }
-                
-      })
-
-      
-
-    } catch (error) {}
-  };
-
-  loadUserFrom = async id => {
-    try {
-      await firebase
-        .database()
-        .ref("users")
-        .orderByKey()
-        .equalTo(id)
-        .once("value", snapshot => {
-          if (snapshot.val()) {
-            let value = Object.values(snapshot.val());
-            let email = value[0].email;
+  createDataList = (rawData) => {
+    var arr = [];
+    for (let ele of rawData) {
+      var hobbies = ""
+      for (let hobby in ele.tags){
+        hobbies = hobbies + ", " +hobby.toString()
+      }
+      hobbies = hobbies.substr(2, hobbies.length - 2);
+      ele.hobbies = hobbies;
+        arr.push(ele);
+    }
+    return arr;
+}
+  loadUserFrom = (index) => {
             this.setState({
-              name: value[0].name,
-              age2: value[0].age,
-              Quote: value[0].quote, // TODO: Add user's quote
-              avatarUrl: value[0].avatarUrl
+              name: this.state.searchData[index].name,
+              age2: this.state.searchData[index].age,
+              Quote: this.state.searchData[index].quote,
+              avatarUrl: this.state.searchData[index].avatarUrl,
+              // currentIndex: index
             });
-          }
-        });
-
       this.showScaleAnimationDialog();
-    } catch (error) {
-      this.showError(error);
-    }
-  };
-
-  findUser = async userIds => {
-    try {
-      await Promise.all(
-        userIds.map(async tag => {
-          await firebase
-            .database()
-            .ref("users")
-            .once("value", function(snapshots) {
-              snapshots.forEach(function(data) {
-                let tempArr = this.state.userProfiles;
-                tempArr.push(data.val());
-                this.setState({ userProfiles: tempArr });
-              });
-            });
-        })
-      ).then(data => {
-        console.log(this.state.userProfiles);
-        // debugger;
-        this.findUser(userIds);
-      });
-
-      this.showScaleAnimationDialog();
-    } catch (error) {
-      this.showError(error);
-    }
   };
 
   // Action của ignore || likes => Đều phải load user mới
-  loadNextUser = async ignore => {
-    // debugger;
-    var { userIds, currentIndex } = this.state;
-    const otherUserId = userIds[currentIndex];
-
-    // debugger;
-    // add to ignore list -> don't this people show next time
-    if (ignore) {
-      if (currentIndex >= userIds.length) {
+  loadNextUser = () => {
+    debugger
+    this.setState({
+      currentIndex: this.state.currentIndex + 1
+    })
+    debugger
+      if (this.state.currentIndex >= data.length) {
         this.showError(this.Global.errorMessage.noMatch);
+        
         return;
       }
-      // kiem tra A co nam trong loved list cua user
-      await firebase.database().ref("lovedlist")
-      .child(this.Global.currentUserId)
-      .child(otherUserId)
-      .once("value", snapshot => {
-        // neu User -> lovedlist -> A
-        if (snapshot.val()) {
-          // xoa A ra khoi lovedlist cua User
-          firebase
-          .database()
-          .ref("lovedlist")
-          .child(this.Global.currentUserId)
-          .child(otherUserId)
-          .set(null);
-        }
-        // add to ignore list
-          firebase
-          .database()
-          .ref("ignores")
-          .child(this.Global.currentUserId)
-          .child(otherUserId)
-          .set(true);
-      })
-      this.autoLoadNew();
-    } else {
-      // add to wish list
-      if (currentIndex >= userIds.length) {
-        this.showError(this.Global.errorMessage.noMatch);
-        return;
+      else {
+        debugger
+        this.loadUserFrom(this.state.currentIndex);
       }
-      // kiem tra A co nam trong loved list cua User hien tai khong
-        firebase.database().ref("lovedlist")
-        .child(this.Global.currentUserId)
-        .child(otherUserId)
-        .once("value", snapshot => {
-          // neu User -> lovedlist -> A
-          if (snapshot.val()) {
-            // xoa A ra khoi lovedlist cua User
-            firebase
-            .database()
-            .ref("lovedlist")
-            .child(this.Global.currentUserId)
-            .child(otherUserId)
-            .set(null);
-            // add to wishlist
-            firebase
-            .database()
-            .ref("wishlist")
-            .child(this.Global.currentUserId)
-            .child(otherUserId)
-            .set(true);
-
-            firebase
-            .database()
-            .ref("notifications")
-            .push({
-              receiver: otherUserId,
-              sender: this.Global.currentUserId,
-              // token: this.Global.token
-            });
-          }
-          // neu User -> khong nam trong lovedlist -> A
-          else {
-            firebase
-            .database()
-            .ref("wishlist")
-            .child(this.Global.currentUserId)
-            .child(otherUserId)
-            .set(true);
-            // add to loved list
-            firebase
-            .database()
-            .ref("lovedlist")
-            .child(otherUserId)
-            .child(this.Global.currentUserId)
-            .set(true);
-          }
-        })
-      this.autoLoadNew();
-    }
-  };
-  autoLoadNew = () => {
-    var { userIds, currentIndex } = this.state;
-    const otherUserId = userIds[currentIndex];
-    if (currentIndex < userIds.length) {
-      this.loadUserFrom(otherUserId);
-      // tăng +1 để load user khác
-      this.setState({ currentIndex: this.state.currentIndex + 1 });
-    } else {
-      this.showError(this.Global.errorMessage.noMatch);
-    }
   };
 
   showError = errMessage => {
-    this.setState({ animating: false });
     Alert.alert(
       this.Global.APP_NAME,
       errMessage,
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }],
+      [{ text: "OK", onPress: () => this.scaleAnimationDialog.dismiss() }],
       { cancelable: false }
     );
   };
@@ -649,15 +406,14 @@ export default class SearchFriend extends Component {
               <Text style={styles.textQuote}> {this.state.Quote}</Text>
             </View>
             <Image
-              // source={require("./img/HHKTeam.jpg")}
-              source={{ uri: this.state.avatarUrl }}
+              source={this.state.avatarUrl ? { uri: this.state.avatarUrl } : require("./img/HHKTeam.jpg")}
               style={styles.avatar}
             />
             <View style={styles.containerButton01}>
               <TouchableOpacity
                 onPress={() => {
                   //code ham like/ ignore
-                  this.loadNextUser(true);
+                  this.loadNextUser();
                 }}
                 style={[
                   styles.waperButton,
@@ -669,7 +425,7 @@ export default class SearchFriend extends Component {
               <TouchableOpacity
                 onPress={() => {
                   // code ham like / ignore
-                  this.loadNextUser(false);
+                  this.loadNextUser();
                 }}
                 style={[
                   styles.waperButton,

@@ -23,8 +23,7 @@ import { observable } from "mobx";
 import { autobind } from "core-decorators";
 import { observer } from "mobx-react/native";
 const { width, height } = Dimensions.get("window");
-import firebase from "firebase";
-import { async } from "@firebase/util";
+const data = require('./data/users.json');
 var _ = require('lodash');
 @autobind
 @observer
@@ -38,7 +37,7 @@ export default class Chat extends Component {
       refreshing: false,
       listViewData: [],
       isSwipe: false,
-      username: "",
+      name: "",
       saveResult: []
 
     };
@@ -47,68 +46,24 @@ export default class Chat extends Component {
   }
 
   async componentWillMount() {
-    var tempArr = [];
-    try {
-      await firebase
-        .database()
-        .ref("wishlist")
-        .child(this.Global.currentUserId)
-        .once("value", function(snapshots) {
-          snapshots.forEach(function(data) {
-            tempArr.push(data.key);
-          });
-        });
-
-      this.loadWishListUser(tempArr);
-    } catch (error) {}
+    let userData = this.createDataList(data);
+    this.setState({ 
+      listViewData: userData,
+    });
   }
-
-  loadWishListUser = async userIds => {
-    var tempUsers = [];
-
-    try {
-      await Promise.all(
-        userIds.map(async id => {
-          await firebase
-            .database()
-            .ref("users")
-            .orderByKey()
-            .equalTo(id)
-            .once("value", snapshot => {
-              if (snapshot.val()) {
-                let value = Object.values(snapshot.val());
-                let tempObj = value[0];
-                let keys = Object.keys(snapshot.val());
-                tempObj.id = keys[0];
-                tempUsers.push(tempObj);
-              }
-            });
-        })
-      ).then(data => {
-        let userData = this.createDataList(tempUsers);
-
-        this.setState({ listViewData: userData });
-        this.setState({ saveResult: userData});
-      });
-
-      // this.showScaleAnimationDialog();
-    } catch (error) {
-      // this.showError(error);
-    }
-  };
-
-  // rawData là data từ firebase -> Chuyển thành mảng dùng được
-  createDataList = rawData => {
-    // TODO: Thêm các thômg tin cần thiết nếu cần
+  createDataList = (rawData) => {
     var arr = [];
     for (let ele of rawData) {
-      ele.username = ele.name;
-      ele.chat = "chat message here";
-      ele.lastActive = "";
-      arr.push(ele);
+      var hobbies = ""
+      for (let hobby in ele.tags){
+        hobbies = hobbies + ", " +hobby.toString()
+      }
+      hobbies = hobbies.substr(2, hobbies.length - 2);
+      ele.hobbies = hobbies;
+        arr.push(ele);
     }
     return arr;
-  };
+}
   componentDidMount() {
     this.setState({
       listViewData: this.state.listViewData
@@ -121,103 +76,21 @@ export default class Chat extends Component {
       refreshing: false
     });
   }
-
-  checkConversation = async () => {
-    let self = this;
-    var isCreating = true; 
-    
-    await firebase
-      .database()
-      .ref("users/" + this.Global.currentUserId + "/conversations")
-      .child(this.Global.selectedChatUser.id)
-      .once("value", snapshot => {
-        const userData = snapshot.val();
-        if (userData) {
-          
-          console.log(userData.conversationId);
-          self.Global.selectedConversation = userData.conversationId;
-          isCreating = false;
-        } else {
-          self.createConversation();
-          isCreating = true;
-        }
-      });
-
-      if (!isCreating) {
-          Actions.messager();
-      }
-
-
-  };
-  createConversation = async () => {
-     
-      let conver = await firebase
-      .database()
-      .ref("conversations")
-      .push({
-        members: {
-          [this.Global.currentUserId]: true,
-          [this.Global.selectedChatUser.id]: true
-        }
-      });
-
-    await firebase
-      .database()
-      .ref("users")
-      .child(this.Global.currentUserId)
-      .child("conversations")
-      .child(this.Global.selectedChatUser.id)
-      .set({
-        conversationId: conver.key
-      });
-  
-    await firebase
-      .database()
-      .ref("users")
-      .child(this.Global.selectedChatUser.id)
-      .child("conversations")
-      .child(this.Global.currentUserId)
-      .set({
-        conversationId: conver.key
-      });
-      this.Global.selectedConversation = conver.key
-      Actions.messager();
-  }
-  onSearchTextChange = (name) => {
-
-        if (name == "") {
-          this.setState({ listViewData: this.state.saveResult });          
-        }else {
-          var arr = this.state.listViewData.filter(m =>
-            m.name.toLowerCase().includes(name.toLowerCase())
-          );
-          // debugger;
-          this.setState({ listViewData: arr });
-        }        
-        
-       
-    }
   deleteRow(secId, rowId, rowMap) {
     rowMap[`${secId}${rowId}`].closeRow();
     const newData = [...this.state.listViewData];
     newData.splice(rowId, 1);
     this.setState({ listViewData: newData });
   }
-  _renderRow(rowData) {
+  _renderRow(rowData, secId, rowId, rowMap) {
     return (
       <TouchableOpacity
         style={styles.viewContainer}
         onPress={() => {
-          console.log(rowData);
-
-          this.Global.selectedChatUser = rowData;
+          this.Global.selectedChatUser = rowId;
           this.Global.isFooter = false;
           this.Global.pressStatus = "chat";
-          this.checkConversation();
-
-          // create conversation here
-
-        
+          Actions.messager();
         }}
       >
         <Image
@@ -253,23 +126,23 @@ export default class Chat extends Component {
         <Animated.View style={styles.headerContainer}>
           <Text style={styles.headerText}>CHAT</Text>
         </Animated.View>
-        <View style={styles.searchContainer}>
+        {/* <View style={styles.searchContainer}>
           <Icon name="search" color="#ffffff" size={22} style={{ marginLeft: 10 }} />
-          <TextInput placeholder={"Search by name"} style={styles.styleUserName} onChangeText={username => {
-              this.setState({ username });
-              this.onSearchTextChange(username);
-            }} placeholderTextColor={"#ffffff"} value={this.state.username} />
-        </View>
+          <TextInput placeholder={"Search by name"} style={styles.styleUserName} onChangeText={name => {
+              this.setState({ name });
+              this.onSearchTextChange(name);
+            }} placeholderTextColor={"#ffffff"} value={this.state.name} />
+        </View> */}
         <SwipeListView contentContainerStyle={styles.loveContainer} dataSource={this.ds.cloneWithRows(this.state.listViewData)} renderRow={this._renderRow} renderHiddenRow={(data, secId, rowId, rowMap) => <TouchableOpacity style={[styles.backRightBtnRight]} onPress={_ => this.deleteRow(secId, rowId, rowMap)}>
               <Icon name="trash" color="#F15F66" size={32} />
             </TouchableOpacity>} rightOpenValue={-75} disableRightSwipe={true} refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onReLoad.bind(this)} />} />
-        {/* <TouchableOpacity onPress={() => {
+        <TouchableOpacity onPress={() => {
             this.Global.isFooter = false;
             this.Global.pressStatus = "search";
             Actions.addchat();
           }} style={styles.containterAdd}>
           <Icon name="search" color="#ffffff" size={23} />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>;
   }
 }

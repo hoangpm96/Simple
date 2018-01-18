@@ -33,7 +33,6 @@ export default class AddChat extends Component {
       this.Global = this.props.Global;
       this.pressStatus = this.props.pressStatus;
       const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-      // this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
       this.state = {
         dataSource: ds.cloneWithRows(data),
         refreshing: false
@@ -74,26 +73,14 @@ export default class AddChat extends Component {
                   <Text style={{ color: 'green' }}>*</Text>
                   <Text numberOfLines={1} style={[styles.informationStyle, { fontSize: 16 }]}  >  {rowData.name}, {rowData.age}</Text>
                 </View>
-{/* 
-
-                <TouchableOpacity
-                  onPress={() => {
-                    Actions.messager();
-                    this.Global.isFooter = false;
-                    this.Global.pressStatus = "chat";
-                  }}
-                > */}
                   <Icon name="chevron-right" color='#ffffff' size={22} style={{ margin: 10 }} />
-                {/* </TouchableOpacity> */}
               </View>
           </TouchableOpacity>
       )
     }
 
-    onSearchTextChange = (username) => {
-        var arr = [];
-        arr = this.state.dataSource.filter( m => m.name == username );
-        this.setState( {dataSource: arr } );
+    onSearchTextChange = () => {
+
     }
 
     render() {
@@ -130,14 +117,6 @@ export default class AddChat extends Component {
                 onRefresh={this._onReLoad.bind(this)} />
             }
           />
-          <TouchableOpacity
-            onPress={() => {
-              this.Global.isFooter = true;
-              this.Global.pressStatus = "search";
-              Actions.messager();
-            }}
-          >
-          </TouchableOpacity>
         </View>
       );
     }
