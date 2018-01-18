@@ -67,11 +67,11 @@ export default class Footer extends Component {
               style={this.Global.pressStatus === "chat" ? styles.disableBackground : styles.background}
             >
               <Icon name="wechat" color='#ffffff' size={height < 812 ? (height < 736 ? (height < 667 ? 33 : 36) : 38) : 40} />
-              {/* {this.Global.pressStatus !== "chat" ?
+              {this.Global.pressStatus !== "chat" ?
                 <View style={styles.notifyContain}>
                   <Text style={styles.notifyText}>5</Text>
                 </View>
-                : null} */}
+                : null}
 
             </TouchableOpacity>
             <TouchableOpacity
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     position: 'absolute',
     left: width / 8,
-    bottom: 35
+    bottom: 25
   },
   notifyText: {
     alignSelf: 'center',

@@ -109,10 +109,9 @@ export default class Chat extends Component {
             </Text>
           </View>
           <Text
-            numberOfLines={1}
             style={[styles.informationStyle, { marginTop: 2, marginRight: 5 }]}
           >
-            {rowData.chat}
+          Tomorrow, can we meet?
           </Text>
           <Text style={styles.styleTextTime}> {rowData.lastActive}</Text>
         </View>
