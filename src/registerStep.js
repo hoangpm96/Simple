@@ -35,8 +35,6 @@ const inputProps = {
       marginVertical: Platform.OS == 'ios' ? 10 : -2,
   },
 };
-// import firebase from "firebase";
-// import { forEach } from "@firebase/util";
 @autobind
 @observer
 
@@ -47,15 +45,6 @@ export default class RegisterStep extends Component {
     background = require("./img/background.png");
     logo = require("./img/logo.png");
     this.Global = this.props.Global;
-    // this.state = {
-    //   name: "",
-    //   email: "",
-    //   pass: "",
-    //   age: 18,
-    //   tags: [],
-    //   text: "",
-    //   isMale: true,
-    // };
     var dataSource = new ViewPager.DataSource({
       pageHasChanged: (p1, p2) => p1 !== p2,
     });
@@ -105,6 +94,11 @@ export default class RegisterStep extends Component {
   render() {
     return (
       <ImageBackground source={background} style={styles.waperContainer}>
+      <KeyboardAwareScrollView
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      contentContainerStyle={styles.container}
+      scrollEnabled={false}
+    >
               <Image source={logo} style={styles.logoStyle} />
         <Text style={styles.textName}>REGISTER</Text>
               <ViewPager
@@ -112,7 +106,7 @@ export default class RegisterStep extends Component {
           renderPage={this.renderViewPagerPage}
           onChangePage={(page) => {this.setState({currentPage:page})}}
           />
-
+</KeyboardAwareScrollView>
         </ImageBackground>
     );
   }
@@ -120,11 +114,7 @@ export default class RegisterStep extends Component {
     return(<View style={styles.page}>
       {
         data === 'Page 1' ? 
-        <KeyboardAwareScrollView
-        resetScrollToCoords={{ x: 0, y: 0 }}
-        contentContainerStyle={styles.container}
-        scrollEnabled={false}
-      >
+      <View>
       <View style={styles.containerInfo}>
         {/* You are? */}
         <View style={styles.containerYouAre}>
@@ -205,15 +195,11 @@ export default class RegisterStep extends Component {
           </View>
         </TouchableOpacity>
       </View>
-      </KeyboardAwareScrollView>
+       </View>
         :
         (
         data === 'Page 2' ?
-        <KeyboardAwareScrollView
-        resetScrollToCoords={{ x: 0, y: 0 }}
-        contentContainerStyle={styles.container}
-        scrollEnabled={false}
-      >
+      <View>
       <View style={styles.containerInfo}>
         {/* What are your hobbies? */}
         <View style={styles.containerHobby}>
@@ -258,8 +244,6 @@ export default class RegisterStep extends Component {
       <View style={styles.containerButton02}>
         <TouchableOpacity
           onPress={() => {
-            // this.Global.isFooter = false;
-            // Actions.login();
           }}
         >
           <View style={[styles.waperRegister, { marginRight: 5 }]}>
@@ -287,15 +271,8 @@ export default class RegisterStep extends Component {
           </View>
         </TouchableOpacity>
       </View>
-      </KeyboardAwareScrollView>
+      </View>
       :
-        <KeyboardAwareScrollView
-          resetScrollToCoords={{ x: 0, y: 0 }}
-          contentContainerStyle={styles.container}
-          scrollEnabled={false}
-        >
-      
-
         <View style={{ flex: 1 }}>
           <View style={[styles.containerForm, { flex: 5 }]}>
             <View style={styles.containerUserName}>
@@ -373,23 +350,6 @@ export default class RegisterStep extends Component {
           <View style={[styles.containerButton, { flex: 4 }]}>
             {/* Button Login */}
             <TouchableOpacity
-            // onPress={() => {
-            //   debugger
-            //   if (this.state.email === "" || this.state.pass === "" || this.state.name === "") {
-            //       Alert.alert(
-            //         this.Global.APP_NAME,
-            //         "Email, Name, Password blank",
-            //         [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-            //         { cancelable: false }
-            //       );
-            //     }
-            //     else {
-            //       debugger
-            //           this.Global.isFooter = true;
-            //           this.Global.firstLogin = false;
-            //           Actions.search();
-            // }
-            // }}
               onPress={() => {
                 if (this.state.email === "" || this.state.pass === "" || this.state.name === "") {
                   Alert.alert(
@@ -432,8 +392,7 @@ export default class RegisterStep extends Component {
               </View>
             </TouchableOpacity>
           </View>
-        </View>
-        </KeyboardAwareScrollView>)
+        </View>)
       }
     </View>)
   }
