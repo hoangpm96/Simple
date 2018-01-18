@@ -125,7 +125,7 @@ export default class Love extends Component {
           this.state.listViewData.length > 0  ? 
           <View style = {{flex: 1}}>
         <Animated.View style={styles.headerContainer}>
-        <Text style={styles.headerText}>LOVED LIST</Text>
+        <Text style={styles.headerText}>LOVE REQUESTS</Text>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => {
@@ -174,7 +174,7 @@ export default class Love extends Component {
         : 
         <View>
         <Animated.View style={styles.headerContainer}>
-        <Text style={styles.headerText}>LOVED LIST</Text>
+        <Text style={styles.headerText}>LOVE REQUEST</Text>
       </Animated.View>
         <Text style={styles.wishlist_blank}>Wating for adding friend... </Text>
         </View>
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
   backButton: {
     justifyContent: 'center',
     position: 'absolute',
-    top: height < 812 ? 30 : 50,
-    left: 10
+    top: height < 812 ? 35 : 50,
+    left: 0
   },
 });

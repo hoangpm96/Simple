@@ -136,7 +136,7 @@ export default class Love extends Component {
           this.state.listViewData.length > 0  ? 
           <View style = {{flex: 1}}>
           <Animated.View style={styles.headerContainer}>
-          <Text style={styles.headerText}>WISH LIST</Text>
+          <Text style={styles.headerText}>LOVE LIST</Text>
         </Animated.View>
           <SwipeListView
           contentContainerStyle={styles.loveContainer}
@@ -166,7 +166,7 @@ export default class Love extends Component {
         : 
         <View>
         <Animated.View style={styles.headerContainer}>
-        <Text style={styles.headerText}>WISH LIST</Text>
+        <Text style={styles.headerText}>LOVE LIST</Text>
       </Animated.View>
         <Text style={styles.wishlist_blank}>Make more friends... </Text>
         </View>
