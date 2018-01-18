@@ -29,10 +29,7 @@ import Modal from "react-native-modalbox";
 import ImagePicker from 'react-native-image-picker';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import firebase from "firebase";
-import { async } from "@firebase/util";
 import Global from "./models/global";
-import { each } from "@firebase/database/dist/esm/src/core/util/util";
 
 const { width, height } = Dimensions.get("window");
 const inputProps = {
@@ -100,8 +97,6 @@ window.Blob = Blob
 
 export default class EditProfile extends Component {
     componentWillMount() {
-
-        this.getInforUser(this.Global.currentUserId);
         this.createSelect();
     }
     createSelect() {
@@ -118,9 +113,6 @@ export default class EditProfile extends Component {
             citys.push(city.name)
         }
         console.log(citys)
-        this.setState({
-            animating: false
-        })
     }
     getDistrict(cityName) {
     const city = addressData.find(m => m.name == cityName );
@@ -129,189 +121,30 @@ export default class EditProfile extends Component {
         districts.push(city.districts[district]);
     }
     }
-    getInforUser = async (userId) => {
-        try {
-            this.setState({
-                animating: true
-            })
-            await firebase
-            .database()
-            .ref("users")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-              if (snapshot.val()) {
-                let value = Object.values(snapshot.val());
-                this.setState({
-                    userName: value[0].username,
-                    Name: value[0].name,
-                    selectedAge: (value[0].age).toString(),
-                    selectedHeight: (value[0].height).toString(),
-                    selectedWeight: (value[0].weight).toString(),
-                    selectedCity: value[0].city,
-                    selectedDistrict: value[0].district,
-                    Email: value[0].email,
-                    Quote: value[0].quote,
-                    Avatar: value[0].avatarUrl,
-                })
-                this.state.selectedHeight === null ? this.setState({
-                    selectedHeight: 'Select Height'
-                }) : null
-                this.state.selectedWeight === null ? this.setState({
-                    selectedWeight: 'Select Weight'
-                }) : null
-                let array = []
-                for (var tag in value[0].tags) {
-                        array.push(tag),
-                    this.setState({tags:  array});
-                }
-                var loved_total = 0;
-            firebase
-            .database()
-            .ref("wishlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        lover: n
-                    })
-                }
-                else {
-                    this.setState({
-                        lover: 0
-                    })
-                    // debugger
-                }
-            })
-            firebase
-            .database()
-            .ref("lovedlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        loved: loved_total
-                    })
-                }
-                else {
-                    this.setState({
-                        loved: loved_total
-                    })
-                    // debugger
-                }
-            })
-                this.setState({
-                    animating: false
-                })
-              } else {
-                Alert.alert(this.Global.APP_NAME, "User had been delete.");
-                return;
-              }
-              console.log(snapshot.val());
-            });
-        }
-        catch(error) {
-            this.setState({
-                animating: false
-            })
-        }
-    }
-
-    uploadInfoUser = async () => {
-        var imgUrl = this.state.avatarSource ? await uploadImage(this.state.avatarSource, this.Global.currentUserId, 'images/'): null;
-        try {
-            // this.state.avatarSource ? 
-            this.setState(
-                {
-                    animating: true
-                }
-            )
-            await firebase.database().ref('users').child(this.Global.currentUserId).update({
-                'avatarUrl': imgUrl ? imgUrl : this.state.Avatar,
-                'age': this.state.selectedAge,
-                'name': this.state.Name,
-                'height': this.state.selectedHeight,
-                'weight': this.state.selectedWeight,
-                'city': this.state.selectedCity,
-                'district': this.state.selectedDistrict,
-                'quote': this.state.Quote,
-            })
-            //remove tags from firebase ref users
-            await firebase
-                .database()
-                .ref("users").child(this.Global.currentUserId).child('tags').remove();
-            
-            for ( let tag of this.state.tags  ) {
-                //remove tags from firebase ref tags
-                await firebase
-                .database()
-                .ref("tags")
-                .child(tag)
-                .child(this.Global.currentUserId)
-                .remove()
-                // add new tags in tags firebase
-                await firebase
-                .database()
-                .ref("tags").child(tag).child(this.Global.currentUserId).set(true);
-                        // end add new tags
-                await firebase
-                .database()
-                .ref("users").child(this.Global.currentUserId).child('tags').child(tag).set(true);
-              }
-              this.setState(
-                {
-                    animating: false
-                }
-            )
-            this.Global.isFooter = true;
-            Actions.profile();
-        }
-        catch (error) {
-            this.setState({
-                animating: false
-            })
-            Alert.alert(this.Global.APP_NAME, error);
-        }
-    }
-
     constructor(props) {
         super(props);
         this.Global = this.props.Global;
         this.onActionsPress = this.onActionsPress.bind(this);
         this.state = {
-            userName: "",
-            Name: "",
-            Age: "",
-            Height: "",
-            Weight: "",
-            Address: "",
-            Email: "",
+            userName: "HoangPhan",
+            Name: "Minh Hoàng",
+            Age: "21",
+            Height: "173",
+            Weight: "54",
+            Email: "hoangpm.qn96@gmail.com",
             Quote: "A woman gives and forgives, a man gets and forgets",
             selected: 1,
             selectedAge: '21',
-            selectedWeight: '45',
-            selectedHeight: '150',
-            selectedCity: "",
-            selectedDistrict: "",
-            lover: 0,
-            loved: 0,
-            tags: [],
+            selectedWeight: '54',
+            selectedHeight: '173',
+            selectedCity: "Tỉnh Quảng Ngãi",
+            selectedDistrict: "Huyện Bình Sơn",
+            lover: 6,
+            loved: 12,
+            tags: ["dog", "cat", "guitar", "harmonica", "swimming"],
             text: "",
-            Avatar: null,
+            Avatar: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/default-avatar%2Fhoangphan.jpg?alt=media&token=b8c0dca2-3521-4188-8820-6c472fa18b73",
             avatarSource: null,
-            animating: false
         };
     }
     selectPhotoTapped() {
@@ -647,29 +480,17 @@ export default class EditProfile extends Component {
                 </ScrollView>
                 <TouchableOpacity
                     onPress={() => {
-                        // this.getInforUser(this.Global.currentUserId);
-                        // console.log(this.Global.currentUserId);
-
-                        this.uploadInfoUser();
+                        this.Global.isFooter = true;
+                        Actions.profile();
+                        this.Global.pressStatus = "profile";
+                        Alert.alert(this.Global.APP_NAME, "Success!")
                     }}
                 >
                     <View style={styles.containterAdd}>
                         <Icon name="check" color='#ffffff' size={23} />
                     </View>
                 </TouchableOpacity>
-                <ActivityIndicator
-              animating={this.state.animating}
-              color="#fff"
-              size="large"
-              style={styles.activityIndicator}
-            />
-                      {
-            this.state.animating ?
-              <View style={styles.waiting}>
-
-              </View>
-              : null
-          }
+  
             </KeyboardAwareScrollView>
         );
     }

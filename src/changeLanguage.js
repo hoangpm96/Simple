@@ -15,7 +15,8 @@ import {
     RefreshControl,
     Animated,
     Button,
-    Platform
+    Platform,
+    Alert
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
@@ -70,7 +71,7 @@ export default class ChangeLanguage extends Component {
                 <TouchableOpacity
                     onPress={() => {
                         this.Global.isFooter = true;
-                        Actions.pop();
+                        Alert.alert(this.Global.APP_NAME, "Language is not supported");
                         this.Global.pressStatus = "profile";
                     }}
                     style={styles.containerLanguage}
@@ -83,13 +84,14 @@ export default class ChangeLanguage extends Component {
                         <Text style={styles.language}>
                             Vietnamese
               </Text>
-                        <Icon name="chevron-right" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
+                        <Icon name="circle-o" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
                         this.Global.isFooter = true;
                         Actions.pop();
+                        Alert.alert(this.Global.APP_NAME, "Use United States Language!");
                         this.Global.pressStatus = "profile";
                     }}
                     style={styles.containerLanguage}
@@ -102,7 +104,7 @@ export default class ChangeLanguage extends Component {
                         <Text style={styles.language}>
                             United States
                                   </Text>
-                        <Icon name="chevron-right" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
+                        <Icon name="circle" color='#ffffff' size={16} style={{ marginRight: 15, backgroundColor: 'transparent' }} />
                     </View>
                 </TouchableOpacity>
 
