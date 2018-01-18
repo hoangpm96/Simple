@@ -20,8 +20,6 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import firebase from "firebase";
-import { async } from "@firebase/util";
 import Modal from "react-native-modalbox";
 const { width, height } = Dimensions.get("window");
 
@@ -32,229 +30,27 @@ export default class DeleteAccount extends Component {
     super(props);
     this.Global = this.props.Global;
     this.state = {
-      Name: "Minh Hoang",
-      lover: 0,
-      loved: 0,
-      Avatar: "",
+      Name: "Minh Hoàng",
+      lover: 6,
+      loved: 12,
+      Avatar: "https://firebasestorage.googleapis.com/v0/b/simple-6e793.appspot.com/o/default-avatar%2Fhoangphan.jpg?alt=media&token=b8c0dca2-3521-4188-8820-6c472fa18b73",
       Email: "",
       pass: "",
-      EmailData: "",
-      tags: [],
-      animating: false
+      EmailConfirm: "hoangpm.qn96@gmail.com",
+      PasswordConfirm: "minhhoang"
     };
   }
-  componentWillMount() {
-    this.getInforUser(this.Global.currentUserId);
-  }
-
-  getInforUser = async (userId) => {
-    try {
-        this.setState({
-            animating: true
-        })
-        await firebase
-        .database()
-        .ref("users")
-        .orderByKey()
-        .equalTo(userId)
-        .once("value", snapshot => {
-          if (snapshot.val()) {
-            let value = Object.values(snapshot.val());
-            this.setState({
-                Name: value[0].name,
-                Avatar: value[0].avatarUrl,
-                EmailData: value[0].email
-            })
-            let array = []
-            for (var tag in value[0].tags) {
-                    array.push(tag),
-                this.setState({tags:  array});
-            }
-            var loved_total = 0;
-            firebase
-            .database()
-            .ref("wishlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        lover: n
-                    })
-                }
-                else {
-                    this.setState({
-                        lover: 0
-                    })
-                    // debugger
-                }
-            })
-            firebase
-            .database()
-            .ref("lovedlist")
-            .orderByKey()
-            .equalTo(userId)
-            .once("value", snapshot => {
-                // debugger
-                if (snapshot.val()) {
-                    let value = Object.values(snapshot.val());
-                    let keys = value[0];
-                    let n = Object.keys(keys).length;
-                    loved_total = loved_total + n;
-                    this.setState({
-                        loved: loved_total
-                    })
-                }
-                else {
-                    this.setState({
-                        loved: loved_total
-                    })
-                    // debugger
-                }
-            })
-            this.setState({
-                animating: false
-            })
-          } else {
-            Alert.alert(this.Global.APP_NAME, "User had been delete.");
-            return;
-          }
-        });
+  verrifyEmailPasswordCorrect = (email, password) => {
+    if (email === this.state.EmailConfirm && password === this.state.PasswordConfirm){
+      this.Global.isFooter = false;
+      Actions.login();
+      this.Global.pressStatus = "love";
+      Alert.alert(this.Global.APP_NAME, "Delete Account success!")
     }
-    catch(error) {
-        this.setState({
-            animating: false
-        })
-    }
-}
-verrifyEmailPasswordCorrect = async (email, password) => {
-  try {
-    //verify correct email
-    if (email === this.state.EmailData )
+    else
     {
-      this.setState({
-        animating: true
-    })
-    //verify correct password
-    await firebase.auth().currentUser
-    .reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(this.state.Email, password))
-    .then( () => {
-      //deleteAccount
-      this.deleteAccount(this.state.Email,this.state.pass);
-
-    })
-    .catch((error) =>
-    {
-      this.setState({
-        animating: false
-    })
-      const { code, message } = error;
-      Alert.alert(this.Global.APP_NAME, message);
-      
-    });
+      Alert.alert(this.Global.APP_NAME, "Email, Password is incorrect")
     }
-    else {
-      Alert.alert(this.Global.APP_NAME, "Email is incorrect");
-    }
-
-  }
-  catch(error) {
-    Alert.alert(this.Global.APP_NAME, error);
-}
-}
-  deleteAccount = async (email, password) => {
-    try {
-      this.setState({
-          animating: true
-      })
-      
-      console.log(firebase.auth().currentUser)
-      await 
-        // User deleted.
-        firebase
-          .database()
-          .ref("users")
-          .child(this.Global.currentUserId)
-          .remove()
-      //end delete from ref User
-      debugger
-      for (let tag of this.state.tags) {
-        //remove tags from firebase ref tags
-        firebase
-          .database()
-          .ref("tags")
-          .child(tag)
-          .child(this.Global.currentUserId)
-          .remove()
-          .catch((error) =>{
-            const { code, message } = error;
-            Alert.alert(this.Global.APP_NAME, message);
-            debugger
-            
-          });
-      }
-                // end delete from ref tags
-                firebase
-                .database()
-                .ref("wishlist")
-                .child(this.Global.currentUserId)
-                .remove() 
-                .catch((error) => {
-            const { code, message } = error;
-            Alert.alert(this.Global.APP_NAME, message);
-            debugger
-            
-          });      
-                //end xóa wishlist với user hiện tại 
-                debugger
-                firebase
-                .database()
-                .ref("wishlist")
-                .once("value", function(snapshots) {
-                  snapshots.forEach(function(data) {
-                    let tempArr = [];
-                    debugger
-                    tempArr.push(data.val());
-                    console.log(data.val())
-                    debugger
-                  });
-                })
-                .catch((error) => {
-                const { code, message } = error;
-                Alert.alert(this.Global.APP_NAME, message);
-                debugger
-                
-              });   
-                debugger
-                //end lấy tất cả danh sách các user có trong wish list 
-                //xóa id user hiện tại từ wishlist của các user đã có 
-                // delete from wishlist
-                //
-      //delete user from authentication -> done
-                await 
-                firebase.auth().currentUser.delete().then(() => {
-        Actions.login();
-      }).catch((error) =>
-      {
-        this.setState({
-          animating: false
-      })
-        const { code, message } = error;
-        Alert.alert(this.Global.APP_NAME, message);
-        
-      });
-      
-  }
-  catch(error) {
-      this.setState({
-          animating: false
-      })
-  }
   }
   render() {
     return (
@@ -299,7 +95,9 @@ verrifyEmailPasswordCorrect = async (email, password) => {
           marginTop: height < 812 ? (height < 736 ? (height < 667 ? 10 : 25) : 35) : 50,
         }]}>
           <Icon name="envelope" color='#DDDDDD' size={24} style={{ marginLeft: 20 }} />
-          <TextInput placeholder={'Your email'} style={styles.styleUserName}
+          <TextInput placeholder={'Your email'} 
+          autoCapitalize = "none"
+          style={styles.styleUserName}
             onChangeText={Email => {
               this.setState({ Email: Email });
             }}
@@ -340,19 +138,6 @@ verrifyEmailPasswordCorrect = async (email, password) => {
         >
           <Text style={styles.textLogin}>DELETE ACCOUNT</Text>
         </TouchableOpacity>
-        <ActivityIndicator
-              animating={this.state.animating}
-              color="#fff"
-              size="large"
-              style={styles.activityIndicator}
-            />
-                      {
-            this.state.animating ?
-              <View style={styles.waiting}>
-
-              </View>
-              : null
-          }
         </KeyboardAwareScrollView>
     );
   }
@@ -475,20 +260,4 @@ const styles = StyleSheet.create({
     marginTop: height < 667 ? 12 : 25,
     marginBottom: height < 667 ? 10 : 20,
   },
-  activityIndicator: {
-    position: 'absolute',
-    top: height/2,
-    left: width/2-20,
-
-  },
-  waiting: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
-    width: width,
-    height: height,
-    backgroundColor: "rgba(0,0,0,0.5)"
-  }
 })
