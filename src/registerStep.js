@@ -372,6 +372,7 @@ export default class RegisterStep extends Component {
                     else {
                       this.Global.isFooter = true;
                       this.Global.firstLogin = false;
+                      this.Global.pressStatus = "search"
                       Actions.search();
                     }
                   }
